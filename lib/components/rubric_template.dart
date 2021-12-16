@@ -1,5 +1,6 @@
 import 'package:flapp/models/factor.dart';
 import 'package:flutter/material.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class RubricTemplate extends StatefulWidget {
   const RubricTemplate(
@@ -22,16 +23,31 @@ class _RubricTemplateState extends State<RubricTemplate> {
   Widget build(BuildContext context) {
     return Wrap(
         children: List.generate(
-            3, (index) => ToggleButtonWidget(isFirst: true, index: index)));
+            widget.categories.length,
+            (index) => ToggleButtonWidget(
+                  index: index,
+                  len: widget.grades.length,
+                  category: widget.categories[index],
+                  grades: widget.grades,
+                  total: widget.totalPoints,
+                )));
   }
 }
 
 class ToggleButtonWidget extends StatefulWidget {
-  final bool isFirst;
   final int index;
+  final int len;
+  final Factor category;
+  final List<Factor> grades;
+  final int total;
 
   const ToggleButtonWidget(
-      {Key? key, this.isFirst = false, required this.index})
+      {Key? key,
+      required this.index,
+      required this.len,
+      required this.category,
+      required this.grades,
+      required this.total})
       : super(key: key);
 
   @override
@@ -43,26 +59,45 @@ class _ToggleButtonWidgetState extends State<ToggleButtonWidget> {
 
   @override
   void initState() {
-    _isSelected = [widget.isFirst ? true : false];
     super.initState();
+    _isSelected = List.filled(widget.len, false);
   }
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      return ToggleButtons(
-        renderBorder: false,
-        constraints: BoxConstraints.expand(
-            width: constraints.maxWidth / 3, height: constraints.maxWidth / 3),
-        borderRadius: BorderRadius.circular(5),
-        children: [
-          Text('Option1-' + widget.index.toString()),
-          Text('Option2-' + widget.index.toString()),
-          Text('Option3-' + widget.index.toString())
-        ],
-        isSelected: [false, false, false],
-        onPressed: (index) {},
-      );
-    });
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+            width: 45,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 5),
+              child: AutoSizeText(
+                widget.category.label,
+                style: const TextStyle(fontSize: 15),
+                minFontSize: 9,
+                maxLines: widget.category.label.contains(" ") ? 2 : 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+              ),
+            )),
+        Expanded(child: LayoutBuilder(builder: (context, constraints) {
+          return ToggleButtons(
+            constraints: BoxConstraints.expand(
+                width: constraints.maxWidth / widget.len,
+                height: constraints.maxWidth / widget.len),
+            renderBorder: false,
+            children: List.filled(widget.len, Text("-")),
+            isSelected: _isSelected,
+            onPressed: (index) {
+              setState(() {
+                _isSelected = List.filled(widget.len, false);
+                _isSelected[index] = true;
+              });
+            },
+          );
+        })),
+      ],
+    );
   }
 }

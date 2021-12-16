@@ -18,8 +18,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.amber,
       ),
       home: const Scaffold(
-          body: Padding(
-              padding: EdgeInsets.only(top: 5), child: RubricContainer())),
+          body: Padding(padding: EdgeInsets.all(5), child: RubricContainer())),
     );
   }
 }
