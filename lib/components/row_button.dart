@@ -2,38 +2,6 @@ import 'package:flapp/models/factor.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
-class RubricTemplate extends StatefulWidget {
-  const RubricTemplate(
-      {Key? key,
-      required this.categories,
-      required this.grades,
-      required this.totalPoints})
-      : super(key: key);
-
-  final List<Factor> categories;
-  final List<Factor> grades;
-  final int totalPoints;
-
-  @override
-  State<RubricTemplate> createState() => _RubricTemplateState();
-}
-
-class _RubricTemplateState extends State<RubricTemplate> {
-  @override
-  Widget build(BuildContext context) {
-    return Wrap(
-        children: List.generate(
-            widget.categories.length,
-            (index) => ToggleButtonWidget(
-                  index: index,
-                  len: widget.grades.length,
-                  category: widget.categories[index],
-                  grades: widget.grades,
-                  total: widget.totalPoints,
-                )));
-  }
-}
-
 class ToggleButtonWidget extends StatefulWidget {
   final int index;
   final int len;
@@ -81,23 +49,35 @@ class _ToggleButtonWidgetState extends State<ToggleButtonWidget> {
                 textAlign: TextAlign.center,
               ),
             )),
-        Expanded(child: LayoutBuilder(builder: (context, constraints) {
-          return ToggleButtons(
-            constraints: BoxConstraints.expand(
+        Expanded(
+          child: LayoutBuilder(builder: (context, constraints) {
+            return ToggleButtons(
+              constraints: BoxConstraints.expand(
                 width: constraints.maxWidth / widget.len,
-                height: constraints.maxWidth / widget.len),
-            renderBorder: false,
-            children: List.filled(widget.len, Text("-")),
-            isSelected: _isSelected,
-            onPressed: (index) {
-              setState(() {
-                _isSelected = List.filled(widget.len, false);
-                _isSelected[index] = true;
-              });
-            },
-          );
-        })),
+                height: constraints.maxWidth / widget.len,
+              ),
+              renderBorder: false,
+              children: List.filled(widget.len, Text("-")),
+              isSelected: _isSelected,
+              onPressed: (index) {
+                setState(() {
+                  _isSelected = List.filled(widget.len, false);
+                  _isSelected[index] = true;
+                });
+              },
+            );
+          }),
+        ),
       ],
     );
   }
 }
+
+/*
+        decoration: const BoxDecoration(
+          color: Colors.lightGreen,
+          borderRadius: BorderRadius.all(
+            Radius.circular(12.0),
+          ),
+        )
+*/
