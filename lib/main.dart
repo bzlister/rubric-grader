@@ -1,9 +1,13 @@
+import 'package:flapp/models/rubric.dart';
 import 'package:flutter/material.dart';
-
 import 'components/rubric_container.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider(
+    create: (context) => Rubric.standard(),
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {

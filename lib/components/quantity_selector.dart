@@ -9,7 +9,6 @@ class QuantitySelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Popup example'),
       content: SpinBox(
         min: 0,
         max: 100,

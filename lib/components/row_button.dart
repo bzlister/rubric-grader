@@ -1,74 +1,49 @@
-import 'package:flapp/models/factor.dart';
+import 'dart:collection';
+import 'package:flapp/models/rubric.dart';
 import 'package:flutter/material.dart';
-import 'package:auto_size_text/auto_size_text.dart';
 
-class ToggleButtonWidget extends StatefulWidget {
-  final int index;
+class RowButton extends StatefulWidget {
+  final UnmodifiableListView<Factor> grades;
+  final double worth;
   final int len;
-  final Factor category;
-  final List<Factor> grades;
-  final int total;
 
-  const ToggleButtonWidget(
-      {Key? key,
-      required this.index,
-      required this.len,
-      required this.category,
-      required this.grades,
-      required this.total})
-      : super(key: key);
+  const RowButton({Key? key, required this.grades, required this.worth})
+      : len = grades.length,
+        super(key: key);
 
   @override
-  _ToggleButtonWidgetState createState() => _ToggleButtonWidgetState();
+  _RowButtonState createState() => _RowButtonState();
 }
 
-class _ToggleButtonWidgetState extends State<ToggleButtonWidget> {
+class _RowButtonState extends State<RowButton> {
   late List<bool> _isSelected;
 
   @override
   void initState() {
     super.initState();
-    _isSelected = List.filled(widget.len, false);
+    _isSelected = List.filled(widget.grades.length, false);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-            width: 45,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 5),
-              child: AutoSizeText(
-                widget.category.label,
-                style: const TextStyle(fontSize: 15),
-                minFontSize: 9,
-                maxLines: widget.category.label.contains(" ") ? 2 : 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-              ),
-            )),
-        Expanded(
-          child: LayoutBuilder(builder: (context, constraints) {
-            return ToggleButtons(
-              constraints: BoxConstraints.expand(
-                width: constraints.maxWidth / widget.len,
-                height: constraints.maxWidth / widget.len,
-              ),
-              renderBorder: false,
-              children: List.filled(widget.len, Text("-")),
-              isSelected: _isSelected,
-              onPressed: (index) {
-                setState(() {
-                  _isSelected = List.filled(widget.len, false);
-                  _isSelected[index] = true;
-                });
-              },
-            );
-          }),
-        ),
-      ],
+    return Expanded(
+      child: LayoutBuilder(builder: (context, constraints) {
+        return ToggleButtons(
+          constraints: BoxConstraints.expand(
+            width: constraints.maxWidth / widget.len,
+            height: constraints.maxWidth / widget.len,
+          ),
+          renderBorder: false,
+          children: List.filled(widget.len, Text("-")),
+          isSelected: _isSelected,
+          onPressed: (index) {
+            setState(() {
+              _isSelected = List.filled(widget.len, false);
+              _isSelected[index] = true;
+            });
+          },
+        );
+      }),
     );
   }
 }

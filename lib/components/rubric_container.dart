@@ -1,8 +1,8 @@
 import 'package:flapp/components/quantity_selector.dart';
-import 'package:flapp/components/rubric.dart';
-import 'package:flapp/models/factor.dart';
+import 'package:flapp/components/rubric_table.dart';
+import 'package:flapp/models/rubric.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinbox/material.dart';
+import 'package:provider/provider.dart';
 
 class RubricContainer extends StatefulWidget {
   const RubricContainer({Key? key}) : super(key: key);
@@ -12,88 +12,57 @@ class RubricContainer extends StatefulWidget {
 }
 
 class _RubricContainerState extends State<RubricContainer> {
-  late List<Factor> grades;
-  late List<Factor> categories;
-  late int totalPoints;
-  final _formKey = GlobalKey<FormState>();
-  late String _text;
+  final double leftColumnWidth = 45;
 
   @override
   void initState() {
     super.initState();
     // default starting rubric
-    grades = [
-      Factor("A", 1.0),
-      Factor("B", 0.85),
-      Factor("C", 0.75),
-      Factor("D", 0.7),
-      Factor("F", 0.6)
-    ];
-    categories = [
-      Factor("Zaudience & Genre", 0.3),
-      Factor("Thesis & Support", 0.3),
-      Factor("Reasoning", 0.2),
-      Factor("Organization & Style", 0.15),
-      Factor("Correctness", 0.05)
-    ];
-    totalPoints = 200;
-    _text = "V";
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Center(
-          child: ElevatedButton(
-            child: Text(
-              _text,
-              style: TextStyle(
-                color: Colors.white,
+        Row(
+          children: [
+            SizedBox(
+              width: leftColumnWidth,
+              child: Consumer<Rubric>(
+                builder: (context, rubric, child) =>
+                    Text("Total Points: ${rubric.totalPoints}"),
               ),
             ),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) => QuantitySelector(
-                  onChanged: (value) {
-                    setState(() {
-                      _text = value.toString();
-                    });
-                  },
-                ),
-              );
-            },
-          ),
+            grader(""),
+            grader(""),
+            grader(""),
+            grader(""),
+            grader(""),
+          ],
         ),
-        Rubric(
-          categories: categories,
-          grades: grades,
-          totalPoints: totalPoints,
-        ),
+        RubricTable(),
       ],
     );
   }
-}
 
-/*
-        Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(_text),
-              TextField(
-                textInputAction: TextInputAction.go,
-                onSubmitted: (value) {
-                  if (value != null && value.isNotEmpty) {
-                    setState(() {
-                      _text = value;
-                    });
-                  }
-                },
-              )
-            ],
+  Widget grader(textVar) {
+    return Expanded(
+        child: ElevatedButton(
+      child: Text(
+        textVar,
+      ),
+      onPressed: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) => QuantitySelector(
+            onChanged: (value) {
+              setState(() {
+                textVar = value.toString();
+              });
+            },
           ),
-        )
-*/
+        );
+      },
+    ));
+  }
+}
