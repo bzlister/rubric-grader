@@ -5,7 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class RubricTable extends StatelessWidget {
-  const RubricTable({Key? key}) : super(key: key);
+  final double leftColumnWidth;
+
+  const RubricTable({Key? key, required this.leftColumnWidth})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +22,7 @@ class RubricTable extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  width: 45,
+                  width: leftColumnWidth,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 5),
                     child: AutoSizeText(
@@ -35,7 +38,8 @@ class RubricTable extends StatelessWidget {
                 RowButton(
                     grades: rubric.grades,
                     worth:
-                        rubric.categories[index].weight * rubric.totalPoints),
+                        (rubric.categories[index].weight * rubric.totalPoints) /
+                            100.0),
               ],
             );
           },

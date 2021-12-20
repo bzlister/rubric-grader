@@ -18,18 +18,18 @@ class Rubric extends ChangeNotifier {
       : _totalPoints = 200,
         _assignmentName = "Assignment 1",
         _grades = [
-          Factor("A", 1.0),
-          Factor("B", 0.85),
-          Factor("C", 0.75),
-          Factor("D", 0.7),
-          Factor("F", 0.6)
+          Factor("A", 100),
+          Factor("B", 85),
+          Factor("C", 75),
+          Factor("D", 70),
+          Factor("F", 60)
         ],
         _categories = [
-          Factor("Audience & Genre", 0.3),
-          Factor("Thesis & Support", 0.3),
-          Factor("Reasoning", 0.2),
-          Factor("Organization & Style", 0.15),
-          Factor("Correctness", 0.05)
+          Factor("Audience & Genre", 30),
+          Factor("Thesis & Support", 30),
+          Factor("Reasoning", 20),
+          Factor("Organization & Style", 15),
+          Factor("Correctness", 5)
         ];
 
   int get totalPoints => _totalPoints;
@@ -48,8 +48,8 @@ class Rubric extends ChangeNotifier {
 
   UnmodifiableListView<Factor> get grades => UnmodifiableListView(_grades);
 
-  void updateGrade(int index, Factor value) {
-    _grades[index] = value;
+  void updateGradeWeight(int index, int value) {
+    _grades[index].weight = value;
     notifyListeners();
   }
 
@@ -74,7 +74,7 @@ class Rubric extends ChangeNotifier {
 
 class Factor {
   String label;
-  double weight;
+  int weight;
 
   Factor(this.label, this.weight);
 }

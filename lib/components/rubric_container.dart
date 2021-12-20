@@ -1,68 +1,80 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flapp/components/quantity_selector.dart';
 import 'package:flapp/components/rubric_table.dart';
 import 'package:flapp/models/rubric.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class RubricContainer extends StatefulWidget {
+class RubricContainer extends StatelessWidget {
+  final double leftColumnWidth = 65;
+
   const RubricContainer({Key? key}) : super(key: key);
-
-  @override
-  State<RubricContainer> createState() => _RubricContainerState();
-}
-
-class _RubricContainerState extends State<RubricContainer> {
-  final double leftColumnWidth = 45;
-
-  @override
-  void initState() {
-    super.initState();
-    // default starting rubric
-  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Row(
-          children: [
-            SizedBox(
-              width: leftColumnWidth,
-              child: Consumer<Rubric>(
-                builder: (context, rubric, child) =>
-                    Text("Total Points: ${rubric.totalPoints}"),
-              ),
+        Consumer<Rubric>(
+          builder: (context, rubric, child) => SizedBox(
+            height: 35,
+            child: TextField(
+              onSubmitted: (value) {
+                rubric.setAssignmentName(value);
+              },
+              textInputAction: TextInputAction.go,
+              controller: TextEditingController(text: rubric.assignmentName),
             ),
-            grader(""),
-            grader(""),
-            grader(""),
-            grader(""),
-            grader(""),
-          ],
+          ),
         ),
-        RubricTable(),
+        Consumer<Rubric>(
+          builder: (context, rubric, child) => Row(
+            children: [
+              SizedBox(
+                width: leftColumnWidth,
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                      primary: Colors.black, alignment: Alignment.bottomLeft),
+                  child: Wrap(
+                    direction: Axis.vertical,
+                    children: [
+                      const Text(
+                        "Total Points",
+                        style: TextStyle(fontSize: 10),
+                      ),
+                      Text("${rubric.totalPoints}")
+                    ],
+                  ),
+                  onPressed: () => print("total points"),
+                ),
+              ),
+              ...List.generate(rubric.grades.length, (index) {
+                Factor grade = rubric.grades[index];
+                return Expanded(
+                  child: TextButton(
+                    style: TextButton.styleFrom(primary: Colors.black),
+                    child: Column(
+                      children: [
+                        Text(grade.label),
+                        Text("${grade.weight}%"),
+                      ],
+                    ),
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) => QuantitySelector(
+                          index: index,
+                          initialValue: grade.weight,
+                        ),
+                      );
+                    },
+                  ),
+                );
+              })
+            ],
+          ),
+        ),
+        RubricTable(leftColumnWidth: leftColumnWidth),
       ],
     );
-  }
-
-  Widget grader(textVar) {
-    return Expanded(
-        child: ElevatedButton(
-      child: Text(
-        textVar,
-      ),
-      onPressed: () {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) => QuantitySelector(
-            onChanged: (value) {
-              setState(() {
-                textVar = value.toString();
-              });
-            },
-          ),
-        );
-      },
-    ));
   }
 }
