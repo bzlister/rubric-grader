@@ -48,16 +48,21 @@ class Rubric extends ChangeNotifier {
 
   UnmodifiableListView<Factor> get grades => UnmodifiableListView(_grades);
 
-  void updateGradeWeight(int index, int value) {
-    _grades[index].weight = value;
+  void updateGrade(String label, Factor newGrade) {
+    Factor oldGrade = _grades.firstWhere((element) => element.label == label);
+    oldGrade.label = newGrade.label;
+    oldGrade.weight = newGrade.weight;
     notifyListeners();
   }
 
   UnmodifiableListView<Factor> get categories =>
       UnmodifiableListView(_categories);
 
-  void updateCategory(int index, Factor value) {
-    _categories[index] = value;
+  void updateCategory(String label, Factor newCategory) {
+    Factor oldCategory =
+        _categories.firstWhere((element) => element.label == label);
+    oldCategory.label = newCategory.label;
+    oldCategory.weight = newCategory.weight;
     notifyListeners();
   }
 
@@ -74,7 +79,7 @@ class Rubric extends ChangeNotifier {
 
 class Factor {
   String label;
-  int weight;
+  double weight;
 
   Factor(this.label, this.weight);
 }

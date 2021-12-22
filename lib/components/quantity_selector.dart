@@ -4,26 +4,39 @@ import 'package:flutter_spinbox/material.dart';
 import 'package:provider/provider.dart';
 
 class QuantitySelector extends StatelessWidget {
-  final int index;
-  final int initialValue;
+  final List<Factor> factors;
+  final QuantitySelectorType type;
 
-  const QuantitySelector(
-      {Key? key, required this.index, required this.initialValue})
+  const QuantitySelector({Key? key, required this.factors, required this.type})
       : super(key: key);
+
+  Widget spinBoxContainer(List<Widget> children) {
+    return type == QuantitySelectorType.grades
+        ? Row(children: children)
+        : Column(children: children);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<Rubric>(
       builder: (context, rubric, child) => AlertDialog(
-        content: SpinBox(
-          min: 0,
-          max: 100,
-          step: 1,
-          value: initialValue.toDouble(),
-          onChanged: (value) {
-            rubric.updateGradeWeight(index, value.toInt());
-          },
-        ),
+        content: spinBoxContainer(factors
+            .map((f) => Expanded(
+                    child: SpinBox(
+                  min: 0,
+                  max: 100,
+                  step: 1,
+                  spacing: 0,
+                  direction: type == QuantitySelectorType.grades
+                      ? Axis.vertical
+                      : Axis.horizontal,
+                  decoration: InputDecoration(labelText: f.label),
+                  value: f.weight,
+                  onChanged: (value) {
+                    rubric.updateGrade(f.label, Factor(f.label, value));
+                  },
+                )))
+            .toList()),
         actions: [
           TextButton(
             onPressed: () {
@@ -35,4 +48,9 @@ class QuantitySelector extends StatelessWidget {
       ),
     );
   }
+}
+
+enum QuantitySelectorType {
+  grades,
+  categories,
 }

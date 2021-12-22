@@ -55,15 +55,15 @@ class RubricContainer extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(grade.label),
-                        Text("${grade.weight}%"),
+                        Text("${grade.weight.truncate()}%"),
                       ],
                     ),
                     onPressed: () {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) => QuantitySelector(
-                          index: index,
-                          initialValue: grade.weight,
+                          factors: rubric.grades,
+                          type: QuantitySelectorType.grades,
                         ),
                       );
                     },
