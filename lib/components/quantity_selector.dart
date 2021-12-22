@@ -4,11 +4,18 @@ import 'package:flutter_spinbox/material.dart';
 import 'package:provider/provider.dart';
 
 class QuantitySelector extends StatelessWidget {
-  final List<Factor> factors;
+  final double max;
   final QuantitySelectorType type;
 
-  const QuantitySelector({Key? key, required this.factors, required this.type})
-      : super(key: key);
+  const QuantitySelector.grades({Key? key})
+      : max = 100,
+        type = QuantitySelectorType.grades,
+        super(key: key);
+
+  const QuantitySelector.categories({Key? key})
+      : max = double.maxFinite,
+        type = QuantitySelectorType.categories,
+        super(key: key);
 
   Widget spinBoxContainer(List<Widget> children) {
     return type == QuantitySelectorType.grades
@@ -18,34 +25,40 @@ class QuantitySelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<Rubric>(
-      builder: (context, rubric, child) => AlertDialog(
-        content: spinBoxContainer(factors
-            .map((f) => Expanded(
+    return AlertDialog(
+      content: Consumer<Rubric>(
+        builder: (context, rubric, child) => spinBoxContainer(
+            (type == QuantitySelectorType.grades
+                    ? rubric.grades
+                    : rubric.categories)
+                .map(
+                  (f) => Expanded(
                     child: SpinBox(
-                  min: 0,
-                  max: 100,
-                  step: 1,
-                  spacing: 0,
-                  direction: type == QuantitySelectorType.grades
-                      ? Axis.vertical
-                      : Axis.horizontal,
-                  decoration: InputDecoration(labelText: f.label),
-                  value: f.weight,
-                  onChanged: (value) {
-                    rubric.updateGrade(f.label, Factor(f.label, value));
-                  },
-                )))
-            .toList()),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text('Close'),
-          ),
-        ],
+                      min: 0,
+                      max: max,
+                      step: 1,
+                      spacing: 0,
+                      direction: type == QuantitySelectorType.grades
+                          ? Axis.vertical
+                          : Axis.horizontal,
+                      decoration: InputDecoration(labelText: f.label),
+                      value: f.weight,
+                      onChanged: (value) {
+                        rubric.updateGrade(f.label, Factor(f.label, value));
+                      },
+                    ),
+                  ),
+                )
+                .toList()),
       ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text('Close'),
+        ),
+      ],
     );
   }
 }

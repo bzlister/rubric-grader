@@ -82,4 +82,17 @@ class Factor {
   double weight;
 
   Factor(this.label, this.weight);
+
+  @override
+  bool operator ==(Object other) {
+    if (other is Factor) {
+      return other.label == label && other.weight == weight;
+    }
+    return false;
+  }
+
+  @override
+  int get hashCode {
+    return "${label}_$weight".hashCode;
+  }
 }

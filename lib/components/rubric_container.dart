@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flapp/components/quantity_selector.dart';
 import 'package:flapp/components/rubric_table.dart';
 import 'package:flapp/models/rubric.dart';
@@ -61,10 +60,8 @@ class RubricContainer extends StatelessWidget {
                     onPressed: () {
                       showDialog(
                         context: context,
-                        builder: (BuildContext context) => QuantitySelector(
-                          factors: rubric.grades,
-                          type: QuantitySelectorType.grades,
-                        ),
+                        builder: (BuildContext context) =>
+                            const QuantitySelector.grades(),
                       );
                     },
                   ),
