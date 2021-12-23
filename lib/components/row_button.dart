@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'package:flapp/models/rubric.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -35,14 +34,14 @@ class _RowButtonState extends State<RowButton> {
           renderBorder: false,
           children: List.generate(
               widget.length,
-              (index) => Selector<Rubric, int>(
+              (index) => Selector<Rubric, String>(
                   builder: (context, value, child) =>
-                      Text(_isSelected[index] ? value.toString() : "-"),
+                      Text(_isSelected[index] ? value : "-"),
                   selector: (context, rubric) => (0.0001 *
-                          rubric.totalPoints *
+                          rubric.totalPoints.weight *
                           rubric.categories[widget.rowNum].weight *
                           rubric.grades[index].weight)
-                      .toInt())),
+                      .toStringAsFixed(1))),
           isSelected: _isSelected,
           onPressed: (index) {
             setState(() {

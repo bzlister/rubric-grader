@@ -2,7 +2,7 @@ import 'dart:collection';
 import 'package:flutter/cupertino.dart';
 
 class Rubric extends ChangeNotifier {
-  int _totalPoints;
+  Factor _totalPoints;
   String _assignmentName;
   List<Factor> _grades;
   List<Factor> _categories;
@@ -15,7 +15,7 @@ class Rubric extends ChangeNotifier {
   );
 
   Rubric.standard()
-      : _totalPoints = 200,
+      : _totalPoints = Factor("Total points", 200),
         _assignmentName = "Assignment 1",
         _grades = [
           Factor("A", 100),
@@ -32,10 +32,10 @@ class Rubric extends ChangeNotifier {
           Factor("Correctness", 5)
         ];
 
-  int get totalPoints => _totalPoints;
+  Factor get totalPoints => _totalPoints;
 
-  void setTotalPoints(int value) {
-    _totalPoints = value;
+  void setTotalPoints(double value) {
+    _totalPoints.weight = value;
     notifyListeners();
   }
 

@@ -17,10 +17,30 @@ class QuantitySelector extends StatelessWidget {
         type = QuantitySelectorType.categories,
         super(key: key);
 
+  const QuantitySelector.total({Key? key})
+      : max = double.maxFinite,
+        type = QuantitySelectorType.total,
+        super(key: key);
+
   Widget spinBoxContainer(List<Widget> children) {
-    return type == QuantitySelectorType.grades
-        ? Row(children: children)
-        : Column(children: children);
+    switch (type) {
+      case QuantitySelectorType.grades:
+        return Row(children: children);
+      case QuantitySelectorType.categories:
+        return Column(children: children);
+      case QuantitySelectorType.total:
+        return children[0];
+    }
+  }
+
+  Widget wrapper(Widget child) {
+    switch (type) {
+      case QuantitySelectorType.grades:
+      case QuantitySelectorType.categories:
+        return Expanded(child: child);
+      case QuantitySelectorType.total:
+        return child;
+    }
   }
 
   @override
@@ -30,41 +50,56 @@ class QuantitySelector extends StatelessWidget {
         builder: (context, length, child) => spinBoxContainer(
           List.generate(
             length,
-            (index) => Expanded(
-              child: Selector<Rubric, Factor>(
-                builder: (context, factor, child) => SpinBox(
-                    min: 0,
-                    max: max,
-                    step: 1,
-                    spacing: 0,
-                    direction: type == QuantitySelectorType.grades
-                        ? Axis.vertical
-                        : Axis.horizontal,
-                    decoration: InputDecoration(labelText: factor.label),
-                    value: factor.weight,
-                    onChanged: (value) {
-                      switch (type) {
-                        case QuantitySelectorType.grades:
-                          context.read<Rubric>().updateGrade(
-                              factor.label, Factor(factor.label, value));
-                          break;
-                        case QuantitySelectorType.categories:
-                          context.read<Rubric>().updateCategory(
-                              factor.label, Factor(factor.label, value));
-                          break;
-                      }
-                    }),
-                selector: (context, rubric) =>
-                    (type == QuantitySelectorType.grades
-                        ? rubric.grades[index]
-                        : rubric.categories[index]),
-              ),
+            (index) => wrapper(
+              Selector<Rubric, Factor>(
+                  builder: (context, factor, child) => SpinBox(
+                      min: 0,
+                      max: max,
+                      step: 1,
+                      spacing: 0,
+                      direction: type == QuantitySelectorType.grades
+                          ? Axis.vertical
+                          : Axis.horizontal,
+                      decoration: InputDecoration(labelText: factor.label),
+                      value: factor.weight,
+                      onChanged: (value) {
+                        switch (type) {
+                          case QuantitySelectorType.grades:
+                            context.read<Rubric>().updateGrade(
+                                factor.label, Factor(factor.label, value));
+                            break;
+                          case QuantitySelectorType.categories:
+                            context.read<Rubric>().updateCategory(
+                                factor.label, Factor(factor.label, value));
+                            break;
+                          case QuantitySelectorType.total:
+                            context.read<Rubric>().setTotalPoints(value);
+                            break;
+                        }
+                      }),
+                  selector: (context, rubric) {
+                    switch (type) {
+                      case QuantitySelectorType.grades:
+                        return rubric.grades[index];
+                      case QuantitySelectorType.categories:
+                        return rubric.categories[index];
+                      case QuantitySelectorType.total:
+                        return rubric.totalPoints;
+                    }
+                  }),
             ),
           ),
         ),
-        selector: (context, rubric) => type == QuantitySelectorType.grades
-            ? rubric.grades.length
-            : rubric.categories.length,
+        selector: (context, rubric) {
+          switch (type) {
+            case QuantitySelectorType.grades:
+              return rubric.grades.length;
+            case QuantitySelectorType.categories:
+              return rubric.categories.length;
+            case QuantitySelectorType.total:
+              return 1;
+          }
+        },
       ),
       actions: [
         TextButton(
@@ -81,4 +116,5 @@ class QuantitySelector extends StatelessWidget {
 enum QuantitySelectorType {
   grades,
   categories,
+  total,
 }

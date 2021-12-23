@@ -41,17 +41,20 @@ class RubricContainer extends StatelessWidget {
                   direction: Axis.vertical,
                   children: [
                     const Text(
-                      "Total Points",
+                      "Total points",
                       style: TextStyle(fontSize: 10),
                     ),
-                    Selector<Rubric, int>(
+                    Selector<Rubric, double>(
                       builder: (context, totalPoints, child) =>
-                          Text("$totalPoints"),
-                      selector: (context, rubric) => rubric.totalPoints,
+                          Text("${totalPoints.truncate()}"),
+                      selector: (context, rubric) => rubric.totalPoints.weight,
                     )
                   ],
                 ),
-                onPressed: () => print("total points"),
+                onPressed: () => showDialog(
+                    context: context,
+                    builder: (BuildContext context) =>
+                        const QuantitySelector.total()),
               ),
             ),
             Selector<Rubric, int>(
