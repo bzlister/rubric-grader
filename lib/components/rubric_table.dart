@@ -12,12 +12,11 @@ class RubricTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<Rubric>(
-      builder: (context, rubric, child) => Wrap(
+    return Selector<Rubric, int>(
+      builder: (context, length, child) => Wrap(
         children: List.generate(
-          rubric.categories.length,
+          length,
           (index) {
-            Factor category = rubric.categories[index];
             return Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -25,26 +24,31 @@ class RubricTable extends StatelessWidget {
                   width: leftColumnWidth,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 5),
-                    child: AutoSizeText(
-                      category.label,
-                      style: const TextStyle(fontSize: 15),
-                      minFontSize: 9,
-                      maxLines: category.label.contains(" ") ? 2 : 1,
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.center,
+                    child: Selector<Rubric, String>(
+                      builder: (context, label, child) => AutoSizeText(
+                        label,
+                        style: const TextStyle(fontSize: 15),
+                        minFontSize: 9,
+                        maxLines: label.contains(" ") ? 2 : 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                      ),
+                      selector: (context, rubric) =>
+                          rubric.categories[index].label,
                     ),
                   ),
                 ),
-                RowButton(
-                    grades: rubric.grades,
-                    worth:
-                        (rubric.categories[index].weight * rubric.totalPoints) /
-                            100.0),
+                Selector<Rubric, int>(
+                  builder: (context, lngth, child) =>
+                      RowButton(rowNum: index, length: lngth),
+                  selector: (context, rubric) => rubric.grades.length,
+                )
               ],
             );
           },
         ),
       ),
+      selector: (context, rubric) => rubric.categories.length,
     );
   }
 }

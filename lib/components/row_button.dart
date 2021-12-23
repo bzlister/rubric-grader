@@ -1,15 +1,14 @@
 import 'dart:collection';
 import 'package:flapp/models/rubric.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class RowButton extends StatefulWidget {
-  final UnmodifiableListView<Factor> grades;
-  final double worth;
-  final int len;
+  final int rowNum;
+  final int length;
 
-  const RowButton({Key? key, required this.grades, required this.worth})
-      : len = grades.length,
-        super(key: key);
+  const RowButton({Key? key, required this.rowNum, required this.length})
+      : super(key: key);
 
   @override
   _RowButtonState createState() => _RowButtonState();
@@ -21,7 +20,7 @@ class _RowButtonState extends State<RowButton> {
   @override
   void initState() {
     super.initState();
-    _isSelected = List.filled(widget.grades.length, false);
+    _isSelected = List.filled(widget.length, false);
   }
 
   @override
@@ -30,15 +29,24 @@ class _RowButtonState extends State<RowButton> {
       child: LayoutBuilder(builder: (context, constraints) {
         return ToggleButtons(
           constraints: BoxConstraints.expand(
-            width: constraints.maxWidth / widget.len,
-            height: constraints.maxWidth / widget.len,
+            width: constraints.maxWidth / widget.length,
+            height: constraints.maxWidth / widget.length,
           ),
           renderBorder: false,
-          children: List.filled(widget.len, Text("-")),
+          children: List.generate(
+              widget.length,
+              (index) => Selector<Rubric, int>(
+                  builder: (context, value, child) =>
+                      Text(_isSelected[index] ? value.toString() : "-"),
+                  selector: (context, rubric) => (0.0001 *
+                          rubric.totalPoints *
+                          rubric.categories[widget.rowNum].weight *
+                          rubric.grades[index].weight)
+                      .toInt())),
           isSelected: _isSelected,
           onPressed: (index) {
             setState(() {
-              _isSelected = List.filled(widget.len, false);
+              _isSelected = List.filled(widget.length, false);
               _isSelected[index] = true;
             });
           },

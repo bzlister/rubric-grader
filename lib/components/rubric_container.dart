@@ -83,7 +83,7 @@ class RubricContainer extends StatelessWidget {
                   ),
                 ),
               ),
-              selector: (context, rubric) => rubric.numGrades,
+              selector: (context, rubric) => rubric.grades.length,
             )
           ],
         ),

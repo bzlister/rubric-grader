@@ -48,8 +48,6 @@ class Rubric extends ChangeNotifier {
 
   UnmodifiableListView<Factor> get grades => UnmodifiableListView(_grades);
 
-  int get numGrades => _grades.length;
-
   void updateGrade(String label, Factor newGrade) {
     _grades = _grades.map((f) => f.label == label ? newGrade : f).toList();
     notifyListeners();
@@ -57,8 +55,6 @@ class Rubric extends ChangeNotifier {
 
   UnmodifiableListView<Factor> get categories =>
       UnmodifiableListView(_categories);
-
-  int get numCategories => _categories.length;
 
   void updateCategory(String label, Factor newCategory) {
     _categories =
