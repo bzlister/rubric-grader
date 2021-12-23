@@ -27,29 +27,37 @@ class QuantitySelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       content: Consumer<Rubric>(
-        builder: (context, rubric, child) => spinBoxContainer(
-            (type == QuantitySelectorType.grades
-                    ? rubric.grades
-                    : rubric.categories)
-                .map(
-                  (f) => Expanded(
-                    child: SpinBox(
-                      min: 0,
-                      max: max,
-                      step: 1,
-                      spacing: 0,
-                      direction: type == QuantitySelectorType.grades
-                          ? Axis.vertical
-                          : Axis.horizontal,
-                      decoration: InputDecoration(labelText: f.label),
-                      value: f.weight,
-                      onChanged: (value) {
+        builder: (context, rubric, child) => spinBoxContainer((type ==
+                    QuantitySelectorType.grades
+                ? rubric.grades
+                : rubric.categories)
+            .map(
+              (f) => Expanded(
+                child: SpinBox(
+                  min: 0,
+                  max: max,
+                  step: 1,
+                  spacing: 0,
+                  direction: type == QuantitySelectorType.grades
+                      ? Axis.vertical
+                      : Axis.horizontal,
+                  decoration: InputDecoration(labelText: f.label),
+                  value: f.weight,
+                  onChanged: (value) {
+                    switch (type) {
+                      case QuantitySelectorType.grades:
                         rubric.updateGrade(f.label, Factor(f.label, value));
-                      },
-                    ),
-                  ),
-                )
-                .toList()),
+                        // rubric.updateGrade(f.label, Factor(f.label, value));
+                        break;
+                      case QuantitySelectorType.categories:
+                        rubric.updateCategory(f.label, Factor(f.label, value));
+                        break;
+                    }
+                  },
+                ),
+              ),
+            )
+            .toList()),
       ),
       actions: [
         TextButton(

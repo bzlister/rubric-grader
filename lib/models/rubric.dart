@@ -49,9 +49,11 @@ class Rubric extends ChangeNotifier {
   UnmodifiableListView<Factor> get grades => UnmodifiableListView(_grades);
 
   void updateGrade(String label, Factor newGrade) {
+    print(grades[0].weight);
     Factor oldGrade = _grades.firstWhere((element) => element.label == label);
     oldGrade.label = newGrade.label;
     oldGrade.weight = newGrade.weight;
+    print(grades[0].weight);
     notifyListeners();
   }
 
