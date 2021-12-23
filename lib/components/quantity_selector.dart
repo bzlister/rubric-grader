@@ -46,7 +46,9 @@ class QuantitySelector extends StatelessWidget {
                   onChanged: (value) {
                     switch (type) {
                       case QuantitySelectorType.grades:
-                        rubric.updateGrade(f.label, Factor(f.label, value));
+                        context
+                            .read<Rubric>()
+                            .updateGrade(f.label, Factor(f.label, value));
                         // rubric.updateGrade(f.label, Factor(f.label, value));
                         break;
                       case QuantitySelectorType.categories:

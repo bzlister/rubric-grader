@@ -4,8 +4,8 @@ import 'package:flutter/cupertino.dart';
 class Rubric extends ChangeNotifier {
   int _totalPoints;
   String _assignmentName;
-  final List<Factor> _grades;
-  final List<Factor> _categories;
+  List<Factor> _grades;
+  List<Factor> _categories;
 
   Rubric(
     this._totalPoints,
@@ -48,23 +48,21 @@ class Rubric extends ChangeNotifier {
 
   UnmodifiableListView<Factor> get grades => UnmodifiableListView(_grades);
 
+  int get numGrades => _grades.length;
+
   void updateGrade(String label, Factor newGrade) {
-    print(grades[0].weight);
-    Factor oldGrade = _grades.firstWhere((element) => element.label == label);
-    oldGrade.label = newGrade.label;
-    oldGrade.weight = newGrade.weight;
-    print(grades[0].weight);
+    _grades = _grades.map((f) => f.label == label ? newGrade : f).toList();
     notifyListeners();
   }
 
   UnmodifiableListView<Factor> get categories =>
       UnmodifiableListView(_categories);
 
+  int get numCategories => _categories.length;
+
   void updateCategory(String label, Factor newCategory) {
-    Factor oldCategory =
-        _categories.firstWhere((element) => element.label == label);
-    oldCategory.label = newCategory.label;
-    oldCategory.weight = newCategory.weight;
+    _categories =
+        _categories.map((f) => f.label == label ? newCategory : f).toList();
     notifyListeners();
   }
 

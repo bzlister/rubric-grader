@@ -54,19 +54,22 @@ class RubricContainer extends StatelessWidget {
                 onPressed: () => print("total points"),
               ),
             ),
-            Selector<Rubric, UnmodifiableListView<Factor>>(
-              builder: (context, grades, child) => Expanded(
+            Selector<Rubric, int>(
+              builder: (context, length, child) => Expanded(
                 child: Row(
-                  children: List.generate(grades.length, (index) {
-                    Factor grade = grades[index];
-                    return Expanded(
+                  children: List.generate(
+                    length,
+                    (index) => Expanded(
                       child: TextButton(
                         style: TextButton.styleFrom(primary: Colors.black),
-                        child: Column(
-                          children: [
-                            Text(grade.label),
-                            Text("${grade.weight.truncate()}%"),
-                          ],
+                        child: Selector<Rubric, Factor>(
+                          builder: (context, grade, child) => Column(
+                            children: [
+                              Text(grade.label),
+                              Text("${grade.weight.truncate()}%"),
+                            ],
+                          ),
+                          selector: (context, rubric) => rubric.grades[index],
                         ),
                         onPressed: () {
                           showDialog(
@@ -76,11 +79,11 @@ class RubricContainer extends StatelessWidget {
                           );
                         },
                       ),
-                    );
-                  }),
+                    ),
+                  ),
                 ),
               ),
-              selector: (context, rubric) => rubric.grades,
+              selector: (context, rubric) => rubric.numGrades,
             )
           ],
         ),
