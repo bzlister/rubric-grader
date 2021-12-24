@@ -60,7 +60,25 @@ class QuantitySelector extends StatelessWidget {
                       direction: type == QuantitySelectorType.grades
                           ? Axis.vertical
                           : Axis.horizontal,
-                      decoration: InputDecoration(labelText: factor.label),
+                      decoration: InputDecoration(
+                          label: type == QuantitySelectorType.categories
+                              ? Selector<Rubric, String>(
+                                  builder: (context, label, child) => SizedBox(
+                                    child: TextField(
+                                      onSubmitted: (value) {
+                                        context.read<Rubric>().updateCategory(
+                                            factor.label,
+                                            Factor(label, factor.weight));
+                                      },
+                                      textInputAction: TextInputAction.go,
+                                      controller:
+                                          TextEditingController(text: label),
+                                    ),
+                                  ),
+                                  selector: (context, rubric) =>
+                                      rubric.categories[index].label,
+                                )
+                              : Text(factor.label)),
                       value: factor.weight,
                       onChanged: (value) {
                         switch (type) {

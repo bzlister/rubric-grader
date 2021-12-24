@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flapp/components/quantity_selector.dart';
 import 'package:flapp/components/row_button.dart';
 import 'package:flapp/models/rubric.dart';
 import 'package:flutter/material.dart';
@@ -24,17 +25,28 @@ class RubricTable extends StatelessWidget {
                   width: leftColumnWidth,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 5),
-                    child: Selector<Rubric, String>(
-                      builder: (context, label, child) => AutoSizeText(
-                        label,
-                        style: const TextStyle(fontSize: 15),
-                        minFontSize: 9,
-                        maxLines: label.contains(" ") ? 2 : 1,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
+                    child: GestureDetector(
+                      child: Selector<Rubric, Factor>(
+                        builder: (context, category, child) => Column(
+                          children: [
+                            AutoSizeText(
+                              category.label,
+                              style: const TextStyle(fontSize: 15),
+                              minFontSize: 9,
+                              maxLines: category.label.contains(" ") ? 2 : 1,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                            ),
+                            Text("${category.weight.truncate()}")
+                          ],
+                        ),
+                        selector: (context, rubric) => rubric.categories[index],
                       ),
-                      selector: (context, rubric) =>
-                          rubric.categories[index].label,
+                      onTap: () => showDialog(
+                        context: context,
+                        builder: (BuildContext context) =>
+                            const QuantitySelector.categories(),
+                      ),
                     ),
                   ),
                 ),
