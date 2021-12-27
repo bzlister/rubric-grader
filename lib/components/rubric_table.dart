@@ -6,6 +6,8 @@ import 'package:flapp/models/rubric.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'categories_selector.dart';
+
 class RubricTable extends StatelessWidget {
   final double leftColumnWidth;
 
@@ -45,23 +47,8 @@ class RubricTable extends StatelessWidget {
                       ),
                       onTap: () => showDialog(
                           context: context,
-                          builder: (BuildContext context) => AlertDialog(
-                                content: Selector<Rubric, List<Factor>>(
-                                  builder: (context, categories, child) =>
-                                      PercentageSelector(
-                                          categories: categories),
-                                  selector: (context, rubric) =>
-                                      rubric.categories,
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text('Close'),
-                                  ),
-                                ],
-                              )),
+                          builder: (BuildContext context) =>
+                              const CategoriesSelector()),
                     ),
                   ),
                 ),

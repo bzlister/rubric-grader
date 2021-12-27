@@ -1,4 +1,4 @@
-import 'package:flapp/components/quantity_selector.dart';
+import 'package:flapp/components/grades_selector.dart';
 import 'package:flapp/components/rubric_table.dart';
 import 'package:flapp/models/rubric.dart';
 import 'package:flutter/material.dart';
@@ -80,7 +80,7 @@ class RubricContainer extends StatelessWidget {
                             showDialog(
                               context: context,
                               builder: (BuildContext context) =>
-                                  const QuantitySelector.grades(),
+                                  const GradesSelector(),
                             );
                           },
                         ),
