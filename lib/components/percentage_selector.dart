@@ -15,8 +15,10 @@ class PercentageSelector extends StatefulWidget {
 
 class _PercentageSelectorState extends State<PercentageSelector> {
   late List<Factor> _categories;
-  late int _currSectionIndex;
-  late double _initAngle;
+  late int? _sectionIndexA;
+  late int? _sectionIndexB;
+  late double? _fixedAngleA;
+  late double? _fixedAngleB;
 
   @override
   void initState() {
@@ -24,26 +26,41 @@ class _PercentageSelectorState extends State<PercentageSelector> {
     _categories = widget.categories;
   }
 
-  double calcStartAngle(int index) {
-    double startAngle = 0;
-    for (int i = 0; i < index; i++) {
-      startAngle += _categories[index].weight * 3.6;
+  void _calcBoundaries(int indx, double touchAngle) {
+    List<List<double>> allAngles = [
+      [0, _categories[0].weight * 3.6]
+    ];
+    for (int i = 1; i < _categories.length; i++) {
+      List<double> prev = allAngles[i - 1];
+      allAngles.add([prev[1], prev[1] + _categories[i].weight * 3.6]);
     }
-    return startAngle;
+    double midpoint = (allAngles[indx][0] + allAngles[indx][1]) / 2;
+    setState(() {
+      _sectionIndexA = indx;
+      if (touchAngle <= midpoint) {
+        _sectionIndexB = (indx - 1) % _categories.length;
+        _fixedAngleA = allAngles[indx][1];
+        _fixedAngleB = allAngles[_sectionIndexB!][0];
+      } else {
+        _sectionIndexB = (indx + 1) % _categories.length;
+        _fixedAngleA = allAngles[indx][0];
+        _fixedAngleB = allAngles[_sectionIndexB!][1];
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    var pieChartSectionData = _categories
+        .map((c) => PieChartSectionData(
+            radius: 110,
+            value: c.weight,
+            color: Colors.primaries[Random().nextInt(Colors.primaries.length)],
+            title: c.label))
+        .toList();
     return PieChart(
       PieChartData(
-          sections: _categories
-              .map((c) => PieChartSectionData(
-                  radius: 110,
-                  value: c.weight,
-                  color: Colors
-                      .primaries[Random().nextInt(Colors.primaries.length)],
-                  title: c.label))
-              .toList(),
+          sections: pieChartSectionData,
           centerSpaceRadius: 0,
           pieTouchData:
               PieTouchData(touchCallback: (touchEvent, pieTouchResponse) {
@@ -52,30 +69,22 @@ class _PercentageSelectorState extends State<PercentageSelector> {
             if (touchedSection != null) {
               if (touchEvent is FlLongPressStart) {
                 setState(() {
-                  _currSectionIndex = touchedSection.touchedSectionIndex;
-                  _initAngle = touchedSection.touchAngle;
+                  //_currSectionIndex = touchedSection.touchedSectionIndex;
+                  _calcBoundaries(
+                    touchedSection.touchedSectionIndex,
+                    touchedSection.touchAngle,
+                  );
+                  print(
+                      "Section A: ${_categories[_sectionIndexA!].label}, Fixed angle: $_fixedAngleA");
+                  print(
+                      "Section B: ${_categories[_sectionIndexB!].label}, Fixed angle: $_fixedAngleB");
                 });
               } else if (touchEvent is FlLongPressMoveUpdate) {
-                if (_currSectionIndex != null && _initAngle != null) {
-                  setState(() {
-                    double newWeight = (touchedSection.touchAngle -
-                                calcStartAngle(_currSectionIndex))
-                            .abs() /
-                        360.0;
-                    double newWeightNextSection =
-                        (_categories[_currSectionIndex].weight - newWeight) +
-                            _categories[(_currSectionIndex + 1) %
-                                    _categories.length]
-                                .weight;
-
-                    print(
-                        "Assigning $newWeight to ${_categories[_currSectionIndex].label}");
-                    print(
-                        "Assigning $newWeightNextSection to ${_categories[(_currSectionIndex + 1) % _categories.length].label}");
-                    _categories[_currSectionIndex].weight = newWeight;
-                    _categories[_currSectionIndex].weight =
-                        newWeightNextSection;
-                  });
+                if (_fixedAngleA != null &&
+                    _fixedAngleB != null &&
+                    _sectionIndexA != null &&
+                    _sectionIndexB != null) {
+                  //setState(() {});
                 }
               } else if (touchEvent is FlLongPressEnd) {
                 print(

@@ -44,10 +44,24 @@ class RubricTable extends StatelessWidget {
                         selector: (context, rubric) => rubric.categories[index],
                       ),
                       onTap: () => showDialog(
-                        context: context,
-                        builder: (BuildContext context) =>
-                            const QuantitySelector.categories(),
-                      ),
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                                content: Selector<Rubric, List<Factor>>(
+                                  builder: (context, categories, child) =>
+                                      PercentageSelector(
+                                          categories: categories),
+                                  selector: (context, rubric) =>
+                                      rubric.categories,
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('Close'),
+                                  ),
+                                ],
+                              )),
                     ),
                   ),
                 ),
