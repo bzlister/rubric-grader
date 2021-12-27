@@ -37,8 +37,7 @@ class _RowButtonState extends State<RowButton> {
               (index) => Selector<Rubric, String>(
                   builder: (context, value, child) =>
                       Text(_isSelected[index] ? value : "-"),
-                  selector: (context, rubric) => (0.0001 *
-                          rubric.totalPoints.weight *
+                  selector: (context, rubric) => (0.01 *
                           rubric.categories[widget.rowNum].weight *
                           rubric.grades[index].weight)
                       .toStringAsFixed(1))),

@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flapp/components/percentage_selector.dart';
 import 'package:flapp/components/quantity_selector.dart';
 import 'package:flapp/components/row_button.dart';
 import 'package:flapp/models/rubric.dart';

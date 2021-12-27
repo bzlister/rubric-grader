@@ -31,6 +31,7 @@ class RubricContainer extends StatelessWidget {
             children: [
               SizedBox(
                 width: leftColumnWidth,
+                /*
                 child: TextButton(
                   style: TextButton.styleFrom(
                     primary: Colors.black,
@@ -57,6 +58,7 @@ class RubricContainer extends StatelessWidget {
                         const QuantitySelector.total(),
                   ),
                 ),
+                */
               ),
               Selector<Rubric, int>(
                 builder: (context, length, child) => Expanded(

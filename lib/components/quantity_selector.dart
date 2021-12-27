@@ -27,7 +27,7 @@ class QuantitySelector extends StatelessWidget {
       case QuantitySelectorType.grades:
         return Row(children: children);
       case QuantitySelectorType.categories:
-        return Column(children: children);
+        return SingleChildScrollView(child: ListBody(children: children));
       case QuantitySelectorType.total:
         return children[0];
     }
@@ -36,8 +36,8 @@ class QuantitySelector extends StatelessWidget {
   Widget wrapper(Widget child) {
     switch (type) {
       case QuantitySelectorType.grades:
-      case QuantitySelectorType.categories:
         return Expanded(child: child);
+      case QuantitySelectorType.categories:
       case QuantitySelectorType.total:
         return child;
     }
@@ -51,60 +51,67 @@ class QuantitySelector extends StatelessWidget {
           List.generate(
             length,
             (index) => wrapper(
-              Selector<Rubric, Factor>(
-                  builder: (context, factor, child) => SpinBox(
-                      min: 0,
-                      max: max,
-                      step: 1,
-                      spacing: 0,
-                      direction: type == QuantitySelectorType.grades
-                          ? Axis.vertical
-                          : Axis.horizontal,
-                      decoration: InputDecoration(
-                          label: type == QuantitySelectorType.categories
-                              ? Selector<Rubric, String>(
-                                  builder: (context, label, child) => SizedBox(
-                                    child: TextField(
-                                      onSubmitted: (value) {
-                                        context.read<Rubric>().updateCategory(
-                                            factor.label,
-                                            Factor(label, factor.weight));
-                                      },
-                                      textInputAction: TextInputAction.go,
-                                      controller:
-                                          TextEditingController(text: label),
-                                    ),
-                                  ),
-                                  selector: (context, rubric) =>
-                                      rubric.categories[index].label,
-                                )
-                              : Text(factor.label)),
-                      value: factor.weight,
-                      onChanged: (value) {
-                        switch (type) {
-                          case QuantitySelectorType.grades:
-                            context.read<Rubric>().updateGrade(
-                                factor.label, Factor(factor.label, value));
-                            break;
-                          case QuantitySelectorType.categories:
+              Selector<Rubric, Factor>(builder: (context, factor, child) {
+                var sBox = SpinBox(
+                    min: 0,
+                    max: max,
+                    step: 1,
+                    spacing: 0,
+                    direction: type == QuantitySelectorType.grades
+                        ? Axis.vertical
+                        : Axis.horizontal,
+                    decoration: InputDecoration(
+                        label: type == QuantitySelectorType.categories
+                            ? null
+                            : Text(factor.label)),
+                    value: factor.weight,
+                    onChanged: (value) {
+                      switch (type) {
+                        case QuantitySelectorType.grades:
+                          context.read<Rubric>().updateGrade(
+                              factor.label, Factor(factor.label, value));
+                          break;
+                        case QuantitySelectorType.categories:
+                          context.read<Rubric>().updateCategory(
+                              factor.label, Factor(factor.label, value));
+                          break;
+                        case QuantitySelectorType.total:
+                          context.read<Rubric>().setTotalPoints(value);
+                          break;
+                      }
+                    });
+
+                if (type == QuantitySelectorType.categories) {
+                  return Column(
+                    children: [
+                      SizedBox(
+                        child: TextField(
+                          onSubmitted: (value) {
                             context.read<Rubric>().updateCategory(
-                                factor.label, Factor(factor.label, value));
-                            break;
-                          case QuantitySelectorType.total:
-                            context.read<Rubric>().setTotalPoints(value);
-                            break;
-                        }
-                      }),
-                  selector: (context, rubric) {
-                    switch (type) {
-                      case QuantitySelectorType.grades:
-                        return rubric.grades[index];
-                      case QuantitySelectorType.categories:
-                        return rubric.categories[index];
-                      case QuantitySelectorType.total:
-                        return rubric.totalPoints;
-                    }
-                  }),
+                                  factor.label,
+                                  Factor(value, factor.weight),
+                                );
+                          },
+                          textInputAction: TextInputAction.go,
+                          controller: TextEditingController(text: factor.label),
+                        ),
+                      ),
+                      sBox
+                    ],
+                  );
+                } else {
+                  return sBox;
+                }
+              }, selector: (context, rubric) {
+                switch (type) {
+                  case QuantitySelectorType.grades:
+                    return rubric.grades[index];
+                  case QuantitySelectorType.categories:
+                    return rubric.categories[index];
+                  case QuantitySelectorType.total:
+                    return rubric.totalPoints;
+                }
+              }),
             ),
           ),
         ),
@@ -136,3 +143,23 @@ enum QuantitySelectorType {
   categories,
   total,
 }
+
+/*
+Selector<Rubric, String>(
+                                  builder: (context, label, child) => SizedBox(
+                                    child: TextField(
+                                      onSubmitted: (value) {
+                                        context.read<Rubric>().updateCategory(
+                                              factor.label,
+                                              Factor(label, factor.weight),
+                                            );
+                                      },
+                                      textInputAction: TextInputAction.go,
+                                      controller:
+                                          TextEditingController(text: label),
+                                    ),
+                                  ),
+                                  selector: (context, rubric) =>
+                                      rubric.categories[index].label,
+                                )
+                                */
