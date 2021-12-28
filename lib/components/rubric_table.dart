@@ -16,51 +16,64 @@ class RubricTable extends StatelessWidget {
   Widget build(BuildContext context) {
     return Selector<Rubric, int>(
       builder: (context, length, child) => Wrap(
-        children: List.generate(
-          length,
-          (index) {
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: leftColumnWidth,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 5),
-                    child: Selector<Rubric, Factor>(
-                      builder: (context, category, child) => GestureDetector(
-                        child: Column(
-                          children: [
-                            AutoSizeText(
-                              category.label,
-                              style: const TextStyle(fontSize: 15),
-                              minFontSize: 9,
-                              maxLines: category.label.contains(" ") ? 2 : 1,
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.center,
+        children: [
+          ...List.generate(
+            length,
+            (index) {
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: leftColumnWidth,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 5),
+                      child: Selector<Rubric, Factor>(
+                        builder: (context, category, child) => GestureDetector(
+                          child: Column(
+                            children: [
+                              AutoSizeText(
+                                category.label,
+                                style: const TextStyle(fontSize: 15),
+                                minFontSize: 9,
+                                maxLines: category.label.contains(" ") ? 2 : 1,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center,
+                              ),
+                              Text("${category.weight.truncate()}")
+                            ],
+                          ),
+                          onTap: () => showDialog(
+                            context: context,
+                            builder: (BuildContext context) =>
+                                CategoriesSelector.update(
+                              index: index,
+                              category: category,
                             ),
-                            Text("${category.weight.truncate()}")
-                          ],
-                        ),
-                        onTap: () => showDialog(
-                          context: context,
-                          builder: (BuildContext context) => CategoriesSelector(
-                            index: index,
                           ),
                         ),
+                        selector: (context, rubric) => rubric.categories[index],
                       ),
-                      selector: (context, rubric) => rubric.categories[index],
                     ),
                   ),
+                  Selector<Rubric, int>(
+                    builder: (context, lngth, child) =>
+                        RowButton(rowNum: index, length: lngth),
+                    selector: (context, rubric) => rubric.grades.length,
+                  )
+                ],
+              );
+            },
+          ),
+          SizedBox(
+              width: leftColumnWidth,
+              child: GestureDetector(
+                child: const Text("+"),
+                onTap: () => showDialog(
+                  context: context,
+                  builder: (BuildContext context) => CategoriesSelector.add(),
                 ),
-                Selector<Rubric, int>(
-                  builder: (context, lngth, child) =>
-                      RowButton(rowNum: index, length: lngth),
-                  selector: (context, rubric) => rubric.grades.length,
-                )
-              ],
-            );
-          },
-        ),
+              ))
+        ],
       ),
       selector: (context, rubric) => rubric.categories.length,
     );

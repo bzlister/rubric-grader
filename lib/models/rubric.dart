@@ -49,7 +49,7 @@ class Rubric extends ChangeNotifier {
   UnmodifiableListView<Factor> get grades => UnmodifiableListView(_grades);
 
   void updateGrade(int index, Factor newGrade) {
-    _grades[index] = newGrade;
+    _grades[index] = Factor(newGrade.label, newGrade.weight);
     List<Factor> newGrades = [];
     for (var grade in _grades) {
       newGrades.add(grade);
@@ -62,7 +62,7 @@ class Rubric extends ChangeNotifier {
       UnmodifiableListView(_categories);
 
   void updateCategory(int index, Factor newCategory) {
-    _categories[index] = newCategory;
+    _categories[index] = Factor(newCategory.label, newCategory.weight);
     List<Factor> newCategories = [];
     for (var category in _categories) {
       newCategories.add(category);
@@ -71,8 +71,8 @@ class Rubric extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addCategory() {
-    _categories.add(Factor("", 0));
+  void addCategory(Factor category) {
+    _categories.add(category);
     notifyListeners();
   }
 
