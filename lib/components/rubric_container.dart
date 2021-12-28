@@ -27,70 +27,74 @@ class RubricContainer extends StatelessWidget {
             ),
             selector: (context, rubric) => rubric.assignmentName,
           ),
-          Row(
-            children: [
-              SizedBox(
-                width: leftColumnWidth,
-                /*
-                child: TextButton(
-                  style: TextButton.styleFrom(
-                    primary: Colors.black,
-                    alignment: Alignment.bottomLeft,
+          Padding(
+            padding: const EdgeInsets.only(top: 5),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: leftColumnWidth,
+                  /*
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      primary: Colors.black,
+                      alignment: Alignment.bottomLeft,
+                    ),
+                    child: Wrap(
+                      direction: Axis.vertical,
+                      children: [
+                        const Text(
+                          "Total points",
+                          style: TextStyle(fontSize: 10),
+                        ),
+                        Selector<Rubric, double>(
+                          builder: (context, totalPoints, child) =>
+                              Text("${totalPoints.truncate()}"),
+                          selector: (context, rubric) =>
+                              rubric.totalPoints.weight,
+                        )
+                      ],
+                    ),
+                    onPressed: () => showDialog(
+                      context: context,
+                      builder: (BuildContext context) =>
+                          const QuantitySelector.total(),
+                    ),
                   ),
-                  child: Wrap(
-                    direction: Axis.vertical,
-                    children: [
-                      const Text(
-                        "Total points",
-                        style: TextStyle(fontSize: 10),
-                      ),
-                      Selector<Rubric, double>(
-                        builder: (context, totalPoints, child) =>
-                            Text("${totalPoints.truncate()}"),
-                        selector: (context, rubric) =>
-                            rubric.totalPoints.weight,
-                      )
-                    ],
-                  ),
-                  onPressed: () => showDialog(
-                    context: context,
-                    builder: (BuildContext context) =>
-                        const QuantitySelector.total(),
-                  ),
+                  */
                 ),
-                */
-              ),
-              Selector<Rubric, int>(
-                builder: (context, length, child) => Expanded(
-                  child: Row(
-                    children: List.generate(
-                      length,
-                      (index) => Expanded(
-                        child: GestureDetector(
-                          child: Selector<Rubric, Factor>(
-                            builder: (context, grade, child) => Column(
-                              children: [
-                                Text(grade.label),
-                                Text("${grade.weight.truncate()}%"),
-                              ],
+                Selector<Rubric, int>(
+                  builder: (context, length, child) => Expanded(
+                    child: Row(
+                      children: List.generate(
+                        length,
+                        (index) => Expanded(
+                          child: GestureDetector(
+                            child: Selector<Rubric, Factor>(
+                              builder: (context, grade, child) => Column(
+                                children: [
+                                  Text(grade.label),
+                                  Text("${grade.weight.truncate()}%"),
+                                ],
+                              ),
+                              selector: (context, rubric) =>
+                                  rubric.grades[index],
                             ),
-                            selector: (context, rubric) => rubric.grades[index],
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) =>
+                                    const GradesSelector(),
+                              );
+                            },
                           ),
-                          onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) =>
-                                  const GradesSelector(),
-                            );
-                          },
                         ),
                       ),
                     ),
                   ),
-                ),
-                selector: (context, rubric) => rubric.grades.length,
-              )
-            ],
+                  selector: (context, rubric) => rubric.grades.length,
+                )
+              ],
+            ),
           ),
           RubricTable(leftColumnWidth: leftColumnWidth),
         ],

@@ -1,6 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flapp/components/percentage_selector.dart';
-import 'package:flapp/components/quantity_selector.dart';
 import 'package:flapp/components/row_button.dart';
 import 'package:flapp/models/rubric.dart';
 import 'package:flutter/material.dart';
@@ -28,9 +26,9 @@ class RubricTable extends StatelessWidget {
                   width: leftColumnWidth,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 5),
-                    child: GestureDetector(
-                      child: Selector<Rubric, Factor>(
-                        builder: (context, category, child) => Column(
+                    child: Selector<Rubric, Factor>(
+                      builder: (context, category, child) => GestureDetector(
+                        child: Column(
                           children: [
                             AutoSizeText(
                               category.label,
@@ -43,12 +41,14 @@ class RubricTable extends StatelessWidget {
                             Text("${category.weight.truncate()}")
                           ],
                         ),
-                        selector: (context, rubric) => rubric.categories[index],
-                      ),
-                      onTap: () => showDialog(
+                        onTap: () => showDialog(
                           context: context,
-                          builder: (BuildContext context) =>
-                              const CategoriesSelector()),
+                          builder: (BuildContext context) => CategoriesSelector(
+                            index: index,
+                          ),
+                        ),
+                      ),
+                      selector: (context, rubric) => rubric.categories[index],
                     ),
                   ),
                 ),

@@ -30,6 +30,7 @@ class GradesSelector extends StatelessWidget {
             (index) {
               double min = getMin(index, grades);
               double max = getMax(index, grades);
+              Factor grade = grades[index];
               return Expanded(
                 child: SpinBox(
                     min: min,
@@ -38,12 +39,12 @@ class GradesSelector extends StatelessWidget {
                     spacing: 0,
                     direction: Axis.vertical,
                     decoration: InputDecoration(
-                      label: Text(grades[index].label),
+                      label: Text(grade.label),
                       focusedErrorBorder: const UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.red, width: 1.0),
                       ),
                     ),
-                    value: grades[index].weight,
+                    value: grade.weight,
                     validator: (value) {
                       try {
                         if (value != null) {
@@ -63,8 +64,9 @@ class GradesSelector extends StatelessWidget {
                     },
                     onChanged: (value) {
                       if (value <= max && value >= min) {
-                        context.read<Rubric>().updateGrade(grades[index].label,
-                            Factor(grades[index].label, value));
+                        context
+                            .read<Rubric>()
+                            .updateGrade(index, Factor(grade.label, value));
                       }
                     }),
               );
