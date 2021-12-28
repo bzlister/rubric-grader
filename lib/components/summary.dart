@@ -14,45 +14,51 @@ class Summary extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Spacer(),
+              SizedBox(
+                width: MediaQuery.of(context).size.width / 2,
+              ),
               Container(
-                width: width,
                 alignment: Alignment.bottomLeft,
                 child: const Text(
                   "Total:",
                   style: TextStyle(fontSize: 15),
-                  textAlign: TextAlign.start,
                 ),
               ),
-              Selector<Rubric, double>(
-                builder: (context, total, child) => Text(
-                  total.toStringAsFixed(1),
-                  style: const TextStyle(fontSize: 15),
-                  textAlign: TextAlign.start,
+              const Spacer(),
+              Container(
+                alignment: Alignment.bottomRight,
+                child: Selector<Rubric, double>(
+                  builder: (context, total, child) => Text(
+                    total.toStringAsFixed(1),
+                    style: const TextStyle(fontSize: 15),
+                  ),
+                  selector: (context, rubric) => rubric.totalPoints,
                 ),
-                selector: (context, rubric) => rubric.totalPoints,
               ),
             ],
           ),
           Row(
             children: [
-              const Spacer(),
+              SizedBox(
+                width: MediaQuery.of(context).size.width / 2,
+              ),
               Container(
-                width: width,
                 alignment: Alignment.bottomLeft,
                 child: const Text(
                   "Earned:",
                   style: TextStyle(fontSize: 15),
-                  textAlign: TextAlign.start,
                 ),
               ),
-              Selector<Rubric, double>(
-                builder: (context, earned, child) => Text(
-                  earned.toStringAsFixed(1),
-                  style: const TextStyle(fontSize: 15),
-                  textAlign: TextAlign.start,
+              const Spacer(),
+              Container(
+                alignment: Alignment.bottomRight,
+                child: Selector<Rubric, double>(
+                  builder: (context, earned, child) => Text(
+                    earned.toStringAsFixed(1),
+                    style: const TextStyle(fontSize: 15),
+                  ),
+                  selector: (context, rubric) => rubric.earnedPoints,
                 ),
-                selector: (context, rubric) => rubric.earnedPoints,
               )
             ],
           )
