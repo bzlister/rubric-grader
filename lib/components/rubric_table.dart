@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
 import 'categories_selector.dart';
+import 'delete_menu.dart';
 
 class RubricTable extends StatelessWidget {
   final double leftColumnWidth;
@@ -42,6 +43,13 @@ class RubricTable extends StatelessWidget {
                               ),
                               Text("${category.weight.truncate()}")
                             ],
+                          ),
+                          onLongPressStart: (_) => showDialog(
+                            context: context,
+                            builder: (BuildContext context) => DeleteMenu(
+                              index: index,
+                              categoryLabel: category.label,
+                            ),
                           ),
                           onTap: () => showDialog(
                             context: context,
