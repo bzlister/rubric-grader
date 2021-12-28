@@ -38,8 +38,8 @@ class _RowButtonState extends State<RowButton> {
                   builder: (context, value, child) =>
                       Text(_isSelected[index] ? value : "-"),
                   selector: (context, rubric) => (0.01 *
-                          rubric.getCategory(widget.rowNum).item2 *
-                          rubric.getGrade(index).item2)
+                          rubric.getCategory(widget.rowNum).weight *
+                          rubric.getGrade(index).weight)
                       .toStringAsFixed(1))),
           isSelected: _isSelected,
           onPressed: (index) {

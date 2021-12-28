@@ -28,19 +28,19 @@ class RubricTable extends StatelessWidget {
                     width: leftColumnWidth,
                     child: Padding(
                       padding: const EdgeInsets.only(top: 5),
-                      child: Selector<Rubric, Tuple2<String, double>>(
-                        builder: (context, data, child) => GestureDetector(
+                      child: Selector<Rubric, Factor>(
+                        builder: (context, category, child) => GestureDetector(
                           child: Column(
                             children: [
                               AutoSizeText(
-                                data.item1,
+                                category.label,
                                 style: const TextStyle(fontSize: 15),
                                 minFontSize: 9,
-                                maxLines: data.item1.contains(" ") ? 2 : 1,
+                                maxLines: category.label.contains(" ") ? 2 : 1,
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.center,
                               ),
-                              Text("${data.item2.truncate()}")
+                              Text("${category.weight.truncate()}")
                             ],
                           ),
                           onTap: () => showDialog(
@@ -48,8 +48,8 @@ class RubricTable extends StatelessWidget {
                             builder: (BuildContext context) =>
                                 CategoriesSelector.update(
                               index: index,
-                              initLabel: data.item1,
-                              initWeight: data.item2,
+                              initLabel: category.label,
+                              initWeight: category.weight,
                             ),
                           ),
                         ),

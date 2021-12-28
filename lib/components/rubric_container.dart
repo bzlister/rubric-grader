@@ -42,11 +42,11 @@ class RubricContainer extends StatelessWidget {
                         length,
                         (index) => Expanded(
                           child: GestureDetector(
-                            child: Selector<Rubric, Tuple2<String, double>>(
+                            child: Selector<Rubric, Factor>(
                               builder: (context, grade, child) => Column(
                                 children: [
-                                  Text(grade.item1),
-                                  Text("${grade.item2.truncate()}%"),
+                                  Text(grade.label),
+                                  Text("${grade.weight.truncate()}%"),
                                 ],
                               ),
                               selector: (context, rubric) =>
