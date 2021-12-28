@@ -33,13 +33,16 @@ class RubricTable extends StatelessWidget {
                         builder: (context, category, child) => GestureDetector(
                           child: Column(
                             children: [
-                              AutoSizeText(
-                                category.label,
-                                style: const TextStyle(fontSize: 15),
-                                minFontSize: 9,
-                                maxLines: category.label.contains(" ") ? 2 : 1,
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.center,
+                              Center(
+                                child: AutoSizeText(
+                                  category.label,
+                                  style: const TextStyle(fontSize: 15),
+                                  minFontSize: 9,
+                                  maxLines:
+                                      category.label.contains(" ") ? 2 : 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
                               Text("${category.weight.truncate()}")
                             ],

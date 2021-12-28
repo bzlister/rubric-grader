@@ -12,10 +12,7 @@ class DeleteMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-        content: Text(
-          "Delete category '$categoryLabel'?",
-          textAlign: TextAlign.center,
-        ),
+        content: Text("Delete category '$categoryLabel'?"),
         actions: [
           TextButton(
             onPressed: () {

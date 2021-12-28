@@ -37,11 +37,11 @@ class RubricContainer extends StatelessWidget {
                 ),
                 Selector<Rubric, int>(
                   builder: (context, length, child) => Expanded(
-                    child: Row(
-                      children: List.generate(
-                        length,
-                        (index) => Expanded(
-                          child: GestureDetector(
+                    child: GestureDetector(
+                      child: Row(
+                        children: List.generate(
+                          length,
+                          (index) => Expanded(
                             child: Selector<Rubric, Factor>(
                               builder: (context, grade, child) => Column(
                                 children: [
@@ -52,16 +52,16 @@ class RubricContainer extends StatelessWidget {
                               selector: (context, rubric) =>
                                   rubric.getGrade(index),
                             ),
-                            onTap: () {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) =>
-                                    const GradesSelector(),
-                              );
-                            },
                           ),
                         ),
                       ),
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) =>
+                              const GradesSelector(),
+                        );
+                      },
                     ),
                   ),
                   selector: (context, rubric) => rubric.grades.length,
