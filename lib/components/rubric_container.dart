@@ -1,9 +1,9 @@
 import 'package:flapp/components/grades_selector.dart';
 import 'package:flapp/components/rubric_table.dart';
+import 'package:flapp/components/summary.dart';
 import 'package:flapp/models/rubric.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 class RubricContainer extends StatelessWidget {
   final double leftColumnWidth = 70;
@@ -70,6 +70,15 @@ class RubricContainer extends StatelessWidget {
             ),
           ),
           RubricTable(leftColumnWidth: leftColumnWidth),
+          Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: Divider(
+              thickness: 2,
+              indent: leftColumnWidth,
+              color: Colors.grey,
+            ),
+          ),
+          const Summary()
         ],
       ),
     );

@@ -34,6 +34,30 @@ class Rubric extends ChangeNotifier {
       .map((c) => c.data.weight)
       .reduce((value, element) => value + element);
 
+  double get earnedPoints {
+    double points = 0;
+    for (int i = 0; i < _categories.length; i++) {
+      int indx = getSelection(i);
+      if (indx != -1) {
+        points += _categories[i].data.weight * _grades[indx].data.weight * 0.01;
+      }
+    }
+    return points;
+  }
+
+  int getSelection(int categoryIndex) {
+    if (_categories[categoryIndex].selected != null) {
+      return _grades.indexWhere(
+          (grade) => grade.id == _categories[categoryIndex].selected);
+    }
+    return -1;
+  }
+
+  void makeSelection(int categoryIndex, int rowIndex) {
+    _categories[categoryIndex].selected = _grades[rowIndex].id;
+    notifyListeners();
+  }
+
   String get assignmentName => _assignmentName;
 
   void setAssignmentName(String value) {
@@ -87,6 +111,7 @@ class Rubric extends ChangeNotifier {
 class FactorContainer {
   Factor _data;
   UniqueKey id;
+  UniqueKey? selected;
 
   FactorContainer({required String label, required double weight})
       : id = UniqueKey(),
@@ -96,6 +121,10 @@ class FactorContainer {
 
   void update(String newLabel, double newWeight) {
     _data = Factor(newLabel, newWeight);
+  }
+
+  void select(UniqueKey selectedId) {
+    selected = selectedId;
   }
 
   @override

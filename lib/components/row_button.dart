@@ -2,7 +2,7 @@ import 'package:flapp/models/rubric.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class RowButton extends StatefulWidget {
+class RowButton extends StatelessWidget {
   final int rowNum;
   final int length;
 
@@ -10,43 +10,38 @@ class RowButton extends StatefulWidget {
       : super(key: key);
 
   @override
-  _RowButtonState createState() => _RowButtonState();
-}
-
-class _RowButtonState extends State<RowButton> {
-  late List<bool> _isSelected;
-
-  @override
-  void initState() {
-    super.initState();
-    _isSelected = List.filled(widget.length, false);
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Expanded(
       child: LayoutBuilder(builder: (context, constraints) {
-        return ToggleButtons(
-          constraints: BoxConstraints.expand(
-            width: constraints.maxWidth / widget.length,
-            height: constraints.maxWidth / widget.length,
-          ),
-          renderBorder: false,
-          children: List.generate(
-              widget.length,
+        return Selector<Rubric, List<bool>>(
+          builder: (context, isSelected, child) => ToggleButtons(
+            constraints: BoxConstraints.expand(
+              width: constraints.maxWidth / length,
+              height: constraints.maxWidth / length,
+            ),
+            renderBorder: false,
+            children: List.generate(
+              length,
               (index) => Selector<Rubric, String>(
                   builder: (context, value, child) =>
-                      Text(_isSelected[index] ? value : "-"),
+                      Text(isSelected[index] ? value : "-"),
                   selector: (context, rubric) => (0.01 *
-                          rubric.getCategory(widget.rowNum).weight *
+                          rubric.getCategory(rowNum).weight *
                           rubric.getGrade(index).weight)
-                      .toStringAsFixed(1))),
-          isSelected: _isSelected,
-          onPressed: (index) {
-            setState(() {
-              _isSelected = List.filled(widget.length, false);
-              _isSelected[index] = true;
-            });
+                      .toStringAsFixed(1)),
+            ),
+            isSelected: isSelected,
+            onPressed: (index) {
+              context.read<Rubric>().makeSelection(rowNum, index);
+            },
+          ),
+          selector: (context, rubric) {
+            int indx = rubric.getSelection(rowNum);
+            List<bool> isSelected = List.filled(length, false);
+            if (indx != -1) {
+              isSelected[indx] = true;
+            }
+            return isSelected;
           },
         );
       }),
