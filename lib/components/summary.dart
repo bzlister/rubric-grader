@@ -61,6 +61,42 @@ class Summary extends StatelessWidget {
                 ),
               )
             ],
+          ),
+          Row(
+            children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width / 2,
+              ),
+              Container(
+                alignment: Alignment.bottomLeft,
+                child: const Text(
+                  "Grade:",
+                  style: TextStyle(fontSize: 15),
+                ),
+              ),
+              const Spacer(),
+              Container(
+                alignment: Alignment.bottomRight,
+                child: Selector<Rubric, String>(
+                  builder: (context, letterGradeText, child) => Text(
+                    letterGradeText,
+                    style: const TextStyle(fontSize: 15),
+                  ),
+                  selector: (context, rubric) {
+                    double score =
+                        rubric.earnedPoints / rubric.totalPoints * 100;
+                    String letterGrade = rubric.grades.last.label;
+                    for (int i = 0; i < rubric.grades.length; i++) {
+                      if (rubric.grades[i].weight <= score) {
+                        letterGrade = rubric.grades[i].label;
+                        break;
+                      }
+                    }
+                    return "$letterGrade (${score.toStringAsFixed(1)}%)";
+                  },
+                ),
+              )
+            ],
           )
         ],
       ),

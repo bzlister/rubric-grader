@@ -32,7 +32,11 @@ class RowButton extends StatelessWidget {
             ),
             isSelected: isSelected,
             onPressed: (index) {
-              context.read<Rubric>().makeSelection(rowNum, index);
+              if (isSelected[index] == false) {
+                context.read<Rubric>().makeSelection(rowNum, index);
+              } else {
+                context.read<Rubric>().cancelSelection(rowNum, index);
+              }
             },
           ),
           selector: (context, rubric) {

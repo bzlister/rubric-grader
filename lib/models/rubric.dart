@@ -58,6 +58,11 @@ class Rubric extends ChangeNotifier {
     notifyListeners();
   }
 
+  void cancelSelection(int categoryIndex, int rowIndex) {
+    _categories[categoryIndex].selected = null;
+    notifyListeners();
+  }
+
   String get assignmentName => _assignmentName;
 
   void setAssignmentName(String value) {
