@@ -80,6 +80,10 @@ class Rubric extends ChangeNotifier {
     _categories.removeAt(index);
     notifyListeners();
   }
+
+  bool isCategoryLabelUsed(String label) {
+    return _categories.any((element) => element.label == label);
+  }
 }
 
 class Factor {

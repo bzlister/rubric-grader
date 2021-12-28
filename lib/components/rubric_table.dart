@@ -67,7 +67,7 @@ class RubricTable extends StatelessWidget {
           SizedBox(
               width: leftColumnWidth,
               child: GestureDetector(
-                child: const Text("+"),
+                child: const Center(child: Text("+")),
                 onTap: () => showDialog(
                   context: context,
                   builder: (BuildContext context) => CategoriesSelector.add(),
