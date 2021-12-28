@@ -1,43 +1,40 @@
 import 'dart:collection';
+import 'package:tuple/tuple.dart';
 import 'package:flutter/cupertino.dart';
 
 class Rubric extends ChangeNotifier {
-  Factor _totalPoints;
+  double _totalPoints;
   String _assignmentName;
   List<Factor> _grades;
   List<Factor> _categories;
 
   Rubric(
-    this._totalPoints,
     this._assignmentName,
     this._grades,
     this._categories,
-  );
+  ) : _totalPoints = _categories
+            .map((c) => c.weight)
+            .reduce((value, element) => value + element);
 
   Rubric.standard()
-      : _totalPoints = Factor("Total points", 200),
-        _assignmentName = "Assignment 1",
+      : _assignmentName = "Assignment 1",
         _grades = [
-          Factor("A", 100),
-          Factor("B", 85),
-          Factor("C", 75),
-          Factor("D", 70),
-          Factor("F", 60)
+          Factor(label: "A", weight: 100),
+          Factor(label: "B", weight: 85),
+          Factor(label: "C", weight: 75),
+          Factor(label: "D", weight: 70),
+          Factor(label: "F", weight: 60)
         ],
         _categories = [
-          Factor("Audience & Genre", 30),
-          Factor("Thesis & Support", 30),
-          Factor("Reasoning", 20),
-          Factor("Organization & Style", 15),
-          Factor("Correctness", 5)
-        ];
+          Factor(label: "Audience & Genre", weight: 60),
+          Factor(label: "Thesis & Support", weight: 60),
+          Factor(label: "Reasoning", weight: 40),
+          Factor(label: "Organization & Style", weight: 30),
+          Factor(label: "Correctness", weight: 10)
+        ],
+        _totalPoints = 200;
 
-  Factor get totalPoints => _totalPoints;
-
-  void setTotalPoints(double value) {
-    _totalPoints.weight = value;
-    notifyListeners();
-  }
+  double get totalPoints => _totalPoints;
 
   String get assignmentName => _assignmentName;
 
@@ -46,33 +43,51 @@ class Rubric extends ChangeNotifier {
     notifyListeners();
   }
 
-  UnmodifiableListView<Factor> get grades => UnmodifiableListView(_grades);
+  List<Tuple2<String, double>> get grades =>
+      _grades.map((grade) => grade.data).toList();
 
-  void updateGrade(int index, Factor newGrade) {
-    _grades[index] = Factor(newGrade.label, newGrade.weight);
+  Tuple2<String, double> getGrade(int index) => _grades[index].data;
+
+  void updateGrade(int index, String newLabel, double newWeight) {
+    //_grades[index] = Factor.from(newGrade, _grades[index].id);
+    _grades = [..._grades];
+    _grades[index].label = newLabel;
+    _grades[index].weight = newWeight;
+    /*
     List<Factor> newGrades = [];
     for (var grade in _grades) {
       newGrades.add(grade);
     }
     _grades = newGrades;
+    */
     notifyListeners();
   }
 
-  UnmodifiableListView<Factor> get categories =>
-      UnmodifiableListView(_categories);
+  List<Tuple2<String, double>> get categories =>
+      _categories.map((category) => category.data).toList();
 
-  void updateCategory(int index, Factor newCategory) {
-    _categories[index] = Factor(newCategory.label, newCategory.weight);
+  Tuple2<String, double> getCategory(int index) => _categories[index].data;
+
+  void updateCategory(int index, String newLabel, double newWeight) {
+    //_categories[index] = Factor.from(newCategory, _categories[index].id);
+    _categories = [..._categories];
+    _categories[index].label = newLabel;
+    _categories[index].weight = newWeight;
+    /*
     List<Factor> newCategories = [];
+    double newPoints = 0;
     for (var category in _categories) {
       newCategories.add(category);
+      newPoints += category.weight;
     }
     _categories = newCategories;
+    _totalPoints = newPoints;
+    */
     notifyListeners();
   }
 
-  void addCategory(Factor category) {
-    _categories.add(category);
+  void addCategory(String label, double weight) {
+    _categories.add(Factor(label: label, weight: weight));
     notifyListeners();
   }
 
@@ -89,8 +104,15 @@ class Rubric extends ChangeNotifier {
 class Factor {
   String label;
   double weight;
+  UniqueKey id;
 
-  Factor(this.label, this.weight);
+  Factor({required this.label, required this.weight}) : id = UniqueKey();
+
+  Tuple2<String, double> get data => Tuple2<String, double>(label, weight);
+
+  Factor.from(Factor f, this.id)
+      : label = f.label,
+        weight = f.weight;
 
   @override
   bool operator ==(Object other) {

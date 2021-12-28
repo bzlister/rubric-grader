@@ -3,6 +3,7 @@ import 'package:flapp/components/row_button.dart';
 import 'package:flapp/models/rubric.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 import 'categories_selector.dart';
 
@@ -27,19 +28,19 @@ class RubricTable extends StatelessWidget {
                     width: leftColumnWidth,
                     child: Padding(
                       padding: const EdgeInsets.only(top: 5),
-                      child: Selector<Rubric, Factor>(
-                        builder: (context, category, child) => GestureDetector(
+                      child: Selector<Rubric, Tuple2<String, double>>(
+                        builder: (context, data, child) => GestureDetector(
                           child: Column(
                             children: [
                               AutoSizeText(
-                                category.label,
+                                data.item1,
                                 style: const TextStyle(fontSize: 15),
                                 minFontSize: 9,
-                                maxLines: category.label.contains(" ") ? 2 : 1,
+                                maxLines: data.item1.contains(" ") ? 2 : 1,
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.center,
                               ),
-                              Text("${category.weight.truncate()}")
+                              Text("${data.item2.truncate()}")
                             ],
                           ),
                           onTap: () => showDialog(
@@ -47,11 +48,13 @@ class RubricTable extends StatelessWidget {
                             builder: (BuildContext context) =>
                                 CategoriesSelector.update(
                               index: index,
-                              category: category,
+                              initLabel: data.item1,
+                              initWeight: data.item2,
                             ),
                           ),
                         ),
-                        selector: (context, rubric) => rubric.categories[index],
+                        selector: (context, rubric) =>
+                            rubric.getCategory(index),
                       ),
                     ),
                   ),

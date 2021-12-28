@@ -6,19 +6,24 @@ import 'package:provider/provider.dart';
 
 class CategoriesSelector extends StatefulWidget {
   final int index;
-  final Factor category;
+  final String initLabel;
+  final double initWeight;
   final bool autoFocus;
   final TextInputAction textInputAction;
 
   const CategoriesSelector.update(
-      {Key? key, required this.index, required this.category})
+      {Key? key,
+      required this.index,
+      required this.initLabel,
+      required this.initWeight})
       : autoFocus = false,
         textInputAction = TextInputAction.go,
         super(key: key);
 
   CategoriesSelector.add({Key? key})
       : index = -1,
-        category = Factor("", 0),
+        initLabel = "",
+        initWeight = 0,
         autoFocus = true,
         textInputAction = TextInputAction.next,
         super(key: key);
@@ -28,7 +33,8 @@ class CategoriesSelector extends StatefulWidget {
 }
 
 class _CategoriesSelectorState extends State<CategoriesSelector> {
-  late Factor _category;
+  late String _label;
+  late double _weight;
   late TextEditingController _controller;
   final _validationKey = GlobalKey<FormState>();
   final FocusNode focus = FocusNode();
@@ -36,8 +42,9 @@ class _CategoriesSelectorState extends State<CategoriesSelector> {
   @override
   void initState() {
     super.initState();
-    _category = Factor(widget.category.label, widget.category.weight);
-    _controller = TextEditingController(text: _category.label);
+    _label = widget.initLabel;
+    _weight = widget.initWeight;
+    _controller = TextEditingController(text: _label);
   }
 
   @override
@@ -60,7 +67,7 @@ class _CategoriesSelectorState extends State<CategoriesSelector> {
                   maxLength: 30,
                   onChanged: (value) {
                     setState(() {
-                      _category.label = value;
+                      _label = value;
                     });
                   },
                   maxLines: 1,
@@ -68,9 +75,9 @@ class _CategoriesSelectorState extends State<CategoriesSelector> {
                     if (value == null || value.isEmpty) {
                       return "Please enter a category";
                     }
-                    if (context.read<Rubric>().isCategoryLabelUsed(value)) {
-                      return "Category already entered";
-                    }
+                    //if (context.read<Rubric>().isCategoryLabelUsed(value)) {
+                    //  return "Category already entered";
+                    // }
                     return null;
                   },
                   focusNode: focus,
@@ -132,10 +139,10 @@ class _CategoriesSelectorState extends State<CategoriesSelector> {
                 step: 1,
                 spacing: 0,
                 direction: Axis.horizontal,
-                value: _category.weight,
+                value: _weight,
                 onChanged: (value) {
                   setState(() {
-                    _category.weight = value;
+                    _weight = value;
                   });
                 })
           ],
@@ -148,9 +155,9 @@ class _CategoriesSelectorState extends State<CategoriesSelector> {
                 if (widget.index != -1) {
                   context
                       .read<Rubric>()
-                      .updateCategory(widget.index, _category);
+                      .updateCategory(widget.index, _label, _weight);
                 } else {
-                  context.read<Rubric>().addCategory(_category);
+                  context.read<Rubric>().addCategory(_label, _weight);
                 }
                 Navigator.of(context).pop();
               } else {
