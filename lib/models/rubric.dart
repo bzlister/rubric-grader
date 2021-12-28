@@ -3,7 +3,6 @@ import 'package:tuple/tuple.dart';
 import 'package:flutter/cupertino.dart';
 
 class Rubric extends ChangeNotifier {
-  double _totalPoints;
   String _assignmentName;
   List<FactorContainer> _grades;
   List<FactorContainer> _categories;
@@ -12,9 +11,7 @@ class Rubric extends ChangeNotifier {
     this._assignmentName,
     this._grades,
     this._categories,
-  ) : _totalPoints = _categories
-            .map((c) => c.data.weight)
-            .reduce((value, element) => value + element);
+  );
 
   Rubric.standard()
       : _assignmentName = "Assignment 1",
@@ -31,10 +28,11 @@ class Rubric extends ChangeNotifier {
           FactorContainer(label: "Reasoning", weight: 40),
           FactorContainer(label: "Organization & Style", weight: 30),
           FactorContainer(label: "Correctness", weight: 10)
-        ],
-        _totalPoints = 200;
+        ];
 
-  double get totalPoints => _totalPoints;
+  double get totalPoints => _categories
+      .map((c) => c.data.weight)
+      .reduce((value, element) => value + element);
 
   String get assignmentName => _assignmentName;
 
@@ -74,8 +72,15 @@ class Rubric extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool isCategoryLabelUsed(String label) {
-    return _categories.any((element) => element.data.label == label);
+  bool isCategoryLabelUsed(int index, String label) {
+    bool retval = false;
+    for (int i = 0; i < _categories.length; i++) {
+      if (_categories[i].data.label == label && i != index) {
+        retval = true;
+        break;
+      }
+    }
+    return retval;
   }
 }
 

@@ -67,7 +67,7 @@ class _CategoriesSelectorState extends State<CategoriesSelector> {
                   maxLength: 30,
                   onChanged: (value) {
                     setState(() {
-                      _label = value;
+                      _label = value.trim();
                     });
                   },
                   maxLines: 1,
@@ -75,9 +75,11 @@ class _CategoriesSelectorState extends State<CategoriesSelector> {
                     if (value == null || value.isEmpty) {
                       return "Please enter a category";
                     }
-                    //if (context.read<Rubric>().isCategoryLabelUsed(value)) {
-                    //  return "Category already entered";
-                    // }
+                    if (context
+                        .read<Rubric>()
+                        .isCategoryLabelUsed(widget.index, value.trim())) {
+                      return "Category already entered";
+                    }
                     return null;
                   },
                   focusNode: focus,
