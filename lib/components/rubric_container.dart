@@ -77,7 +77,11 @@ class RubricContainer extends StatelessWidget {
             color: Colors.grey,
           ),
         ),
-        const Summary()
+        Selector<Rubric, bool>(
+          builder: (context, hasCategories, child) =>
+              hasCategories ? const Summary() : Container(),
+          selector: (context, rubric) => rubric.categories.isNotEmpty,
+        )
       ],
     );
   }

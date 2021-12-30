@@ -83,16 +83,20 @@ class Summary extends StatelessWidget {
                     style: const TextStyle(fontSize: 15),
                   ),
                   selector: (context, rubric) {
-                    double score =
-                        rubric.earnedPoints / rubric.totalPoints * 100;
-                    String letterGrade = rubric.grades.last.label;
-                    for (int i = 0; i < rubric.grades.length; i++) {
-                      if (rubric.grades[i].weight <= score) {
-                        letterGrade = rubric.grades[i].label;
-                        break;
+                    if (rubric.totalPoints > 0) {
+                      double score =
+                          rubric.earnedPoints / rubric.totalPoints * 100;
+                      String letterGrade = rubric.grades.last.label;
+                      for (int i = 0; i < rubric.grades.length; i++) {
+                        if (rubric.grades[i].weight <= score) {
+                          letterGrade = rubric.grades[i].label;
+                          break;
+                        }
                       }
+                      return "$letterGrade (${score.toStringAsFixed(1)}%)";
+                    } else {
+                      return "-";
                     }
-                    return "$letterGrade (${score.toStringAsFixed(1)}%)";
                   },
                 ),
               )
