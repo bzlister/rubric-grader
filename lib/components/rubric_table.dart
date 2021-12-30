@@ -3,7 +3,6 @@ import 'package:flapp/components/row_button.dart';
 import 'package:flapp/models/rubric.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 import 'categories_selector.dart';
 import 'delete_menu.dart';
@@ -25,36 +24,37 @@ class RubricTable extends StatelessWidget {
               return Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  /*
                   SizedBox(
                     width: leftColumnWidth,
                     child: Padding(
                       padding: const EdgeInsets.only(top: 5),
                       child: Selector<Rubric, Factor>(
-                        builder: (context, category, child) => GestureDetector(
+                        builder: (context, category, child) => TextButton(
                           child: Column(
                             children: [
-                              Center(
-                                child: AutoSizeText(
-                                  category.label,
-                                  style: const TextStyle(fontSize: 15),
-                                  minFontSize: 9,
-                                  maxLines:
-                                      category.label.contains(" ") ? 2 : 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  textAlign: TextAlign.center,
-                                ),
+                              AutoSizeText(
+                                category.label,
+                                style: const TextStyle(fontSize: 15),
+                                minFontSize: 9,
+                                maxLines: category.label.contains(" ") ? 2 : 1,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.start,
                               ),
-                              Text("${category.weight.truncate()}")
+                              Text(
+                                "${category.weight.truncate()}",
+                                textAlign: TextAlign.start,
+                              )
                             ],
                           ),
-                          onLongPressStart: (_) => showDialog(
+                          onLongPress: () => showDialog(
                             context: context,
                             builder: (BuildContext context) => DeleteMenu(
                               index: index,
                               categoryLabel: category.label,
                             ),
                           ),
-                          onTap: () => showDialog(
+                          onPressed: () => showDialog(
                             context: context,
                             builder: (BuildContext context) =>
                                 CategoriesSelector.update(
@@ -69,9 +69,13 @@ class RubricTable extends StatelessWidget {
                       ),
                     ),
                   ),
+                  */
                   Selector<Rubric, int>(
-                    builder: (context, lngth, child) =>
-                        RowButton(rowNum: index, length: lngth),
+                    builder: (context, lngth, child) => RowButton(
+                      rowNum: index,
+                      length: lngth,
+                      leftColumnWidth: leftColumnWidth,
+                    ),
                     selector: (context, rubric) => rubric.grades.length,
                   )
                 ],
@@ -79,14 +83,17 @@ class RubricTable extends StatelessWidget {
             },
           ),
           SizedBox(
-              width: leftColumnWidth,
-              child: GestureDetector(
-                child: const Center(child: Text("+")),
-                onTap: () => showDialog(
-                  context: context,
-                  builder: (BuildContext context) => CategoriesSelector.add(),
-                ),
-              ))
+            width: leftColumnWidth,
+            child: ElevatedButton(
+              child: const Center(
+                child: Text("+"),
+              ),
+              onPressed: () => showDialog(
+                context: context,
+                builder: (BuildContext context) => CategoriesSelector.add(),
+              ),
+            ),
+          )
         ],
       ),
       selector: (context, rubric) => rubric.categories.length,
