@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:math';
 import 'package:tuple/tuple.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -6,11 +7,17 @@ class Rubric extends ChangeNotifier {
   String _assignmentName;
   List<FactorContainer> _grades;
   List<FactorContainer> _categories;
+  String _latePolicy;
+  int _daysLate;
+  double _latePercentagePerDay;
 
   Rubric(
     this._assignmentName,
     this._grades,
     this._categories,
+    this._latePolicy,
+    this._daysLate,
+    this._latePercentagePerDay,
   );
 
   Rubric.standard()
@@ -28,7 +35,10 @@ class Rubric extends ChangeNotifier {
           FactorContainer(label: "Reasoning", weight: 40),
           FactorContainer(label: "Organization & Style", weight: 30),
           FactorContainer(label: "Correctness", weight: 10)
-        ];
+        ],
+        _latePolicy = "total",
+        _daysLate = 0,
+        _latePercentagePerDay = 20;
 
   double get totalPoints => _categories
       .map((c) => c.data.weight)
@@ -110,6 +120,36 @@ class Rubric extends ChangeNotifier {
       }
     }
     return retval;
+  }
+
+  String get latePolicy => _latePolicy;
+
+  set latePolicy(String newPolicy) {
+    _latePolicy = newPolicy;
+    notifyListeners();
+  }
+
+  int get daysLate => _daysLate;
+
+  int maxDaysLate() => (100.0 / latePercentagePerDay).ceil();
+
+  set daysLate(int numDays) {
+    _daysLate = numDays;
+    notifyListeners();
+  }
+
+  double get latePercentagePerDay => _latePercentagePerDay;
+
+  set latePercentagePerDay(double percentage) {
+    _latePercentagePerDay = percentage;
+    notifyListeners();
+  }
+
+  double get latePenalty {
+    double percentageOff = daysLate * latePercentagePerDay * 0.01;
+    return min(
+        percentageOff * (latePolicy == "total" ? totalPoints : earnedPoints),
+        earnedPoints);
   }
 }
 

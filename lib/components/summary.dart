@@ -20,31 +20,6 @@ class Summary extends StatelessWidget {
               Container(
                 alignment: Alignment.bottomLeft,
                 child: const Text(
-                  "Total:",
-                  style: TextStyle(fontSize: 15),
-                ),
-              ),
-              const Spacer(),
-              Container(
-                alignment: Alignment.bottomRight,
-                child: Selector<Rubric, double>(
-                  builder: (context, total, child) => Text(
-                    total.toStringAsFixed(1),
-                    style: const TextStyle(fontSize: 15),
-                  ),
-                  selector: (context, rubric) => rubric.totalPoints,
-                ),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              SizedBox(
-                width: MediaQuery.of(context).size.width / 2,
-              ),
-              Container(
-                alignment: Alignment.bottomLeft,
-                child: const Text(
                   "Earned:",
                   style: TextStyle(fontSize: 15),
                 ),
@@ -60,6 +35,27 @@ class Summary extends StatelessWidget {
                   selector: (context, rubric) => rubric.earnedPoints,
                 ),
               )
+            ],
+          ),
+          Row(
+            children: [
+              SizedBox(width: MediaQuery.of(context).size.width / 2),
+              Container(
+                alignment: Alignment.bottomLeft,
+                child: const Text(
+                  "Late penalty:",
+                  style: TextStyle(fontSize: 15),
+                ),
+              ),
+              const Spacer(),
+              Container(
+                alignment: Alignment.bottomRight,
+                child: Selector<Rubric, String>(
+                  builder: (context, penalty, child) => Text(penalty),
+                  selector: (context, rubric) =>
+                      '-${rubric.latePenalty.toStringAsFixed(1)}',
+                ),
+              ),
             ],
           ),
           Row(
@@ -85,7 +81,9 @@ class Summary extends StatelessWidget {
                   selector: (context, rubric) {
                     if (rubric.totalPoints > 0) {
                       double score =
-                          rubric.earnedPoints / rubric.totalPoints * 100;
+                          (rubric.earnedPoints - rubric.latePenalty) /
+                              rubric.totalPoints *
+                              100;
                       String letterGrade = rubric.grades.last.label;
                       for (int i = 0; i < rubric.grades.length; i++) {
                         if (rubric.grades[i].weight <= score) {

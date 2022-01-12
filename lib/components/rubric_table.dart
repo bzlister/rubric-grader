@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flapp/components/row_button.dart';
 import 'package:flapp/models/rubric.dart';
 import 'package:flutter/material.dart';
