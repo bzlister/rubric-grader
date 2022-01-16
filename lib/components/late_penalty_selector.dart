@@ -18,36 +18,42 @@ class _LatePenaltySelectorState extends State<LatePenaltySelector> {
     return Column(
       children: [
         Row(children: [
-          const Text("Late penalty:"),
+          const Text("Late work:"),
           SizedBox(
             width: 60,
             child: Padding(
               padding: const EdgeInsets.only(left: 5, right: 5),
-              child: Selector<Rubric, double>(
-                builder: (context, latePercentagePerDay, child) =>
-                    TextFormField(
-                  controller: TextEditingController(
-                      text: latePercentagePerDay.toStringAsFixed(0)),
-                  textAlign: TextAlign.center,
-                  textInputAction: TextInputAction.go,
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
-                  decoration:
-                      const InputDecoration(prefixText: "-", suffixText: "%"),
-                  inputFormatters: [
-                    FilteringTextInputFormatter.deny(RegExp(r'[\.,]')),
-                    FilteringTextInputFormatter.allow(
-                        RegExp(r"^(100|[1-9][0-9]?)$")),
-                  ],
-                  onFieldSubmitted: (value) {
-                    if (value.contains(",")) {
-                      value = value.replaceFirst(",", ".");
-                    }
-                    context.read<Rubric>().latePercentagePerDay =
-                        double.parse(value);
-                  },
+              child: SizedBox(
+                child: Selector<Rubric, double>(
+                  builder: (context, latePercentagePerDay, child) =>
+                      TextFormField(
+                    controller: TextEditingController(
+                        text: latePercentagePerDay.toStringAsFixed(0)),
+                    textAlign: TextAlign.center,
+                    textInputAction: TextInputAction.go,
+                    keyboardType:
+                        const TextInputType.numberWithOptions(decimal: false),
+                    decoration: const InputDecoration(
+                      prefixText: "-",
+                      suffixText: "%",
+                      isDense: true,
+                      isCollapsed: true,
+                    ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.deny(RegExp(r'[\.,]')),
+                      FilteringTextInputFormatter.allow(
+                          RegExp(r"^(100|[1-9][0-9]?)$")),
+                    ],
+                    onFieldSubmitted: (value) {
+                      if (value.contains(",")) {
+                        value = value.replaceFirst(",", ".");
+                      }
+                      context.read<Rubric>().latePercentagePerDay =
+                          double.parse(value);
+                    },
+                  ),
+                  selector: (context, rubric) => rubric.latePercentagePerDay,
                 ),
-                selector: (context, rubric) => rubric.latePercentagePerDay,
               ),
             ),
           ),
@@ -58,6 +64,7 @@ class _LatePenaltySelectorState extends State<LatePenaltySelector> {
               builder: (context, latePolicy, child) {
                 return DropdownButton(
                   value: latePolicy,
+                  isDense: true,
                   items: const [
                     DropdownMenuItem<String>(
                         value: "total", child: Text("total")),
@@ -82,7 +89,10 @@ class _LatePenaltySelectorState extends State<LatePenaltySelector> {
             Selector<Rubric, Tuple2<double, double>>(
                 builder: (context, daysLateInfo, child) => SizedBox(
                       width: 120,
+                      height: 32,
                       child: SpinBox(
+                        decoration: const InputDecoration(
+                            contentPadding: EdgeInsets.zero),
                         value: daysLateInfo.item1,
                         min: 0,
                         max: daysLateInfo

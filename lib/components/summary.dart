@@ -52,8 +52,9 @@ class Summary extends StatelessWidget {
                 alignment: Alignment.bottomRight,
                 child: Selector<Rubric, String>(
                   builder: (context, penalty, child) => Text(penalty),
-                  selector: (context, rubric) =>
-                      '-${rubric.latePenalty.toStringAsFixed(1)}',
+                  selector: (context, rubric) => rubric.latePenalty == 0
+                      ? "-"
+                      : '-${rubric.latePenalty.toStringAsFixed(1)}',
                 ),
               ),
             ],

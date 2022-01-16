@@ -38,9 +38,8 @@ class GradesSelector extends StatelessWidget {
                     step: 1,
                     spacing: 0,
                     direction: Axis.vertical,
-                    decoration: InputDecoration(
-                      label: Text(grade.label),
-                      focusedErrorBorder: const UnderlineInputBorder(
+                    decoration: const InputDecoration(
+                      focusedErrorBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.red, width: 1.0),
                       ),
                     ),

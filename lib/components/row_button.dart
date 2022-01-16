@@ -27,45 +27,51 @@ class RowButton extends StatelessWidget {
             SizedBox(
               width: leftColumnWidth,
               height: (constraints.maxWidth - leftColumnWidth) / length,
-              child: Selector<Rubric, Factor>(
-                builder: (context, category, child) => TextButton(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Container(
-                        alignment: Alignment.bottomLeft,
-                        child: Text(
-                          category.label,
-                          style: const TextStyle(fontSize: 12),
-                          maxLines: category.label.contains(" ") ? 2 : 1,
-                          overflow: TextOverflow.ellipsis,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 2, left: 2, top: 2),
+                child: Selector<Rubric, Factor>(
+                  builder: (context, category, child) => TextButton(
+                    style: TextButton.styleFrom(backgroundColor: Colors.amber),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Container(
+                          alignment: Alignment.bottomLeft,
+                          child: Text(
+                            category.label,
+                            style: const TextStyle(
+                                fontSize: 12, color: Colors.white),
+                            maxLines: category.label.contains(" ") ? 2 : 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
+                        Text(
+                          "${category.weight.truncate()}",
+                          style: const TextStyle(
+                              fontSize: 13, color: Colors.white),
+                        )
+                      ],
+                    ),
+                    onLongPress: () => showDialog(
+                      context: context,
+                      builder: (BuildContext context) => DeleteMenu(
+                        index: rowNum,
+                        categoryLabel: category.label,
                       ),
-                      Text(
-                        "${category.weight.truncate()}",
-                        style: const TextStyle(fontSize: 13),
-                      )
-                    ],
-                  ),
-                  onLongPress: () => showDialog(
-                    context: context,
-                    builder: (BuildContext context) => DeleteMenu(
-                      index: rowNum,
-                      categoryLabel: category.label,
+                    ),
+                    onPressed: () => showDialog(
+                      context: context,
+                      builder: (BuildContext context) =>
+                          CategoriesSelector.update(
+                        index: rowNum,
+                        initLabel: category.label,
+                        initWeight: category.weight,
+                      ),
                     ),
                   ),
-                  onPressed: () => showDialog(
-                    context: context,
-                    builder: (BuildContext context) =>
-                        CategoriesSelector.update(
-                      index: rowNum,
-                      initLabel: category.label,
-                      initWeight: category.weight,
-                    ),
-                  ),
+                  selector: (context, rubric) => rubric.getCategory(rowNum),
                 ),
-                selector: (context, rubric) => rubric.getCategory(rowNum),
               ),
             ),
             ToggleButtons(

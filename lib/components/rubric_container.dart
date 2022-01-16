@@ -44,12 +44,11 @@ class RubricContainer extends StatelessWidget {
                           length,
                           (index) => Expanded(
                             child: Selector<Rubric, Factor>(
-                              builder: (context, grade, child) => Column(
-                                children: [
-                                  Text(grade.label),
-                                  Text("${grade.weight.truncate()}%"),
-                                ],
-                              ),
+                              builder: (context, grade, child) => Center(
+                                  child: Text(
+                                "${grade.weight.truncate()}%",
+                                style: const TextStyle(fontSize: 15),
+                              )),
                               selector: (context, rubric) =>
                                   rubric.getGrade(index),
                             ),
@@ -72,19 +71,34 @@ class RubricContainer extends StatelessWidget {
           ),
           RubricTable(leftColumnWidth: leftColumnWidth),
           Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: Divider(
-              thickness: 2,
-              indent: leftColumnWidth,
-              color: Colors.grey,
+            padding: const EdgeInsets.only(top: 10.0),
+            child: Row(
+              children: [
+                Selector<Rubric, double>(
+                  builder: (context, totalPoints, child) => Text(
+                    "Total: ${totalPoints.toStringAsFixed(1)}",
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  selector: (context, rubric) => rubric.totalPoints,
+                ),
+                const Expanded(
+                  child: Divider(
+                    thickness: 2,
+                    indent: 10,
+                    color: Colors.grey,
+                  ),
+                ),
+              ],
             ),
           ),
-          const LatePenaltySelector(),
+          const Padding(
+            padding: EdgeInsets.only(top: 10.0),
+            child: LatePenaltySelector(),
+          ),
           Selector<Rubric, bool>(
-            builder: (context, hasCategories, child) => hasCategories
-                ? const Summary()
-                : const Text("Click the '+' button above to add a category"),
-            selector: (context, rubric) => rubric.categories.isNotEmpty,
+            builder: (context, canShowSummary, child) =>
+                canShowSummary ? const Summary() : Container(),
+            selector: (context, rubric) => rubric.totalPoints > 0,
           )
         ],
       ),
