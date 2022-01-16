@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flapp/models/rubric.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -29,7 +28,7 @@ class RowButton extends StatelessWidget {
               height: (constraints.maxWidth - leftColumnWidth) / length,
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 2, left: 2, top: 2),
-                child: Selector<Rubric, Factor>(
+                child: Selector<Rubric, Category>(
                   builder: (context, category, child) => TextButton(
                     style: TextButton.styleFrom(backgroundColor: Colors.amber),
                     child: Column(
@@ -88,7 +87,7 @@ class RowButton extends StatelessWidget {
                         Text(isSelected[index] ? value : "-"),
                     selector: (context, rubric) => (0.01 *
                             rubric.getCategory(rowNum).weight *
-                            rubric.getGrade(index).weight)
+                            rubric.getScore(index))
                         .toStringAsFixed(1)),
               ),
               isSelected: isSelected,
@@ -96,7 +95,7 @@ class RowButton extends StatelessWidget {
                 if (isSelected[index] == false) {
                   context.read<Rubric>().makeSelection(rowNum, index);
                 } else {
-                  context.read<Rubric>().cancelSelection(rowNum, index);
+                  context.read<Rubric>().cancelSelection(rowNum);
                 }
               },
             ),
@@ -114,12 +113,3 @@ class RowButton extends StatelessWidget {
     });
   }
 }
-
-/*
-        decoration: const BoxDecoration(
-          color: Colors.lightGreen,
-          borderRadius: BorderRadius.all(
-            Radius.circular(12.0),
-          ),
-        )
-*/

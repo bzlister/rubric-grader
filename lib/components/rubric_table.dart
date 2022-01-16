@@ -27,7 +27,7 @@ class RubricTable extends StatelessWidget {
                       length: lngth,
                       leftColumnWidth: leftColumnWidth,
                     ),
-                    selector: (context, rubric) => rubric.grades.length,
+                    selector: (context, rubric) => rubric.scores.length,
                   );
                 },
               ),

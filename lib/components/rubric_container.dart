@@ -43,14 +43,14 @@ class RubricContainer extends StatelessWidget {
                         children: List.generate(
                           length,
                           (index) => Expanded(
-                            child: Selector<Rubric, Factor>(
-                              builder: (context, grade, child) => Center(
+                            child: Selector<Rubric, double>(
+                              builder: (context, score, child) => Center(
                                   child: Text(
-                                "${grade.weight.truncate()}%",
+                                "${score.truncate()}%",
                                 style: const TextStyle(fontSize: 15),
                               )),
                               selector: (context, rubric) =>
-                                  rubric.getGrade(index),
+                                  rubric.getScore(index),
                             ),
                           ),
                         ),
@@ -59,12 +59,12 @@ class RubricContainer extends StatelessWidget {
                         showDialog(
                           context: context,
                           builder: (BuildContext context) =>
-                              const GradesSelector(),
+                              const ScoresSelector(),
                         );
                       },
                     ),
                   ),
-                  selector: (context, rubric) => rubric.grades.length,
+                  selector: (context, rubric) => rubric.scores.length,
                 )
               ],
             ),

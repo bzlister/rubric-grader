@@ -3,19 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinbox/material.dart';
 import 'package:provider/provider.dart';
 
-class GradesSelector extends StatelessWidget {
-  const GradesSelector({Key? key}) : super(key: key);
+class ScoresSelector extends StatelessWidget {
+  const ScoresSelector({Key? key}) : super(key: key);
 
-  double getMin(int index, List<Factor> grades) {
-    if (index < grades.length - 1) {
-      return grades[index + 1].weight + 1;
+  double getMin(int index, List<double> scores) {
+    if (index < scores.length - 1) {
+      return scores[index + 1] + 1;
     }
     return 0;
   }
 
-  double getMax(int index, List<Factor> grades) {
+  double getMax(int index, List<double> scores) {
     if (index > 0) {
-      return grades[index - 1].weight - 1;
+      return scores[index - 1] - 1;
     }
     return 100;
   }
@@ -23,14 +23,14 @@ class GradesSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      content: Selector<Rubric, List<Factor>>(
-        builder: (context, grades, child) => Row(
+      content: Selector<Rubric, List<double>>(
+        builder: (context, scores, child) => Row(
           children: List.generate(
-            grades.length,
+            scores.length,
             (index) {
-              double min = getMin(index, grades);
-              double max = getMax(index, grades);
-              Factor grade = grades[index];
+              double min = getMin(index, scores);
+              double max = getMax(index, scores);
+              double score = scores[index];
               return Expanded(
                 child: SpinBox(
                     min: min,
@@ -43,7 +43,7 @@ class GradesSelector extends StatelessWidget {
                         borderSide: BorderSide(color: Colors.red, width: 1.0),
                       ),
                     ),
-                    value: grade.weight,
+                    value: score,
                     validator: (value) {
                       try {
                         if (value != null) {
@@ -63,16 +63,14 @@ class GradesSelector extends StatelessWidget {
                     },
                     onChanged: (value) {
                       if (value <= max && value >= min) {
-                        context
-                            .read<Rubric>()
-                            .updateGrade(index, grade.label, value);
+                        context.read<Rubric>().updateScore(index, value);
                       }
                     }),
               );
             },
           ),
         ),
-        selector: (context, rubric) => rubric.grades,
+        selector: (context, rubric) => rubric.scores,
       ),
       actions: [
         TextButton(

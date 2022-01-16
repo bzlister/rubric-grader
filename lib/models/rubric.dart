@@ -1,40 +1,39 @@
-import 'dart:collection';
 import 'dart:math';
 import 'package:tuple/tuple.dart';
 import 'package:flutter/cupertino.dart';
 
 class Rubric extends ChangeNotifier {
   String _assignmentName;
-  List<FactorContainer> _grades;
-  List<FactorContainer> _categories;
+  List<ScoreContainer> _scores;
+  List<CategoryContainer> _categories;
   String _latePolicy;
   int _daysLate;
   double _latePercentagePerDay;
 
   Rubric(
     this._assignmentName,
-    this._grades,
+    this._scores,
     this._categories,
     this._latePolicy,
     this._daysLate,
     this._latePercentagePerDay,
   );
 
-  Rubric.standard()
+  Rubric.example()
       : _assignmentName = "Assignment 1",
-        _grades = [
-          FactorContainer(label: "A", weight: 100),
-          FactorContainer(label: "B", weight: 85),
-          FactorContainer(label: "C", weight: 75),
-          FactorContainer(label: "D", weight: 70),
-          FactorContainer(label: "F", weight: 60)
+        _scores = [
+          ScoreContainer(weight: 100),
+          ScoreContainer(weight: 85),
+          ScoreContainer(weight: 75),
+          ScoreContainer(weight: 70),
+          ScoreContainer(weight: 60),
         ],
         _categories = [
-          FactorContainer(label: "Audience & Genre", weight: 60),
-          FactorContainer(label: "Thesis & Support", weight: 60),
-          FactorContainer(label: "Reasoning", weight: 40),
-          FactorContainer(label: "Organization & Style", weight: 30),
-          FactorContainer(label: "Correctness", weight: 10)
+          CategoryContainer(label: "Audience & Genre", weight: 60),
+          CategoryContainer(label: "Thesis & Support", weight: 60),
+          CategoryContainer(label: "Reasoning", weight: 40),
+          CategoryContainer(label: "Organization & Style", weight: 30),
+          CategoryContainer(label: "Correctness", weight: 10)
         ],
         _latePolicy = "total",
         _daysLate = 0,
@@ -49,7 +48,7 @@ class Rubric extends ChangeNotifier {
     for (int i = 0; i < _categories.length; i++) {
       int indx = getSelection(i);
       if (indx != -1) {
-        points += _categories[i].data.weight * _grades[indx].data.weight * 0.01;
+        points += _categories[i].data.weight * _scores[indx]._weight * 0.01;
       }
     }
     return points;
@@ -57,18 +56,18 @@ class Rubric extends ChangeNotifier {
 
   int getSelection(int categoryIndex) {
     if (_categories[categoryIndex].selected != null) {
-      return _grades.indexWhere(
-          (grade) => grade.id == _categories[categoryIndex].selected);
+      return _scores.indexWhere(
+          (score) => score.id == _categories[categoryIndex].selected);
     }
     return -1;
   }
 
   void makeSelection(int categoryIndex, int rowIndex) {
-    _categories[categoryIndex].selected = _grades[rowIndex].id;
+    _categories[categoryIndex].selected = _scores[rowIndex].id;
     notifyListeners();
   }
 
-  void cancelSelection(int categoryIndex, int rowIndex) {
+  void cancelSelection(int categoryIndex) {
     _categories[categoryIndex].selected = null;
     notifyListeners();
   }
@@ -80,20 +79,20 @@ class Rubric extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<Factor> get grades => _grades.map((grade) => grade.data).toList();
+  List<double> get scores => _scores.map((score) => score.weight).toList();
 
-  Factor getGrade(int index) => _grades[index].data;
+  double getScore(int index) => _scores[index].weight;
 
-  void updateGrade(int index, String newLabel, double newWeight) {
-    _grades = [..._grades];
-    _grades[index].update(newLabel, newWeight);
+  void updateScore(int index, double newWeight) {
+    _scores = [..._scores];
+    _scores[index].update(newWeight);
     notifyListeners();
   }
 
-  List<Factor> get categories =>
+  List<Category> get categories =>
       _categories.map((category) => category.data).toList();
 
-  Factor getCategory(int index) => _categories[index].data;
+  Category getCategory(int index) => _categories[index].data;
 
   void updateCategory(int index, String newLabel, double newWeight) {
     _categories = [..._categories];
@@ -102,7 +101,7 @@ class Rubric extends ChangeNotifier {
   }
 
   void addCategory(String label, double weight) {
-    _categories.add(FactorContainer(label: label, weight: weight));
+    _categories.add(CategoryContainer(label: label, weight: weight));
     notifyListeners();
   }
 
@@ -148,24 +147,40 @@ class Rubric extends ChangeNotifier {
   double get latePenalty {
     double percentageOff = daysLate * latePercentagePerDay * 0.01;
     return min(
-        percentageOff * (latePolicy == "total" ? totalPoints : earnedPoints),
-        earnedPoints);
+      percentageOff * (latePolicy == "total" ? totalPoints : earnedPoints),
+      earnedPoints,
+    );
   }
 }
 
-class FactorContainer {
-  Factor _data;
+class ScoreContainer {
+  UniqueKey id;
+  double _weight;
+
+  ScoreContainer({required double weight})
+      : _weight = weight,
+        id = UniqueKey();
+
+  double get weight => _weight;
+
+  void update(double newWeight) {
+    _weight = newWeight;
+  }
+}
+
+class CategoryContainer {
+  Category _data;
   UniqueKey id;
   UniqueKey? selected;
 
-  FactorContainer({required String label, required double weight})
+  CategoryContainer({required String label, required double weight})
       : id = UniqueKey(),
-        _data = Factor(label, weight);
+        _data = Category(label, weight);
 
-  Factor get data => _data;
+  Category get data => _data;
 
   void update(String newLabel, double newWeight) {
-    _data = Factor(newLabel, newWeight);
+    _data = Category(newLabel, newWeight);
   }
 
   void select(UniqueKey selectedId) {
@@ -174,7 +189,7 @@ class FactorContainer {
 
   @override
   bool operator ==(Object other) {
-    if (other is FactorContainer) {
+    if (other is CategoryContainer) {
       return other.data.label == _data.label &&
           other.data.weight == _data.weight;
     }
@@ -187,8 +202,8 @@ class FactorContainer {
   }
 }
 
-class Factor extends Tuple2<String, double> {
-  Factor(String label, double weight) : super(label, weight);
+class Category extends Tuple2<String, double> {
+  Category(String label, double weight) : super(label, weight);
 
   get label => item1;
   get weight => item2;

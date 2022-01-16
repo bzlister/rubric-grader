@@ -85,14 +85,16 @@ class Summary extends StatelessWidget {
                           (rubric.earnedPoints - rubric.latePenalty) /
                               rubric.totalPoints *
                               100;
-                      String letterGrade = rubric.grades.last.label;
-                      for (int i = 0; i < rubric.grades.length; i++) {
-                        if (rubric.grades[i].weight <= score) {
-                          letterGrade = rubric.grades[i].label;
+                      /*
+                      String letterGrade = rubric.scores.last.label;
+                      for (int i = 0; i < rubric.scores.length; i++) {
+                        if (rubric.scores[i].weight <= score) {
+                          letterGrade = rubric.scores[i].label;
                           break;
                         }
                       }
-                      return "$letterGrade (${score.toStringAsFixed(1)}%)";
+                      */
+                      return "A (${score.toStringAsFixed(1)}%)";
                     } else {
                       return "-";
                     }

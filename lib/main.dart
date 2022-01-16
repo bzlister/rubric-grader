@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 void main() {
   runApp(ChangeNotifierProvider(
-    create: (context) => Rubric.standard(),
+    create: (context) => Rubric.example(),
     child: const MyApp(),
   ));
 }
