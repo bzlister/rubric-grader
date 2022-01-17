@@ -99,6 +99,24 @@ class RubricContainer extends StatelessWidget {
             builder: (context, canShowSummary, child) =>
                 canShowSummary ? const Summary() : Container(),
             selector: (context, rubric) => rubric.totalPoints > 0,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 20),
+            child: SizedBox(
+              height: 35,
+              child: Selector<Rubric, String>(
+                builder: (context, comment, child) => TextFormField(
+                  controller: TextEditingController(text: comment),
+                  style: const TextStyle(
+                      fontStyle: FontStyle.italic, decorationThickness: 0),
+                  keyboardType: TextInputType.text,
+                  decoration: const InputDecoration(hintText: "Add a comment"),
+                  onFieldSubmitted: (value) =>
+                      context.read<Rubric>().comment = value,
+                ),
+                selector: (context, rubric) => rubric.comment,
+              ),
+            ),
           )
         ],
       ),

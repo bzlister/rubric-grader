@@ -1,6 +1,7 @@
 import 'package:flapp/models/rubric.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 class Summary extends StatelessWidget {
   final double width = 110;
@@ -14,9 +15,6 @@ class Summary extends StatelessWidget {
         children: [
           Row(
             children: [
-              SizedBox(
-                width: MediaQuery.of(context).size.width / 2,
-              ),
               Container(
                 alignment: Alignment.bottomLeft,
                 child: const Text(
@@ -34,12 +32,14 @@ class Summary extends StatelessWidget {
                   ),
                   selector: (context, rubric) => rubric.earnedPoints,
                 ),
-              )
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width / 2,
+              ),
             ],
           ),
           Row(
             children: [
-              SizedBox(width: MediaQuery.of(context).size.width / 2),
               Container(
                 alignment: Alignment.bottomLeft,
                 child: const Text(
@@ -57,13 +57,11 @@ class Summary extends StatelessWidget {
                       : '-${rubric.latePenalty.toStringAsFixed(1)}',
                 ),
               ),
+              SizedBox(width: MediaQuery.of(context).size.width / 2),
             ],
           ),
           Row(
             children: [
-              SizedBox(
-                width: MediaQuery.of(context).size.width / 2,
-              ),
               Container(
                 alignment: Alignment.bottomLeft,
                 child: const Text(
@@ -80,29 +78,16 @@ class Summary extends StatelessWidget {
                     style: const TextStyle(fontSize: 15),
                   ),
                   selector: (context, rubric) {
-                    if (rubric.totalPoints > 0) {
-                      double score =
-                          (rubric.earnedPoints - rubric.latePenalty) /
-                              rubric.totalPoints *
-                              100;
-                      /*
-                      String letterGrade = rubric.scores.last.label;
-                      for (int i = 0; i < rubric.scores.length; i++) {
-                        if (rubric.scores[i].weight <= score) {
-                          letterGrade = rubric.scores[i].label;
-                          break;
-                        }
-                      }
-                      */
-                      return "A (${score.toStringAsFixed(1)}%)";
-                    } else {
-                      return "-";
-                    }
+                    Tuple2<String, double> finalScore = rubric.calcGrade();
+                    return '${finalScore.item1} (${finalScore.item2.toStringAsFixed(1)})';
                   },
                 ),
-              )
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width / 2,
+              ),
             ],
-          )
+          ),
         ],
       ),
     );

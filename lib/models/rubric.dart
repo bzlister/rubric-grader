@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:flapp/models/grading_scale.dart';
 import 'package:tuple/tuple.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -9,6 +10,8 @@ class Rubric extends ChangeNotifier {
   String _latePolicy;
   int _daysLate;
   double _latePercentagePerDay;
+  GradingScale _gradingScale;
+  String _comment;
 
   Rubric(
     this._assignmentName,
@@ -17,6 +20,8 @@ class Rubric extends ChangeNotifier {
     this._latePolicy,
     this._daysLate,
     this._latePercentagePerDay,
+    this._gradingScale,
+    this._comment,
   );
 
   Rubric.example()
@@ -37,7 +42,9 @@ class Rubric extends ChangeNotifier {
         ],
         _latePolicy = "total",
         _daysLate = 0,
-        _latePercentagePerDay = 20;
+        _latePercentagePerDay = 20,
+        _gradingScale = GradingScale.collegeBoard(),
+        _comment = "";
 
   double get totalPoints => _categories
       .map((c) => c.data.weight)
@@ -150,6 +157,28 @@ class Rubric extends ChangeNotifier {
       percentageOff * (latePolicy == "total" ? totalPoints : earnedPoints),
       earnedPoints,
     );
+  }
+
+  Tuple2<String, double> calcGrade() {
+    if (totalPoints == 0) {
+      return const Tuple2("", 0);
+    }
+    double finalScore = (earnedPoints - latePenalty) / totalPoints * 100;
+    String label = _gradingScale.scale[0].item1;
+    for (int i = 0; i < _gradingScale.scale.length; i++) {
+      if (_gradingScale.scale[i].item2 <= finalScore) {
+        label = _gradingScale.scale[i].item1;
+        break;
+      }
+    }
+    return Tuple2(label, finalScore);
+  }
+
+  String get comment => _comment;
+
+  set comment(String value) {
+    _comment = value;
+    notifyListeners();
   }
 }
 
