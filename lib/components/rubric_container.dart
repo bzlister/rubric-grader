@@ -43,14 +43,24 @@ class RubricContainer extends StatelessWidget {
                         children: List.generate(
                           length,
                           (index) => Expanded(
-                            child: Selector<Rubric, double>(
-                              builder: (context, score, child) => Center(
-                                  child: Text(
-                                "${score.truncate()}%",
-                                style: const TextStyle(fontSize: 15),
-                              )),
-                              selector: (context, rubric) =>
-                                  rubric.getScore(index),
+                            child: Padding(
+                              padding: const EdgeInsets.all(1.0),
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                    color: Colors.amber,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(2))),
+                                child: Selector<Rubric, double>(
+                                  builder: (context, score, child) => Center(
+                                      child: Text(
+                                    "${score.truncate()}%",
+                                    style: const TextStyle(
+                                        fontSize: 15, color: Colors.white),
+                                  )),
+                                  selector: (context, rubric) =>
+                                      rubric.getScore(index),
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -100,22 +110,19 @@ class RubricContainer extends StatelessWidget {
                 canShowSummary ? const Summary() : Container(),
             selector: (context, rubric) => rubric.totalPoints > 0,
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 20),
-            child: SizedBox(
-              height: 35,
-              child: Selector<Rubric, String>(
-                builder: (context, comment, child) => TextFormField(
-                  controller: TextEditingController(text: comment),
-                  style: const TextStyle(
-                      fontStyle: FontStyle.italic, decorationThickness: 0),
-                  keyboardType: TextInputType.text,
-                  decoration: const InputDecoration(hintText: "Add a comment"),
-                  onFieldSubmitted: (value) =>
-                      context.read<Rubric>().comment = value,
-                ),
-                selector: (context, rubric) => rubric.comment,
+          SizedBox(
+            height: 35,
+            child: Selector<Rubric, String>(
+              builder: (context, comment, child) => TextFormField(
+                controller: TextEditingController(text: comment),
+                style: const TextStyle(
+                    fontStyle: FontStyle.italic, decorationThickness: 0),
+                keyboardType: TextInputType.text,
+                decoration: const InputDecoration(hintText: "Add a comment"),
+                onFieldSubmitted: (value) =>
+                    context.read<Rubric>().comment = value,
               ),
+              selector: (context, rubric) => rubric.comment,
             ),
           )
         ],

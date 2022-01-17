@@ -32,18 +32,18 @@ class RubricTable extends StatelessWidget {
                 },
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 4.0, left: 2.0, bottom: 4),
+                padding: const EdgeInsets.only(top: 4.0, bottom: 4),
                 child: SizedBox(
                   width: leftColumnWidth,
                   height: 28,
-                  child: TextButton(
-                    style: TextButton.styleFrom(backgroundColor: Colors.amber),
-                    child: Container(
-                      alignment: Alignment.bottomLeft,
-                      child: const Text(
-                        "+ Add",
-                        style: TextStyle(fontSize: 11, color: Colors.white),
-                      ),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        shape: const CircleBorder(),
+                        primary: Colors.amber,
+                        onPrimary: Colors.black),
+                    child: const Text(
+                      "+",
+                      style: TextStyle(fontSize: 11, color: Colors.white),
                     ),
                     onPressed: () => showDialog(
                       context: context,
