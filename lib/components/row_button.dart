@@ -40,15 +40,15 @@ class RowButton extends StatelessWidget {
                           child: Text(
                             category.label,
                             style: const TextStyle(
-                                fontSize: 12, color: Colors.white),
-                            maxLines: category.label.contains(" ") ? 2 : 1,
+                                fontSize: 11, color: Colors.white),
+                            maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
                         Text(
                           "${category.weight.truncate()}",
                           style: const TextStyle(
-                              fontSize: 13, color: Colors.white),
+                              fontSize: 12, color: Colors.white),
                         )
                       ],
                     ),
