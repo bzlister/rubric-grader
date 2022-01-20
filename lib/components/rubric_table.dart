@@ -12,11 +12,11 @@ class RubricTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.of(context).size.height / 2.1,
-      child: Column(
-        children: [
-          SingleChildScrollView(
+    return Column(
+      children: [
+        SizedBox(
+          height: MediaQuery.of(context).size.height / 2.5,
+          child: SingleChildScrollView(
             child: Selector<Rubric, int>(
               builder: (context, length, child) => Wrap(
                 children: [
@@ -34,7 +34,7 @@ class RubricTable extends StatelessWidget {
                     },
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 4.0),
+                    padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
                     child: SizedBox(
                       width: leftColumnWidth,
                       height: 28,
@@ -60,29 +60,29 @@ class RubricTable extends StatelessWidget {
               selector: (context, rubric) => rubric.categories.length,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 10.0),
-            child: Row(
-              children: [
-                Selector<Rubric, double>(
-                  builder: (context, totalPoints, child) => Text(
-                    "Total: ${totalPoints.toStringAsFixed(1)}",
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  selector: (context, rubric) => rubric.totalPoints,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 10.0),
+          child: Row(
+            children: [
+              Selector<Rubric, double>(
+                builder: (context, totalPoints, child) => Text(
+                  "Total: ${totalPoints.toStringAsFixed(1)}",
+                  style: const TextStyle(fontSize: 16),
                 ),
-                const Expanded(
-                  child: Divider(
-                    thickness: 2,
-                    indent: 10,
-                    color: Colors.grey,
-                  ),
+                selector: (context, rubric) => rubric.totalPoints,
+              ),
+              const Expanded(
+                child: Divider(
+                  thickness: 2,
+                  indent: 10,
+                  color: Colors.grey,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

@@ -41,7 +41,7 @@ class RowButton extends StatelessWidget {
                             category.label,
                             style: const TextStyle(
                                 fontSize: 11, color: Colors.white),
-                            maxLines: 1,
+                            maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
