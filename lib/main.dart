@@ -25,7 +25,10 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(
           title: Selector<Rubric, String>(
             builder: (context, assignmentName, child) => TextField(
-              style: TextStyle(fontSize: 20, color: Colors.white),
+              style: TextStyle(
+                fontSize: 20,
+                color: Colors.white,
+              ),
               onSubmitted: (value) {
                 context.read<Rubric>().setAssignmentName(value);
               },
