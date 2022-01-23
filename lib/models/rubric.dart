@@ -234,6 +234,6 @@ class CategoryContainer {
 class Category extends Tuple2<String, double> {
   Category(String label, double weight) : super(label, weight);
 
-  get label => item1;
-  get weight => item2;
+  String get label => item1;
+  double get weight => item2;
 }

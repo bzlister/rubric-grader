@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flapp/models/rubric.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -37,18 +38,20 @@ class RowButton extends StatelessWidget {
                       children: [
                         Container(
                           alignment: Alignment.bottomLeft,
-                          child: Text(
+                          child: AutoSizeText(
                             category.label,
-                            style: const TextStyle(
-                                fontSize: 11, color: Colors.white),
-                            maxLines: 2,
+                            style: const TextStyle(color: Colors.white),
+                            maxFontSize: 11,
+                            minFontSize: 6,
+                            maxLines: category.label.contains(" ") ? 2 : 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        Text(
+                        AutoSizeText(
                           "${category.weight.truncate()}",
-                          style: const TextStyle(
-                              fontSize: 12, color: Colors.white),
+                          style: const TextStyle(color: Colors.white),
+                          maxFontSize: 12,
+                          minFontSize: 10,
                         )
                       ],
                     ),

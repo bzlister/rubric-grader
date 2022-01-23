@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
         drawer: Menu(),
         resizeToAvoidBottomInset: false,
         body: Padding(
-          padding: EdgeInsets.only(left: 5, right: 5, top: 15),
+          padding: EdgeInsets.only(left: 5, right: 5, top: 10),
           child: RubricContainer(),
         ),
       ),
