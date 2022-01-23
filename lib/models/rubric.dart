@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:collection/collection.dart';
 import 'package:flapp/models/grading_scale.dart';
 import 'package:tuple/tuple.dart';
 import 'package:flutter/cupertino.dart';
@@ -46,9 +47,7 @@ class Rubric extends ChangeNotifier {
         _gradingScale = GradingScale.collegeBoard(),
         _comment = "";
 
-  double get totalPoints => _categories
-      .map((c) => c.data.weight)
-      .reduce((value, element) => value + element);
+  double get totalPoints => _categories.map((c) => c.data.weight).sum;
 
   double get earnedPoints {
     double points = 0;

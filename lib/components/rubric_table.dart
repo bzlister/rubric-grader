@@ -14,8 +14,9 @@ class RubricTable extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(
-          height: MediaQuery.of(context).size.height / 2.5,
+        Container(
+          constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height / 2.5),
           child: SingleChildScrollView(
             child: Selector<Rubric, int>(
               builder: (context, length, child) => Wrap(
@@ -35,22 +36,25 @@ class RubricTable extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
-                    child: SizedBox(
-                      width: leftColumnWidth,
-                      height: 28,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            shape: const CircleBorder(),
-                            primary: Colors.amber,
-                            onPrimary: Colors.black),
-                        child: const Text(
-                          "+",
-                          style: TextStyle(fontSize: 11, color: Colors.white),
-                        ),
-                        onPressed: () => showDialog(
-                          context: context,
-                          builder: (BuildContext context) =>
-                              CategoriesSelector.add(),
+                    child: Align(
+                      alignment: Alignment.bottomLeft,
+                      child: SizedBox(
+                        width: leftColumnWidth,
+                        height: 28,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              shape: const CircleBorder(),
+                              primary: Colors.amber,
+                              onPrimary: Colors.black),
+                          child: const Text(
+                            "+",
+                            style: TextStyle(fontSize: 11, color: Colors.white),
+                          ),
+                          onPressed: () => showDialog(
+                            context: context,
+                            builder: (BuildContext context) =>
+                                CategoriesSelector.add(),
+                          ),
                         ),
                       ),
                     ),
@@ -66,10 +70,12 @@ class RubricTable extends StatelessWidget {
           child: Row(
             children: [
               Selector<Rubric, double>(
-                builder: (context, totalPoints, child) => Text(
-                  "Total: ${totalPoints.toStringAsFixed(1)}",
-                  style: const TextStyle(fontSize: 16),
-                ),
+                builder: (context, totalPoints, child) {
+                  return Text(
+                    "Total: ${totalPoints.toStringAsFixed(1)}",
+                    style: const TextStyle(fontSize: 16),
+                  );
+                },
                 selector: (context, rubric) => rubric.totalPoints,
               ),
               const Expanded(

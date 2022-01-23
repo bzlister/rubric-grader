@@ -71,8 +71,9 @@ class RubricContainer extends StatelessWidget {
         ),
         const Spacer(),
         Selector<Rubric, bool>(
-          builder: (context, canShowSummary, child) =>
-              canShowSummary ? const Summary() : Container(),
+          builder: (context, canShowSummary, child) => canShowSummary
+              ? const Summary()
+              : Text("Tap the '+' button to add a category to your rubric"),
           selector: (context, rubric) => rubric.totalPoints > 0,
         ),
       ],
