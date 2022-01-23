@@ -1,28 +1,14 @@
 import 'package:flapp/components/grades_selector.dart';
 import 'package:flapp/components/late_penalty_selector.dart';
-import 'package:flapp/components/menu.dart';
 import 'package:flapp/components/rubric_table.dart';
 import 'package:flapp/components/summary.dart';
 import 'package:flapp/models/rubric.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class RubricContainer extends StatefulWidget {
-  const RubricContainer({Key? key}) : super(key: key);
-
-  @override
-  State<RubricContainer> createState() => _RubricContainerState();
-}
-
-class _RubricContainerState extends State<RubricContainer> {
+class RubricContainer extends StatelessWidget {
   final double leftColumnWidth = 85;
-  late bool _showMenu;
-
-  @override
-  void initState() {
-    super.initState();
-    _showMenu = false;
-  }
+  const RubricContainer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -85,24 +71,6 @@ class _RubricContainerState extends State<RubricContainer> {
               canShowSummary ? const Summary() : Container(),
           selector: (context, rubric) => rubric.totalPoints > 0,
         ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 20),
-          child: SizedBox(
-            height: 35,
-            child: Selector<Rubric, String>(
-              builder: (context, comment, child) => TextFormField(
-                controller: TextEditingController(text: comment),
-                style: const TextStyle(
-                    fontStyle: FontStyle.italic, decorationThickness: 0),
-                keyboardType: TextInputType.text,
-                decoration: const InputDecoration(hintText: "Add a comment"),
-                onFieldSubmitted: (value) =>
-                    context.read<Rubric>().comment = value,
-              ),
-              selector: (context, rubric) => rubric.comment,
-            ),
-          ),
-        )
       ],
     );
   }
