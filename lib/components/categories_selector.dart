@@ -9,6 +9,7 @@ class CategoriesSelector extends StatefulWidget {
   final String initLabel;
   final double initWeight;
   final bool autoFocus;
+  final String saveText;
   final TextInputAction textInputAction;
 
   const CategoriesSelector.update(
@@ -18,6 +19,7 @@ class CategoriesSelector extends StatefulWidget {
       required this.initWeight})
       : autoFocus = false,
         textInputAction = TextInputAction.go,
+        saveText = "Save",
         super(key: key);
 
   CategoriesSelector.add({Key? key})
@@ -26,6 +28,7 @@ class CategoriesSelector extends StatefulWidget {
         initWeight = 0,
         autoFocus = true,
         textInputAction = TextInputAction.next,
+        saveText = "Add",
         super(key: key);
 
   @override
@@ -166,7 +169,7 @@ class _CategoriesSelectorState extends State<CategoriesSelector> {
                 focus.requestFocus();
               }
             },
-            child: const Text('Save'),
+            child: Text(widget.saveText),
           ),
           TextButton(
             onPressed: () {

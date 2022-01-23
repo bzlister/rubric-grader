@@ -1,3 +1,4 @@
+import 'package:flapp/components/late_penalty_selector.dart';
 import 'package:flapp/models/rubric.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -50,11 +51,27 @@ class Summary extends StatelessWidget {
               const Spacer(),
               Container(
                 alignment: Alignment.bottomRight,
-                child: Selector<Rubric, String>(
-                  builder: (context, penalty, child) => Text(penalty),
-                  selector: (context, rubric) => rubric.latePenalty == 0
-                      ? "-"
-                      : '-${rubric.latePenalty.toStringAsFixed(1)}',
+                child: Selector<Rubric, double>(
+                  builder: (context, penalty, child) => TextButton(
+                    child: Text(
+                      '- $penalty',
+                      style: const TextStyle(
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline,
+                        fontSize: 15,
+                      ),
+                    ),
+                    style: TextButton.styleFrom(
+                      alignment: Alignment.centerRight,
+                      padding: EdgeInsets.zero,
+                    ),
+                    onPressed: () => showDialog(
+                      context: context,
+                      builder: (BuildContext context) =>
+                          const LatePenaltySelector(),
+                    ),
+                  ),
+                  selector: (context, rubric) => rubric.latePenalty,
                 ),
               ),
               SizedBox(width: MediaQuery.of(context).size.width / 2),
