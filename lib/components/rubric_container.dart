@@ -32,7 +32,7 @@ class RubricContainer extends StatelessWidget {
                               padding: const EdgeInsets.all(1.0),
                               child: Container(
                                 decoration: const BoxDecoration(
-                                    color: Colors.amber,
+                                    color: Colors.lightBlue,
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(2))),
                                 child: Selector<Rubric, double>(

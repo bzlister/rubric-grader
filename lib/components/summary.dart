@@ -21,7 +21,7 @@ class Summary extends StatelessWidget {
                 alignment: Alignment.bottomLeft,
                 child: Text(
                   "Earned:",
-                  style: TextStyle(fontSize: 15),
+                  style: TextStyle(fontSize: 16),
                 ),
               ),
               const Spacer(),
@@ -30,7 +30,7 @@ class Summary extends StatelessWidget {
                 child: Selector<Rubric, double>(
                   builder: (context, earned, child) => Text(
                     earned.toStringAsFixed(1),
-                    style: const TextStyle(fontSize: 15),
+                    style: const TextStyle(fontSize: 16),
                   ),
                   selector: (context, rubric) => rubric.earnedPoints,
                 ),
@@ -49,7 +49,7 @@ class Summary extends StatelessWidget {
                 alignment: Alignment.bottomLeft,
                 child: Text(
                   "Late penalty:",
-                  style: TextStyle(fontSize: 15),
+                  style: TextStyle(fontSize: 16),
                 ),
               ),
               const Spacer(),
@@ -62,7 +62,7 @@ class Summary extends StatelessWidget {
                       style: const TextStyle(
                         color: Colors.blue,
                         decoration: TextDecoration.underline,
-                        fontSize: 15,
+                        fontSize: 16,
                       ),
                     ),
                     style: TextButton.styleFrom(
@@ -90,7 +90,7 @@ class Summary extends StatelessWidget {
                 alignment: Alignment.bottomLeft,
                 child: Text(
                   "Grade:",
-                  style: TextStyle(fontSize: 15),
+                  style: TextStyle(fontSize: 16),
                 ),
               ),
               const Spacer(),
@@ -99,7 +99,7 @@ class Summary extends StatelessWidget {
                 child: Selector<Rubric, String>(
                   builder: (context, letterGradeText, child) => Text(
                     letterGradeText,
-                    style: const TextStyle(fontSize: 15),
+                    style: const TextStyle(fontSize: 16),
                   ),
                   selector: (context, rubric) {
                     Tuple2<String, double> finalScore = rubric.calcGrade();

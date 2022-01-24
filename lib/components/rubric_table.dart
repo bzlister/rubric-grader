@@ -15,8 +15,8 @@ class RubricTable extends StatelessWidget {
     return Column(
       children: [
         Container(
-          constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height / 2.5),
+          constraints:
+              BoxConstraints(maxHeight: MediaQuery.of(context).size.height / 2),
           child: SingleChildScrollView(
             child: Selector<Rubric, int>(
               builder: (context, length, child) => Wrap(
@@ -44,7 +44,7 @@ class RubricTable extends StatelessWidget {
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               shape: const CircleBorder(),
-                              primary: Colors.amber,
+                              primary: Colors.lightBlue,
                               onPrimary: Colors.black),
                           child: const Text(
                             "+",

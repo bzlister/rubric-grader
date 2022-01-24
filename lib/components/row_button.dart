@@ -31,7 +31,10 @@ class RowButton extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 2, left: 2, top: 2),
                 child: Selector<Rubric, Category>(
                   builder: (context, category, child) => TextButton(
-                    style: TextButton.styleFrom(backgroundColor: Colors.amber),
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.lightBlue,
+                      padding: const EdgeInsets.all(3),
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -41,8 +44,8 @@ class RowButton extends StatelessWidget {
                           child: AutoSizeText(
                             category.label,
                             style: const TextStyle(color: Colors.white),
-                            maxFontSize: 11,
-                            minFontSize: 6,
+                            maxFontSize: 12,
+                            minFontSize: 7,
                             maxLines: category.label.contains(" ") ? 2 : 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -50,8 +53,8 @@ class RowButton extends StatelessWidget {
                         AutoSizeText(
                           "${category.weight.truncate()}",
                           style: const TextStyle(color: Colors.white),
-                          maxFontSize: 12,
-                          minFontSize: 10,
+                          maxFontSize: 13,
+                          minFontSize: 11,
                         )
                       ],
                     ),

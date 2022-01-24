@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Rubric Grader',
       theme: ThemeData(
-        primarySwatch: Colors.amber,
+        primarySwatch: Colors.lightBlue,
       ),
       home: Scaffold(
         appBar: AppBar(
