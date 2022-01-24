@@ -1,5 +1,4 @@
 import 'package:flapp/components/grades_selector.dart';
-import 'package:flapp/components/late_penalty_selector.dart';
 import 'package:flapp/components/rubric_table.dart';
 import 'package:flapp/components/summary.dart';
 import 'package:flapp/models/rubric.dart';

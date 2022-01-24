@@ -10,21 +10,22 @@ class Summary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 30, right: 20),
-      child: Column(
-        children: [
-          Row(
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SizedBox(
+          height: 22,
+          child: Row(
             children: [
-              Container(
+              const Align(
                 alignment: Alignment.bottomLeft,
-                child: const Text(
+                child: Text(
                   "Earned:",
                   style: TextStyle(fontSize: 15),
                 ),
               ),
               const Spacer(),
-              Container(
+              Align(
                 alignment: Alignment.bottomRight,
                 child: Selector<Rubric, double>(
                   builder: (context, earned, child) => Text(
@@ -39,17 +40,20 @@ class Summary extends StatelessWidget {
               ),
             ],
           ),
-          Row(
+        ),
+        SizedBox(
+          height: 22,
+          child: Row(
             children: [
-              Container(
+              const Align(
                 alignment: Alignment.bottomLeft,
-                child: const Text(
+                child: Text(
                   "Late penalty:",
                   style: TextStyle(fontSize: 15),
                 ),
               ),
               const Spacer(),
-              Container(
+              Align(
                 alignment: Alignment.bottomRight,
                 child: Selector<Rubric, double>(
                   builder: (context, penalty, child) => TextButton(
@@ -77,17 +81,20 @@ class Summary extends StatelessWidget {
               SizedBox(width: MediaQuery.of(context).size.width / 2),
             ],
           ),
-          Row(
+        ),
+        SizedBox(
+          height: 22,
+          child: Row(
             children: [
-              Container(
+              const Align(
                 alignment: Alignment.bottomLeft,
-                child: const Text(
+                child: Text(
                   "Grade:",
                   style: TextStyle(fontSize: 15),
                 ),
               ),
               const Spacer(),
-              Container(
+              Align(
                 alignment: Alignment.bottomRight,
                 child: Selector<Rubric, String>(
                   builder: (context, letterGradeText, child) => Text(
@@ -105,26 +112,23 @@ class Summary extends StatelessWidget {
               ),
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 20),
-            child: SizedBox(
-              height: 35,
-              child: Selector<Rubric, String>(
-                builder: (context, comment, child) => TextFormField(
-                  controller: TextEditingController(text: comment),
-                  style: const TextStyle(
-                      fontStyle: FontStyle.italic, decorationThickness: 0),
-                  keyboardType: TextInputType.text,
-                  decoration: const InputDecoration(hintText: "Add a comment"),
-                  onFieldSubmitted: (value) =>
-                      context.read<Rubric>().comment = value,
-                ),
-                selector: (context, rubric) => rubric.comment,
-              ),
+        ),
+        SizedBox(
+          height: 35,
+          child: Selector<Rubric, String>(
+            builder: (context, comment, child) => TextFormField(
+              controller: TextEditingController(text: comment),
+              style: const TextStyle(
+                  fontStyle: FontStyle.italic, decorationThickness: 0),
+              keyboardType: TextInputType.text,
+              decoration: const InputDecoration(hintText: "Add a comment"),
+              onFieldSubmitted: (value) =>
+                  context.read<Rubric>().comment = value,
             ),
-          )
-        ],
-      ),
+            selector: (context, rubric) => rubric.comment,
+          ),
+        )
+      ],
     );
   }
 }
