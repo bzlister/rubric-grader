@@ -58,7 +58,7 @@ class Summary extends StatelessWidget {
                 child: Selector<Rubric, double>(
                   builder: (context, penalty, child) => TextButton(
                     child: Text(
-                      '- $penalty',
+                      '- ${penalty.toStringAsFixed(1)}',
                       style: const TextStyle(
                         color: Colors.blue,
                         decoration: TextDecoration.underline,

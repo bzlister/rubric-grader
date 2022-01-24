@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
           toolbarHeight: 40,
         ),
         drawer: Menu(),
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         body: Padding(
           padding: EdgeInsets.only(left: 5, right: 5, top: 10),
           child: RubricContainer(),

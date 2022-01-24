@@ -67,25 +67,28 @@ class RubricTable extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.only(top: 10.0),
-          child: Row(
-            children: [
-              Selector<Rubric, double>(
-                builder: (context, totalPoints, child) {
-                  return Text(
-                    "Total: ${totalPoints.toStringAsFixed(1)}",
-                    style: const TextStyle(fontSize: 16),
-                  );
-                },
-                selector: (context, rubric) => rubric.totalPoints,
-              ),
-              const Expanded(
-                child: Divider(
-                  thickness: 2,
-                  indent: 10,
-                  color: Colors.grey,
+          child: SizedBox(
+            height: 20,
+            child: Row(
+              children: [
+                Selector<Rubric, double>(
+                  builder: (context, totalPoints, child) {
+                    return Text(
+                      "Total: ${totalPoints.toStringAsFixed(1)}",
+                      style: const TextStyle(fontSize: 16),
+                    );
+                  },
+                  selector: (context, rubric) => rubric.totalPoints,
                 ),
-              ),
-            ],
+                const Expanded(
+                  child: Divider(
+                    thickness: 2,
+                    indent: 10,
+                    color: Colors.grey,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],

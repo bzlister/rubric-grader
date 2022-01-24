@@ -11,10 +11,10 @@ class RubricContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          SizedBox(
+    return CustomScrollView(
+      slivers: <Widget>[
+        SliverToBoxAdapter(
+          child: SizedBox(
             height: 35,
             child: Row(
               children: [
@@ -64,18 +64,33 @@ class RubricContainer extends StatelessWidget {
               ],
             ),
           ),
-          RubricTable(leftColumnWidth: leftColumnWidth),
-          Selector<Rubric, bool>(
-            builder: (context, canShowSummary, child) => canShowSummary
-                ? const Summary()
-                : const Center(
-                    child: Text(
-                        "Tap the '+' button to add a category to your rubric"),
-                  ),
-            selector: (context, rubric) => rubric.totalPoints > 0,
+        ),
+        SliverToBoxAdapter(
+            child: RubricTable(leftColumnWidth: leftColumnWidth)),
+        SliverFillRemaining(
+          hasScrollBody: false,
+          child: IntrinsicHeight(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                const Spacer(),
+                Selector<Rubric, bool>(
+                  builder: (context, canShowSummary, child) => canShowSummary
+                      ? Padding(
+                          padding: const EdgeInsets.only(bottom: 20),
+                          child: const Summary(),
+                        )
+                      : const Center(
+                          child: Text(
+                              "Tap the '+' button to add a category to your rubric"),
+                        ),
+                  selector: (context, rubric) => rubric.totalPoints > 0,
+                ),
+              ],
+            ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
