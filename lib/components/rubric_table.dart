@@ -44,11 +44,11 @@ class RubricTable extends StatelessWidget {
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               shape: const CircleBorder(),
-                              primary: Colors.lightBlue,
+                              primary: Colors.orange,
                               onPrimary: Colors.black),
-                          child: const Text(
-                            "+",
-                            style: TextStyle(fontSize: 11, color: Colors.white),
+                          child: Icon(
+                            Icons.add_box,
+                            color: Colors.white70,
                           ),
                           onPressed: () => showDialog(
                             context: context,

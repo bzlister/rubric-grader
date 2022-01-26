@@ -30,9 +30,9 @@ class RowButton extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 2, left: 2, top: 2),
                 child: Selector<Rubric, Category>(
-                  builder: (context, category, child) => TextButton(
-                    style: TextButton.styleFrom(
-                      backgroundColor: Colors.lightBlue,
+                  builder: (context, category, child) => ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.blueGrey,
                       padding: const EdgeInsets.all(3),
                     ),
                     child: Column(
@@ -81,11 +81,19 @@ class RowButton extends StatelessWidget {
             ),
             ToggleButtons(
               constraints: BoxConstraints.expand(
-                width: (constraints.maxWidth - leftColumnWidth) / length,
-                height: (constraints.maxWidth - leftColumnWidth) / length,
+                width: (constraints.maxWidth -
+                        leftColumnWidth -
+                        isSelected.length -
+                        1) /
+                    length,
+                height: (constraints.maxWidth -
+                        leftColumnWidth -
+                        isSelected.length -
+                        1) /
+                    length,
               ),
               renderBorder: true,
-              borderWidth: 0,
+              borderWidth: 1,
               children: List.generate(
                 length,
                 (index) => Selector<Rubric, String>(

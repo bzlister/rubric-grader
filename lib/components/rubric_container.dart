@@ -23,40 +23,39 @@ class RubricContainer extends StatelessWidget {
                 ),
                 Expanded(
                   child: Selector<Rubric, int>(
-                    builder: (context, length, child) => GestureDetector(
-                      child: Row(
-                        children: List.generate(
-                          length,
-                          (index) => Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.all(1.0),
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                    color: Colors.lightBlue,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(2))),
+                    builder: (context, length, child) => Row(
+                      children: List.generate(
+                        length,
+                        (index) => Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(1.0),
+                            child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  primary: Colors.blueGrey,
+                                  padding: const EdgeInsets.all(3),
+                                ),
                                 child: Selector<Rubric, double>(
                                   builder: (context, score, child) => Center(
                                       child: Text(
                                     "${score.truncate()}%",
                                     style: const TextStyle(
-                                        fontSize: 15, color: Colors.white),
+                                      fontSize: 15,
+                                      color: Colors.white,
+                                    ),
                                   )),
                                   selector: (context, rubric) =>
                                       rubric.getScore(index),
                                 ),
-                              ),
-                            ),
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        const ScoresSelector(),
+                                  );
+                                }),
                           ),
                         ),
                       ),
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) =>
-                              const ScoresSelector(),
-                        );
-                      },
                     ),
                     selector: (context, rubric) => rubric.scores.length,
                   ),
