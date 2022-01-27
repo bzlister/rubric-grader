@@ -91,34 +91,6 @@ class _CategoriesSelectorState extends State<CategoriesSelector> {
                     errorMaxLines: 3,
                     counterText: "",
                     filled: true,
-                    fillColor: Colors.white,
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(4)),
-                      borderSide: BorderSide(
-                        width: 1,
-                        color: Color(0xffE5E5E5),
-                      ),
-                    ),
-                    disabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(4)),
-                      borderSide: BorderSide(
-                        width: 1,
-                        color: Color(0xffE5E5E5),
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(4)),
-                      borderSide: BorderSide(
-                        width: 1,
-                        color: Color(0xffE5E5E5),
-                      ),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(4)),
-                      borderSide: BorderSide(
-                        width: 1,
-                      ),
-                    ),
                     errorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(4)),
                         borderSide: BorderSide(

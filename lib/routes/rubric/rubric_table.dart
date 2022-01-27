@@ -1,5 +1,5 @@
-import 'package:flapp/components/row_button.dart';
 import 'package:flapp/models/rubric.dart';
+import 'package:flapp/routes/rubric/row_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'categories_selector.dart';

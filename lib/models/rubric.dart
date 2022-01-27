@@ -25,6 +25,22 @@ class Rubric extends ChangeNotifier {
     this._comment,
   );
 
+  Rubric.empty()
+      : _assignmentName = "Assignment 1",
+        _scores = [
+          ScoreContainer(weight: 100),
+          ScoreContainer(weight: 85),
+          ScoreContainer(weight: 75),
+          ScoreContainer(weight: 70),
+          ScoreContainer(weight: 60),
+        ],
+        _categories = [],
+        _latePolicy = "total",
+        _daysLate = 0,
+        _latePercentagePerDay = 20,
+        _gradingScale = GradingScale.collegeBoard(),
+        _comment = "";
+
   Rubric.example()
       : _assignmentName = "Assignment 1",
         _scores = [

@@ -1,4 +1,4 @@
-import 'package:flapp/components/late_penalty_selector.dart';
+import 'package:flapp/routes/rubric/late_penalty_selector.dart';
 import 'package:flapp/models/rubric.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

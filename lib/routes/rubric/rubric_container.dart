@@ -1,8 +1,8 @@
-import 'package:flapp/components/summary.dart';
 import 'package:flapp/menu.dart';
 import 'package:flapp/models/rubric.dart';
 import 'package:flapp/routes/rubric/grades_selector.dart';
 import 'package:flapp/routes/rubric/rubric_table.dart';
+import 'package:flapp/routes/rubric/summary.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

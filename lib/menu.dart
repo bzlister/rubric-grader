@@ -21,7 +21,41 @@ class Menu extends StatelessWidget {
               leading: const Icon(Icons.new_label),
               title: const Text("New"),
               onTap: () {
-                Navigator.pushNamed(context, '/rubric');
+                Navigator.pop(context);
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) => AlertDialog(
+                          content: Text(
+                            "Save rubric 'Assignment 1'?",
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pushNamed(context, 'files/save');
+                              },
+                              child: const Text('Yes'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/rubric');
+                              },
+                              child: const Text('No'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text("Cancel"),
+                            )
+                          ],
+                        ));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.folder_open),
+              title: const Text("Open"),
+              onTap: () {
+                Navigator.pushNamed(context, '/files/open');
               },
             ),
             ListTile(
@@ -38,13 +72,7 @@ class Menu extends StatelessWidget {
                 Navigator.pushNamed(context, '/files/export');
               },
             ),
-            ListTile(
-              leading: const Icon(Icons.folder_open),
-              title: const Text("Open"),
-              onTap: () {
-                Navigator.pushNamed(context, '/files/open');
-              },
-            ),
+            const Divider(),
             ListTile(
               leading: const Icon(Icons.settings),
               title: const Text("Options"),
