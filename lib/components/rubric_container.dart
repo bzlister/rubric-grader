@@ -17,7 +17,6 @@ class RubricContainer extends StatelessWidget {
       appBar: AppBar(
         title: Selector<Rubric, String>(
           builder: (context, assignmentName, child) => TextField(
-            cursorColor: Colors.white,
             decoration: const InputDecoration(
               isDense: true,
             ),
@@ -68,7 +67,6 @@ class RubricContainer extends StatelessWidget {
                                         "${score.truncate()}%",
                                         style: const TextStyle(
                                           fontSize: 15,
-                                          color: Colors.white,
                                         ),
                                       )),
                                       selector: (context, rubric) =>

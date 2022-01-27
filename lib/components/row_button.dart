@@ -42,7 +42,6 @@ class RowButton extends StatelessWidget {
                           alignment: Alignment.bottomLeft,
                           child: AutoSizeText(
                             category.label,
-                            style: const TextStyle(color: Colors.white),
                             maxFontSize: 12,
                             minFontSize: 7,
                             maxLines: category.label.contains(" ") ? 2 : 1,
@@ -51,7 +50,6 @@ class RowButton extends StatelessWidget {
                         ),
                         AutoSizeText(
                           "${category.weight.truncate()}",
-                          style: const TextStyle(color: Colors.white),
                           maxFontSize: 13,
                           minFontSize: 11,
                         )

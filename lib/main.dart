@@ -20,6 +20,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blueGrey,
         fontFamily: 'Allison',
+        brightness: Brightness.dark,
+        textSelectionTheme: const TextSelectionThemeData(
+          cursorColor: Colors.orange,
+          selectionHandleColor: Colors.orange,
+          selectionColor: Colors.orange,
+        ),
       ),
       home: const RubricContainer(),
     );
