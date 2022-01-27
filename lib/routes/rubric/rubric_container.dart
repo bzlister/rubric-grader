@@ -1,11 +1,10 @@
-import 'package:flapp/components/grades_selector.dart';
-import 'package:flapp/components/rubric_table.dart';
 import 'package:flapp/components/summary.dart';
+import 'package:flapp/menu.dart';
 import 'package:flapp/models/rubric.dart';
+import 'package:flapp/routes/rubric/grades_selector.dart';
+import 'package:flapp/routes/rubric/rubric_table.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import 'menu.dart';
 
 class RubricContainer extends StatelessWidget {
   final double leftColumnWidth = 85;
