@@ -22,7 +22,7 @@ class CategoriesSelector extends StatefulWidget {
         saveText = "Save",
         super(key: key);
 
-  CategoriesSelector.add({Key? key})
+  const CategoriesSelector.add({Key? key})
       : index = -1,
         initLabel = "",
         initWeight = 0,

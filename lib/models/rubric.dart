@@ -11,7 +11,7 @@ class Rubric extends ChangeNotifier {
   String _latePolicy;
   int _daysLate;
   double _latePercentagePerDay;
-  GradingScale _gradingScale;
+  final GradingScale _gradingScale;
   String _comment;
 
   Rubric(

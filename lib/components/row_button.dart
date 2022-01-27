@@ -32,7 +32,6 @@ class RowButton extends StatelessWidget {
                 child: Selector<Rubric, Category>(
                   builder: (context, category, child) => ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.blueGrey,
                       padding: const EdgeInsets.all(3),
                     ),
                     child: Column(

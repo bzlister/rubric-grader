@@ -46,14 +46,14 @@ class RubricTable extends StatelessWidget {
                               shape: const CircleBorder(),
                               primary: Colors.orange,
                               onPrimary: Colors.black),
-                          child: Icon(
+                          child: const Icon(
                             Icons.add_box,
                             color: Colors.white70,
                           ),
                           onPressed: () => showDialog(
                             context: context,
                             builder: (BuildContext context) =>
-                                CategoriesSelector.add(),
+                                const CategoriesSelector.add(),
                           ),
                         ),
                       ),

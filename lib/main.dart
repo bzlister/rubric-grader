@@ -1,6 +1,5 @@
 import 'package:flapp/models/rubric.dart';
 import 'package:flutter/material.dart';
-import 'components/menu.dart';
 import 'components/rubric_container.dart';
 import 'package:provider/provider.dart';
 
@@ -20,32 +19,9 @@ class MyApp extends StatelessWidget {
       title: 'Rubric Grader',
       theme: ThemeData(
         primarySwatch: Colors.blueGrey,
+        fontFamily: 'Allison',
       ),
-      home: Scaffold(
-        appBar: AppBar(
-          title: Selector<Rubric, String>(
-            builder: (context, assignmentName, child) => TextField(
-              style: TextStyle(
-                fontSize: 20,
-                color: Colors.white,
-              ),
-              onSubmitted: (value) {
-                context.read<Rubric>().setAssignmentName(value);
-              },
-              textInputAction: TextInputAction.go,
-              controller: TextEditingController(text: assignmentName),
-            ),
-            selector: (context, rubric) => rubric.assignmentName,
-          ),
-          toolbarHeight: 40,
-        ),
-        drawer: Menu(),
-        resizeToAvoidBottomInset: true,
-        body: Padding(
-          padding: EdgeInsets.only(left: 5, right: 5, top: 10),
-          child: RubricContainer(),
-        ),
-      ),
+      home: const RubricContainer(),
     );
   }
 }

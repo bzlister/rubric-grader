@@ -17,7 +17,7 @@ class Menu extends StatelessWidget {
               style: TextStyle(fontSize: 16, color: Colors.blue),
             )),
             Divider(),
-            ListTile(leading: Icon(Icons.new_label), title: Text("New rubric")),
+            ListTile(leading: Icon(Icons.new_label), title: Text("New")),
             ListTile(leading: Icon(Icons.save), title: Text("Save")),
             ListTile(leading: Icon(Icons.import_export), title: Text("Export")),
             ListTile(leading: Icon(Icons.folder_open), title: Text("Open")),
