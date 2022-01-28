@@ -90,7 +90,8 @@ class RubricContainer extends StatelessWidget {
               ),
             ),
             SliverToBoxAdapter(
-                child: RubricTable(leftColumnWidth: leftColumnWidth)),
+              child: RubricTable(leftColumnWidth: leftColumnWidth),
+            ),
             SliverFillRemaining(
               hasScrollBody: false,
               child: IntrinsicHeight(

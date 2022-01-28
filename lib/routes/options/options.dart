@@ -1,4 +1,8 @@
 import 'package:flapp/menu.dart';
+import 'package:flapp/routes/options/components/grading_scale_option.dart';
+import 'package:flapp/routes/options/components/score_selection_option.dart';
+import 'package:flapp/routes/options/components/theme_option.dart';
+import 'package:flapp/routes/options/option_group.dart';
 import 'package:flutter/material.dart';
 
 class Options extends StatelessWidget {
@@ -13,13 +17,18 @@ class Options extends StatelessWidget {
       ),
       drawer: const Menu(),
       resizeToAvoidBottomInset: true,
-      body: Column(
-        children: [
-          Text("Grading scale"),
-          Text("Theme"),
-          Text("Mode"),
-          Text("Precision")
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: const [
+            OptionGroup(
+              optionsList: [
+                ScoreSelectionOption(),
+                GradingScaleOption(),
+              ],
+            ),
+            OptionGroup(optionsList: [ThemeOption()]),
+          ],
+        ),
       ),
     );
   }

@@ -21,7 +21,7 @@ class Menu extends StatelessWidget {
               leading: const Icon(Icons.new_label),
               title: const Text("New"),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.pushNamed(context, '/rubric');
                 showDialog(
                     context: context,
                     builder: (BuildContext context) => AlertDialog(
