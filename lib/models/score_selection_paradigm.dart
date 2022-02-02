@@ -1,4 +1,0 @@
-enum ScoreSelectionParadigm {
-  slider,
-  bin,
-}
