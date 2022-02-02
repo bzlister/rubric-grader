@@ -2,8 +2,11 @@ import 'package:tuple/tuple.dart';
 
 class GradingScale {
   final List<Tuple2<String, double>> _scale;
+  final String name;
 
-  GradingScale({required List<Tuple2<String, double>> scale}) : _scale = scale;
+  GradingScale({required List<Tuple2<String, double>> scale})
+      : _scale = scale,
+        name = "Custom";
 
   GradingScale.collegeBoard()
       : _scale = const [
@@ -19,7 +22,8 @@ class GradingScale {
           Tuple2("D+", 67),
           Tuple2("D", 65),
           Tuple2("F", 0),
-        ];
+        ],
+        name = "College Board";
 
   List<Tuple2<String, double>> get scale => _scale;
 
