@@ -24,7 +24,7 @@ class RubricContainer extends StatelessWidget {
               color: Colors.white,
             ),
             onSubmitted: (value) {
-              context.read<Rubric>().setAssignmentName(value);
+              context.read<Rubric>().assignmentName = value;
             },
             textInputAction: TextInputAction.go,
             controller: TextEditingController(text: assignmentName),
@@ -59,17 +59,18 @@ class RubricContainer extends StatelessWidget {
                                     style: ElevatedButton.styleFrom(
                                       padding: const EdgeInsets.all(3),
                                     ),
-                                    child: Selector<Rubric, double>(
-                                      builder: (context, score, child) =>
-                                          Center(
-                                              child: Text(
-                                        "${score.truncate()}%",
-                                        style: const TextStyle(
-                                          fontSize: 15,
+                                    child: Center(
+                                      child: Selector<Rubric, double>(
+                                        builder: (context, score, child) =>
+                                            Text(
+                                          "${score.truncate()}%",
+                                          style: const TextStyle(
+                                            fontSize: 15,
+                                          ),
                                         ),
-                                      )),
-                                      selector: (context, rubric) =>
-                                          rubric.getScore(index),
+                                        selector: (context, rubric) =>
+                                            rubric.getScore(index),
+                                      ),
                                     ),
                                     onPressed: () {
                                       showDialog(
@@ -82,7 +83,7 @@ class RubricContainer extends StatelessWidget {
                             ),
                           ),
                         ),
-                        selector: (context, rubric) => rubric.scores.length,
+                        selector: (context, rubric) => rubric.scoreBins.length,
                       ),
                     )
                   ],

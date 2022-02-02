@@ -1,3 +1,4 @@
+import 'package:flapp/models/graded_assignment.dart';
 import 'package:flapp/models/rubric.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -92,24 +93,31 @@ class _LatePenaltySelectorState extends State<LatePenaltySelector> {
             Row(
               children: [
                 const Text("Days late:"),
-                Selector<Rubric, Tuple2<double, double>>(
-                    builder: (context, daysLateInfo, child) => SizedBox(
-                          width: 120,
-                          height: 32,
-                          child: SpinBox(
-                            decoration: const InputDecoration(
-                                contentPadding: EdgeInsets.zero),
-                            value: daysLateInfo.item1,
-                            min: 0,
-                            max: daysLateInfo
-                                .item2, // max is num days such that late penalty >= 100
-                            onChanged: (value) =>
-                                context.read<Rubric>().daysLate = value.round(),
-                          ),
-                        ),
-                    selector: (context, rubric) => Tuple2<double, double>(
-                        rubric.daysLate.toDouble(),
-                        rubric.maxDaysLate().toDouble())),
+                SizedBox(
+                  width: 120,
+                  height: 32,
+                  child: Selector2<Rubric, GradedAssignment,
+                      Tuple2<double, double>>(
+                    builder: (context, daysLateInfo, child) {
+                      return SpinBox(
+                        decoration: const InputDecoration(
+                            contentPadding: EdgeInsets.zero),
+                        value: daysLateInfo.item1,
+                        min: 0,
+                        max: daysLateInfo
+                            .item2, // max is num days such that late penalty >= 100
+                        onChanged: (value) => context
+                            .read<GradedAssignment>()
+                            .daysLate = value.round(),
+                      );
+                    },
+                    selector: (context, rubric, gradedAssignment) =>
+                        Tuple2<double, double>(
+                      gradedAssignment.daysLate.toDouble(),
+                      rubric.maxDaysLate().toDouble(),
+                    ),
+                  ),
+                ),
               ],
             )
           ],

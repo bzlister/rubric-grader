@@ -53,53 +53,16 @@ class Rubric extends ChangeNotifier {
         _latePercentagePerDay = 20,
         _comment = "";
 
-  double get totalPoints => categories.map((c) => c.weight).sum;
-
-/*
-  double get earnedPoints {
-    double points = 0;
-    for (int i = 0; i < categories.length; i++) {
-      int indx = -1; // getSelection(i);
-      if (indx != -1) {
-        points += categories[i].weight * _scoreBins[indx].weight * 0.01;
-      }
-    }
-    return points;
-  }
-*/
-
-/*
-  int getSelection(int categoryIndex) {
-    if (categories[categoryIndex].selected != null) {
-      return _scoreBins.indexWhere(
-          (score) => score.id == categories[categoryIndex].selected);
-    }
-    return -1;
-  }
-*/
-
-/*
-  void makeSelection(int categoryIndex, int rowIndex) {
-    categories[categoryIndex].selected = _scoreBins[rowIndex].id;
-    notifyListeners();
-  }
-*/
-
-/*
-  void cancelSelection(int categoryIndex) {
-    categories[categoryIndex].selected = null;
-    notifyListeners();
-  }
-*/
-
   String get assignmentName => _assignmentName;
 
-  void setAssignmentName(String value) {
-    _assignmentName = value;
+  set assignmentName(String name) {
+    _assignmentName = name;
     notifyListeners();
   }
 
-  List<double> get scores => _scoreBins.map((score) => score.weight).toList();
+  double get totalPoints => categories.map((c) => c.weight).sum;
+
+  List<SemanticValue> get scoreBins => _scoreBins;
 
   double getScore(int index) => _scoreBins[index].weight;
 
@@ -146,67 +109,12 @@ class Rubric extends ChangeNotifier {
     notifyListeners();
   }
 
-/*
-  int get daysLate => _daysLate;
-*/
-
   int maxDaysLate() => (100.0 / latePercentagePerDay).ceil();
-
-/*
-  set daysLate(int numDays) {
-    _daysLate = numDays;
-    notifyListeners();
-  }
-*/
 
   double get latePercentagePerDay => _latePercentagePerDay;
 
   set latePercentagePerDay(double percentage) {
     _latePercentagePerDay = percentage;
-    notifyListeners();
-  }
-
-/*
-  double get latePenalty {
-    double percentageOff = daysLate * latePercentagePerDay * 0.01;
-    return min(
-      percentageOff * (latePolicy == "total" ? totalPoints : earnedPoints),
-      earnedPoints,
-    );
-  }
-*/
-
-/*
-  Tuple2<String, double> calcGrade() {
-    if (totalPoints == 0) {
-      return const Tuple2("", 0);
-    }
-    double finalScore = (earnedPoints - latePenalty) / totalPoints * 100;
-    String label = _gradingScale.scale[0].item1;
-    for (int i = 0; i < _gradingScale.scale.length; i++) {
-      if (_gradingScale.scale[i].item2 <= finalScore) {
-        label = _gradingScale.scale[i].item1;
-        break;
-      }
-    }
-    return Tuple2(label, finalScore);
-  }
-*/
-
-/*
-  double calcGrade() {
-    if (totalPoints == 0) {
-      return 0;
-    }
-    double finalScore = (earnedPoints - latePenalty) / totalPoints * 100;
-    return finalScore;
-  }
-*/
-
-  String get comment => _comment;
-
-  set comment(String value) {
-    _comment = value;
     notifyListeners();
   }
 }

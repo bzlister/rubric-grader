@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flapp/models/graded_assignment.dart';
 import 'package:flapp/models/rubric.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +22,7 @@ class RowButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
-      return Selector<Rubric, List<bool>>(
+      return Selector<GradedAssignment, List<bool>>(
         builder: (context, isSelected, child) => Row(
           children: [
             SizedBox(
@@ -104,16 +105,16 @@ class RowButton extends StatelessWidget {
               isSelected: isSelected,
               onPressed: (index) {
                 if (isSelected[index] == false) {
-                  context.read<Rubric>().makeSelection(rowNum, index);
+                  context.read<GradedAssignment>().select(rowNum, index);
                 } else {
-                  context.read<Rubric>().cancelSelection(rowNum);
+                  context.read<GradedAssignment>().deselect(rowNum);
                 }
               },
             ),
           ],
         ),
-        selector: (context, rubric) {
-          int indx = rubric.getSelection(rowNum);
+        selector: (context, gradedAssignment) {
+          int indx = gradedAssignment.getSelection(rowNum);
           List<bool> isSelected = List.filled(length, false);
           if (indx != -1) {
             isSelected[indx] = true;

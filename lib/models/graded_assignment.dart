@@ -7,24 +7,31 @@ import 'package:tuple/tuple.dart';
 
 class GradedAssignment extends ChangeNotifier {
   final HashMap<Category, SemanticValue> _scoreSelections;
-  int daysLate;
+  int _daysLate;
   late Rubric _rubric;
-  String? comment;
-  String? name;
+  String? _comment;
+  String? _name;
 
   GradedAssignment(
     this._scoreSelections,
-    this.daysLate,
-    this.comment,
-    this.name,
+    this._daysLate,
+    this._comment,
+    this._name,
   );
 
   GradedAssignment.empty()
       : _scoreSelections = HashMap<Category, SemanticValue>(),
-        daysLate = 0;
+        _daysLate = 0;
 
   set rubric(Rubric newRubric) {
     _rubric = newRubric;
+  }
+
+  int get daysLate => _daysLate;
+
+  set daysLate(int numDays) {
+    _daysLate = numDays;
+    notifyListeners();
   }
 
   double get earnedPoints {
@@ -35,12 +42,26 @@ class GradedAssignment extends ChangeNotifier {
     return points;
   }
 
-  select(Category category, SemanticValue semanticValue) {
-    _scoreSelections[category] = semanticValue;
+  select(int rowNum, int colNum) {
+    _scoreSelections[_rubric.categories[rowNum]] = _rubric.scoreBins[colNum];
+    notifyListeners();
+  }
+
+  deselect(int rowNum) {
+    _scoreSelections.remove(_rubric.categories[rowNum]);
+    notifyListeners();
+  }
+
+  getSelection(int rowNum) {
+    SemanticValue? selected = _scoreSelections[_rubric.categories[rowNum]];
+    if (selected != null) {
+      return _rubric.scoreBins.indexWhere((val) => val == selected);
+    }
+    return -1;
   }
 
   double get latePenalty {
-    double percentageOff = daysLate * _rubric.latePercentagePerDay * 0.01;
+    double percentageOff = _daysLate * _rubric.latePercentagePerDay * 0.01;
     return min(
       percentageOff *
           (_rubric.latePolicy == "total" ? _rubric.totalPoints : earnedPoints),
@@ -62,5 +83,12 @@ class GradedAssignment extends ChangeNotifier {
       }
     }
     return Tuple2(label, finalScore);
+  }
+
+  String? get comment => _comment;
+
+  set comment(String? newComment) {
+    _comment = newComment;
+    notifyListeners();
   }
 }

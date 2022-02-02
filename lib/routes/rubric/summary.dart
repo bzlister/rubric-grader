@@ -1,3 +1,6 @@
+import 'package:flapp/grading_scale.dart';
+import 'package:flapp/models/graded_assignment.dart';
+import 'package:flapp/models/grader.dart';
 import 'package:flapp/routes/rubric/late_penalty_selector.dart';
 import 'package:flapp/models/rubric.dart';
 import 'package:flutter/material.dart';
@@ -27,12 +30,13 @@ class Summary extends StatelessWidget {
               const Spacer(),
               Align(
                 alignment: Alignment.bottomRight,
-                child: Selector<Rubric, double>(
+                child: Selector<GradedAssignment, double>(
                   builder: (context, earned, child) => Text(
                     earned.toStringAsFixed(1),
                     style: const TextStyle(fontSize: 16),
                   ),
-                  selector: (context, rubric) => rubric.earnedPoints,
+                  selector: (context, gradedAssignment) =>
+                      gradedAssignment.earnedPoints,
                 ),
               ),
               SizedBox(
@@ -55,27 +59,28 @@ class Summary extends StatelessWidget {
               const Spacer(),
               Align(
                 alignment: Alignment.bottomRight,
-                child: Selector<Rubric, double>(
-                  builder: (context, penalty, child) => TextButton(
-                    child: Text(
-                      '- ${penalty.toStringAsFixed(1)}',
+                child: TextButton(
+                  child: Selector<GradedAssignment, String>(
+                    builder: (context, latePenaltyText, child) => Text(
+                      latePenaltyText,
                       style: const TextStyle(
                         color: Colors.blue,
                         decoration: TextDecoration.underline,
                         fontSize: 16,
                       ),
                     ),
-                    style: TextButton.styleFrom(
-                      alignment: Alignment.centerRight,
-                      padding: EdgeInsets.zero,
-                    ),
-                    onPressed: () => showDialog(
-                      context: context,
-                      builder: (BuildContext context) =>
-                          const LatePenaltySelector(),
-                    ),
+                    selector: (context, gradedAssignment) =>
+                        '- ${gradedAssignment.latePenalty.toStringAsFixed(1)}',
                   ),
-                  selector: (context, rubric) => rubric.latePenalty,
+                  style: TextButton.styleFrom(
+                    alignment: Alignment.centerRight,
+                    padding: EdgeInsets.zero,
+                  ),
+                  onPressed: () => showDialog(
+                    context: context,
+                    builder: (BuildContext context) =>
+                        const LatePenaltySelector(),
+                  ),
                 ),
               ),
               SizedBox(width: MediaQuery.of(context).size.width / 2),
@@ -96,13 +101,14 @@ class Summary extends StatelessWidget {
               const Spacer(),
               Align(
                 alignment: Alignment.bottomRight,
-                child: Selector<Rubric, String>(
+                child: Selector2<Grader, GradedAssignment, String>(
                   builder: (context, letterGradeText, child) => Text(
                     letterGradeText,
                     style: const TextStyle(fontSize: 16),
                   ),
-                  selector: (context, rubric) {
-                    Tuple2<String, double> finalScore = rubric.calcGrade();
+                  selector: (context, grader, gradedAssignment) {
+                    Tuple2<String, double> finalScore =
+                        gradedAssignment.calcGrade(grader.gradingScale);
                     return '${finalScore.item1} (${finalScore.item2.toStringAsFixed(1)})';
                   },
                 ),
@@ -115,17 +121,19 @@ class Summary extends StatelessWidget {
         ),
         SizedBox(
           height: 35,
-          child: Selector<Rubric, String>(
+          child: Selector<GradedAssignment, String>(
             builder: (context, comment, child) => TextFormField(
-              controller: TextEditingController(text: comment),
+              controller: TextEditingController(
+                  text: comment), // see if wrapping in Selector here works
               style: const TextStyle(
                   fontStyle: FontStyle.italic, decorationThickness: 0),
               keyboardType: TextInputType.text,
               decoration: const InputDecoration(hintText: "Add a comment"),
               onFieldSubmitted: (value) =>
-                  context.read<Rubric>().comment = value,
+                  context.read<GradedAssignment>().comment = value,
             ),
-            selector: (context, rubric) => rubric.comment,
+            selector: (context, gradedAssignment) =>
+                gradedAssignment.comment ?? "",
           ),
         )
       ],

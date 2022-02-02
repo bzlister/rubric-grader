@@ -25,4 +25,11 @@ class Grader extends ChangeNotifier {
         _gradingScale = GradingScale.collegeBoard(),
         _scoreSelectionParadigm = ScoreSelectionParadigm.bin,
         _themeData = ThemeData.dark();
+
+  GradingScale get gradingScale => _gradingScale;
+
+  set gradingScale(GradingScale scale) {
+    _gradingScale = scale;
+    notifyListeners();
+  }
 }

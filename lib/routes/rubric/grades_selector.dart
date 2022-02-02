@@ -70,7 +70,8 @@ class ScoresSelector extends StatelessWidget {
             },
           ),
         ),
-        selector: (context, rubric) => rubric.scores,
+        selector: (context, rubric) =>
+            rubric.scoreBins.map((s) => s.weight).toList(),
       ),
       actions: [
         TextButton(
