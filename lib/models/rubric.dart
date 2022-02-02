@@ -1,13 +1,13 @@
 import 'dart:math';
 import 'package:collection/collection.dart';
-import 'package:flapp/models/grading_scale.dart';
+import 'package:flapp/grading_scale.dart';
 import 'package:tuple/tuple.dart';
 import 'package:flutter/cupertino.dart';
 
 class Rubric extends ChangeNotifier {
-  String _assignmentName;
-  List<ScoreContainer> _scores;
-  List<CategoryContainer> _categories;
+  String assignmentName;
+  List<SemanticValue> _scoreBins;
+  List<Category> categories;
   String _latePolicy;
   int _daysLate;
   double _latePercentagePerDay;
@@ -15,9 +15,9 @@ class Rubric extends ChangeNotifier {
   String _comment;
 
   Rubric(
-    this._assignmentName,
-    this._scores,
-    this._categories,
+    this.assignmentName,
+    this._scoreBins,
+    this.categories,
     this._latePolicy,
     this._daysLate,
     this._latePercentagePerDay,
@@ -26,15 +26,15 @@ class Rubric extends ChangeNotifier {
   );
 
   Rubric.empty()
-      : _assignmentName = "Assignment 1",
-        _scores = [
-          ScoreContainer(weight: 100),
-          ScoreContainer(weight: 85),
-          ScoreContainer(weight: 75),
-          ScoreContainer(weight: 70),
-          ScoreContainer(weight: 60),
+      : assignmentName = "Assignment 1",
+        _scoreBins = [
+          SemanticValue(weight: 100),
+          SemanticValue(weight: 85),
+          SemanticValue(weight: 75),
+          SemanticValue(weight: 70),
+          SemanticValue(weight: 60),
         ],
-        _categories = [],
+        categories = [],
         _latePolicy = "total",
         _daysLate = 0,
         _latePercentagePerDay = 20,
@@ -42,20 +42,20 @@ class Rubric extends ChangeNotifier {
         _comment = "";
 
   Rubric.example()
-      : _assignmentName = "Assignment 1",
-        _scores = [
-          ScoreContainer(weight: 100),
-          ScoreContainer(weight: 85),
-          ScoreContainer(weight: 75),
-          ScoreContainer(weight: 70),
-          ScoreContainer(weight: 60),
+      : assignmentName = "Assignment 1",
+        _scoreBins = [
+          SemanticValue(weight: 100),
+          SemanticValue(weight: 85),
+          SemanticValue(weight: 75),
+          SemanticValue(weight: 70),
+          SemanticValue(weight: 60),
         ],
-        _categories = [
-          CategoryContainer(label: "Audience & Genre", weight: 60),
-          CategoryContainer(label: "Thesis & Support", weight: 60),
-          CategoryContainer(label: "Reasoning", weight: 40),
-          CategoryContainer(label: "Organization & Style", weight: 30),
-          CategoryContainer(label: "Correctness", weight: 10)
+        categories = [
+          Category(label: "Audience & Genre", weight: 60),
+          Category(label: "Thesis & Support", weight: 60),
+          Category(label: "Reasoning", weight: 40),
+          Category(label: "Organization & Style", weight: 30),
+          Category(label: "Correctness", weight: 10)
         ],
         _latePolicy = "total",
         _daysLate = 0,
@@ -63,79 +63,81 @@ class Rubric extends ChangeNotifier {
         _gradingScale = GradingScale.collegeBoard(),
         _comment = "";
 
-  double get totalPoints => _categories.map((c) => c.data.weight).sum;
+  double get totalPoints => categories.map((c) => c.weight).sum;
 
   double get earnedPoints {
     double points = 0;
-    for (int i = 0; i < _categories.length; i++) {
-      int indx = getSelection(i);
+    for (int i = 0; i < categories.length; i++) {
+      int indx = -1; // getSelection(i);
       if (indx != -1) {
-        points += _categories[i].data.weight * _scores[indx]._weight * 0.01;
+        points += categories[i].weight * _scoreBins[indx].weight * 0.01;
       }
     }
     return points;
   }
 
+/*
   int getSelection(int categoryIndex) {
-    if (_categories[categoryIndex].selected != null) {
-      return _scores.indexWhere(
-          (score) => score.id == _categories[categoryIndex].selected);
+    if (categories[categoryIndex].selected != null) {
+      return _scoreBins.indexWhere(
+          (score) => score.id == categories[categoryIndex].selected);
     }
     return -1;
   }
+*/
 
+/*
   void makeSelection(int categoryIndex, int rowIndex) {
-    _categories[categoryIndex].selected = _scores[rowIndex].id;
+    categories[categoryIndex].selected = _scoreBins[rowIndex].id;
     notifyListeners();
   }
+*/
 
+/*
   void cancelSelection(int categoryIndex) {
-    _categories[categoryIndex].selected = null;
+    categories[categoryIndex].selected = null;
     notifyListeners();
   }
-
-  String get assignmentName => _assignmentName;
+*/
 
   void setAssignmentName(String value) {
-    _assignmentName = value;
+    assignmentName = value;
     notifyListeners();
   }
 
-  List<double> get scores => _scores.map((score) => score.weight).toList();
+  List<double> get scores => _scoreBins.map((score) => score.weight).toList();
 
-  double getScore(int index) => _scores[index].weight;
+  double getScore(int index) => _scoreBins[index].weight;
 
   void updateScore(int index, double newWeight) {
-    _scores = [..._scores];
-    _scores[index].update(newWeight);
+    _scoreBins = [..._scoreBins];
+    _scoreBins[index].weight = newWeight;
     notifyListeners();
   }
 
-  List<Category> get categories =>
-      _categories.map((category) => category.data).toList();
-
-  Category getCategory(int index) => _categories[index].data;
+  Category getCategory(int index) => categories[index];
 
   void updateCategory(int index, String newLabel, double newWeight) {
-    _categories = [..._categories];
-    _categories[index].update(newLabel, newWeight);
+    categories = [...categories];
+    categories[index].label = newLabel;
+    categories[index].weight = newWeight;
     notifyListeners();
   }
 
   void addCategory(String label, double weight) {
-    _categories.add(CategoryContainer(label: label, weight: weight));
+    categories.add(Category(label: label, weight: weight));
     notifyListeners();
   }
 
   void removeCategory(int index) {
-    _categories.removeAt(index);
+    categories.removeAt(index);
     notifyListeners();
   }
 
   bool isCategoryLabelUsed(int index, String label) {
     bool retval = false;
-    for (int i = 0; i < _categories.length; i++) {
-      if (_categories[i].data.label == label && i != index) {
+    for (int i = 0; i < categories.length; i++) {
+      if (categories[i].label == label && i != index) {
         retval = true;
         break;
       }
@@ -197,58 +199,15 @@ class Rubric extends ChangeNotifier {
   }
 }
 
-class ScoreContainer {
-  UniqueKey id;
-  double _weight;
+class SemanticValue {
+  double weight;
 
-  ScoreContainer({required double weight})
-      : _weight = weight,
-        id = UniqueKey();
-
-  double get weight => _weight;
-
-  void update(double newWeight) {
-    _weight = newWeight;
-  }
+  SemanticValue({required this.weight});
 }
 
-class CategoryContainer {
-  Category _data;
-  UniqueKey id;
-  UniqueKey? selected;
+class Category extends SemanticValue {
+  String label;
 
-  CategoryContainer({required String label, required double weight})
-      : id = UniqueKey(),
-        _data = Category(label, weight);
-
-  Category get data => _data;
-
-  void update(String newLabel, double newWeight) {
-    _data = Category(newLabel, newWeight);
-  }
-
-  void select(UniqueKey selectedId) {
-    selected = selectedId;
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (other is CategoryContainer) {
-      return other.data.label == _data.label &&
-          other.data.weight == _data.weight;
-    }
-    return false;
-  }
-
-  @override
-  int get hashCode {
-    return "${_data.label}_${_data.weight}".hashCode;
-  }
-}
-
-class Category extends Tuple2<String, double> {
-  Category(String label, double weight) : super(label, weight);
-
-  String get label => item1;
-  double get weight => item2;
+  Category({required this.label, required double weight})
+      : super(weight: weight);
 }
