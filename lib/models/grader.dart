@@ -5,14 +5,14 @@ import 'package:flapp/score_selection_paradigm.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class GraderState extends ChangeNotifier {
+class Grader extends ChangeNotifier {
   Rubric? _currentRubric;
   List<Rubric> _savedRubrics;
   GradingScale _gradingScale;
   ScoreSelectionParadigm _scoreSelectionParadigm;
   ThemeData _themeData;
 
-  GraderState(
+  Grader(
     this._currentRubric,
     this._savedRubrics,
     this._gradingScale,
@@ -20,7 +20,7 @@ class GraderState extends ChangeNotifier {
     this._themeData,
   );
 
-  GraderState.init()
+  Grader.init()
       : _savedRubrics = [Rubric.example()],
         _gradingScale = GradingScale.collegeBoard(),
         _scoreSelectionParadigm = ScoreSelectionParadigm.bin,
