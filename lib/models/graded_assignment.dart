@@ -2,22 +2,26 @@ import 'dart:collection';
 import 'dart:math';
 import 'package:flapp/grading_scale.dart';
 import 'package:flapp/models/rubric.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:tuple/tuple.dart';
 
-class GradedAssignment {
+class GradedAssignment extends ChangeNotifier {
   final HashMap<Category, SemanticValue> _scoreSelections;
-  Rubric _rubric;
   int daysLate;
+  late Rubric _rubric;
   String? comment;
   String? name;
 
   GradedAssignment(
     this._scoreSelections,
-    this._rubric,
     this.daysLate,
     this.comment,
     this.name,
   );
+
+  GradedAssignment.empty()
+      : _scoreSelections = HashMap<Category, SemanticValue>(),
+        daysLate = 0;
 
   set rubric(Rubric newRubric) {
     _rubric = newRubric;

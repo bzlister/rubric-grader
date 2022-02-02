@@ -1,32 +1,26 @@
 import 'dart:math';
 import 'package:collection/collection.dart';
-import 'package:flapp/grading_scale.dart';
-import 'package:tuple/tuple.dart';
 import 'package:flutter/cupertino.dart';
 
 class Rubric extends ChangeNotifier {
-  String assignmentName;
+  String _assignmentName;
   List<SemanticValue> _scoreBins;
   List<Category> categories;
   String _latePolicy;
-  int _daysLate;
   double _latePercentagePerDay;
-  final GradingScale _gradingScale;
   String _comment;
 
   Rubric(
-    this.assignmentName,
+    this._assignmentName,
     this._scoreBins,
     this.categories,
     this._latePolicy,
-    this._daysLate,
     this._latePercentagePerDay,
-    this._gradingScale,
     this._comment,
   );
 
   Rubric.empty()
-      : assignmentName = "Assignment 1",
+      : _assignmentName = "Assignment 1",
         _scoreBins = [
           SemanticValue(weight: 100),
           SemanticValue(weight: 85),
@@ -36,13 +30,11 @@ class Rubric extends ChangeNotifier {
         ],
         categories = [],
         _latePolicy = "total",
-        _daysLate = 0,
         _latePercentagePerDay = 20,
-        _gradingScale = GradingScale.collegeBoard(),
         _comment = "";
 
   Rubric.example()
-      : assignmentName = "Assignment 1",
+      : _assignmentName = "Assignment 1",
         _scoreBins = [
           SemanticValue(weight: 100),
           SemanticValue(weight: 85),
@@ -58,13 +50,12 @@ class Rubric extends ChangeNotifier {
           Category(label: "Correctness", weight: 10)
         ],
         _latePolicy = "total",
-        _daysLate = 0,
         _latePercentagePerDay = 20,
-        _gradingScale = GradingScale.collegeBoard(),
         _comment = "";
 
   double get totalPoints => categories.map((c) => c.weight).sum;
 
+/*
   double get earnedPoints {
     double points = 0;
     for (int i = 0; i < categories.length; i++) {
@@ -75,6 +66,7 @@ class Rubric extends ChangeNotifier {
     }
     return points;
   }
+*/
 
 /*
   int getSelection(int categoryIndex) {
@@ -100,8 +92,10 @@ class Rubric extends ChangeNotifier {
   }
 */
 
+  String get assignmentName => _assignmentName;
+
   void setAssignmentName(String value) {
-    assignmentName = value;
+    _assignmentName = value;
     notifyListeners();
   }
 
@@ -152,14 +146,18 @@ class Rubric extends ChangeNotifier {
     notifyListeners();
   }
 
+/*
   int get daysLate => _daysLate;
+*/
 
   int maxDaysLate() => (100.0 / latePercentagePerDay).ceil();
 
+/*
   set daysLate(int numDays) {
     _daysLate = numDays;
     notifyListeners();
   }
+*/
 
   double get latePercentagePerDay => _latePercentagePerDay;
 
@@ -168,6 +166,7 @@ class Rubric extends ChangeNotifier {
     notifyListeners();
   }
 
+/*
   double get latePenalty {
     double percentageOff = daysLate * latePercentagePerDay * 0.01;
     return min(
@@ -175,7 +174,9 @@ class Rubric extends ChangeNotifier {
       earnedPoints,
     );
   }
+*/
 
+/*
   Tuple2<String, double> calcGrade() {
     if (totalPoints == 0) {
       return const Tuple2("", 0);
@@ -190,6 +191,17 @@ class Rubric extends ChangeNotifier {
     }
     return Tuple2(label, finalScore);
   }
+*/
+
+/*
+  double calcGrade() {
+    if (totalPoints == 0) {
+      return 0;
+    }
+    double finalScore = (earnedPoints - latePenalty) / totalPoints * 100;
+    return finalScore;
+  }
+*/
 
   String get comment => _comment;
 

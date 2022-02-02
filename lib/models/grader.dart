@@ -6,14 +6,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Grader extends ChangeNotifier {
-  Rubric? _currentRubric;
+  Rubric? currentRubric;
   List<Rubric> _savedRubrics;
   GradingScale _gradingScale;
   ScoreSelectionParadigm _scoreSelectionParadigm;
   ThemeData _themeData;
 
   Grader(
-    this._currentRubric,
+    this.currentRubric,
     this._savedRubrics,
     this._gradingScale,
     this._scoreSelectionParadigm,

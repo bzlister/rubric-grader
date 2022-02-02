@@ -1,3 +1,7 @@
+import 'dart:js';
+
+import 'package:flapp/models/graded_assignment.dart';
+import 'package:flapp/models/grader.dart';
 import 'package:flapp/models/rubric.dart';
 import 'package:flapp/routes/files/file_explorer.dart';
 import 'package:flapp/routes/options/options.dart';
@@ -6,8 +10,32 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  runApp(ChangeNotifierProvider(
-    create: (context) => Rubric.example(),
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (context) => Grader.init()),
+      ChangeNotifierProxyProvider<Grader, Rubric>(
+        create: (context) => Rubric.empty(),
+        update: (context, grader, rubric) {
+          if (grader.currentRubric != null) {
+            return grader.currentRubric!;
+          } else if (rubric != null) {
+            return rubric;
+          }
+          throw Exception(
+              "error in rubric provider. ${grader.currentRubric == null} ${rubric == null}");
+        },
+      ),
+      ChangeNotifierProxyProvider<Rubric, GradedAssignment>(
+        create: (context) => GradedAssignment.empty(),
+        update: (context, rubric, gradedAssignment) {
+          if (gradedAssignment != null) {
+            return gradedAssignment..rubric = rubric;
+          }
+          throw Exception(
+              "error in graded assignment provider. ${gradedAssignment == null}");
+        },
+      )
+    ],
     child: const MyApp(),
   ));
 }
