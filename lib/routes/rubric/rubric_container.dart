@@ -96,24 +96,20 @@ class RubricContainer extends StatelessWidget {
             SliverFillRemaining(
               hasScrollBody: false,
               child: IntrinsicHeight(
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    const Spacer(),
-                    Selector<Rubric, bool>(
-                      builder: (context, canShowSummary, child) =>
-                          canShowSummary
-                              ? const Padding(
-                                  padding: EdgeInsets.only(bottom: 20),
-                                  child: Summary(),
-                                )
-                              : const Center(
-                                  child: Text(
-                                      "Tap the '+' button to add a category to your rubric"),
-                                ),
-                      selector: (context, rubric) => rubric.totalPoints > 0,
-                    ),
-                  ],
+                child: Selector<Rubric, bool>(
+                  builder: (context, canShowSummary, child) => canShowSummary
+                      ? Column(mainAxisSize: MainAxisSize.max, children: const [
+                          Spacer(),
+                          Padding(
+                            padding: EdgeInsets.only(bottom: 20),
+                            child: Summary(),
+                          ),
+                        ])
+                      : const Center(
+                          child: Text(
+                              "Tap the '+' button to add a category to your rubric"),
+                        ),
+                  selector: (context, rubric) => rubric.totalPoints > 0,
                 ),
               ),
             ),

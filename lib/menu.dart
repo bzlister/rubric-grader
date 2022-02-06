@@ -1,4 +1,7 @@
+import 'package:flapp/models/grader.dart';
+import 'package:flapp/models/rubric.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Menu extends StatelessWidget {
   const Menu({Key? key}) : super(key: key);
@@ -21,23 +24,41 @@ class Menu extends StatelessWidget {
               leading: const Icon(Icons.new_label),
               title: const Text("New"),
               onTap: () {
-                Navigator.pushNamed(context, '/rubric');
+                Navigator.pop(context);
+                if (ModalRoute.of(context)?.settings.name != "/rubric") {
+                  Navigator.pushNamed(context, '/rubric');
+                }
                 showDialog(
                     context: context,
                     builder: (BuildContext context) => AlertDialog(
-                          content: Text(
-                            "Save rubric 'Assignment 1'?",
+                          content: Selector<Rubric, String>(
+                            builder: (context, assignmentName, child) => Text(
+                              "Save rubric '$assignmentName'?",
+                            ),
+                            selector: (context, rubric) =>
+                                rubric.assignmentName,
                           ),
                           actions: [
                             TextButton(
                               onPressed: () {
-                                Navigator.pushNamed(context, 'files/save');
+                                Navigator.pop(context);
+                                context
+                                    .read<Grader>()
+                                    .saveRubric(context.read<Rubric>());
+                                context.read<Grader>().currentRubric =
+                                    Rubric.empty(context
+                                        .read<Grader>()
+                                        .defaultAssignmentName);
                               },
                               child: const Text('Yes'),
                             ),
                             TextButton(
                               onPressed: () {
-                                Navigator.pushNamed(context, '/rubric');
+                                Navigator.pop(context);
+                                context.read<Grader>().currentRubric =
+                                    Rubric.empty(context
+                                        .read<Grader>()
+                                        .defaultAssignmentName);
                               },
                               child: const Text('No'),
                             ),
@@ -55,21 +76,30 @@ class Menu extends StatelessWidget {
               leading: const Icon(Icons.folder_open),
               title: const Text("Open"),
               onTap: () {
-                Navigator.pushNamed(context, '/files/open');
+                Navigator.pop(context);
+                if (ModalRoute.of(context)?.settings.name != "/files/open") {
+                  Navigator.pushNamed(context, '/files/open');
+                }
               },
             ),
             ListTile(
               leading: const Icon(Icons.save),
               title: const Text("Save"),
               onTap: () {
-                Navigator.pushNamed(context, '/files/save');
+                Navigator.pop(context);
+                if (ModalRoute.of(context)?.settings.name != "/files/save") {
+                  Navigator.pushNamed(context, '/files/save');
+                }
               },
             ),
             ListTile(
               leading: const Icon(Icons.import_export),
               title: const Text("Export"),
               onTap: () {
-                Navigator.pushNamed(context, '/files/export');
+                Navigator.pop(context);
+                if (ModalRoute.of(context)?.settings.name != "/files/export") {
+                  Navigator.pushNamed(context, '/files/export');
+                }
               },
             ),
             const Divider(),
@@ -77,7 +107,10 @@ class Menu extends StatelessWidget {
               leading: const Icon(Icons.settings),
               title: const Text("Options"),
               onTap: () {
-                Navigator.pushNamed(context, '/options');
+                Navigator.pop(context);
+                if (ModalRoute.of(context)?.settings.name != "/options") {
+                  Navigator.pushNamed(context, '/options');
+                }
               },
             ),
           ],

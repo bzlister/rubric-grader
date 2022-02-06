@@ -25,7 +25,7 @@ class CategoriesSelector extends StatefulWidget {
   const CategoriesSelector.add({Key? key})
       : index = -1,
         initLabel = "",
-        initWeight = 0,
+        initWeight = 1,
         autoFocus = true,
         textInputAction = TextInputAction.next,
         saveText = "Add",
@@ -111,17 +111,31 @@ class _CategoriesSelectorState extends State<CategoriesSelector> {
               ),
             ),
             SpinBox(
-                min: 0,
-                max: 1000,
-                step: 1,
-                spacing: 0,
-                direction: Axis.horizontal,
-                value: _weight,
-                onChanged: (value) {
-                  setState(() {
-                    _weight = value;
-                  });
-                })
+              min: 1,
+              max: 1000,
+              step: 1,
+              spacing: 0,
+              direction: Axis.horizontal,
+              value: _weight,
+              onChanged: (value) {
+                setState(() {
+                  _weight = value;
+                });
+              },
+              validator: (value) {
+                if (value != null) {
+                  try {
+                    double weight = double.parse(value);
+                    if (weight > 1000) {
+                      return "Value too large!";
+                    }
+                    if (weight < 1) {
+                      return 'Value too small!';
+                    }
+                  } catch (numberFormatException) {}
+                }
+              },
+            ),
           ],
         ),
         actions: [

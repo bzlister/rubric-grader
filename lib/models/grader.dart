@@ -31,6 +31,23 @@ class Grader extends ChangeNotifier {
     notifyListeners();
   }
 
+  void saveRubric(Rubric rubric) {
+    int indx = -1;
+    for (var i = 0; i < _savedRubrics.length; i++) {
+      if (_savedRubrics[i].xid == rubric.xid) {
+        indx = i;
+        break;
+      }
+    }
+
+    if (indx != -1) {
+      _savedRubrics[indx] = rubric;
+    } else {
+      _savedRubrics.add(rubric);
+    }
+    notifyListeners();
+  }
+
   Rubric? get currentRubric => _currentRubric;
 
   GradingScale get gradingScale => _gradingScale;
