@@ -127,12 +127,14 @@ class _CategoriesSelectorState extends State<CategoriesSelector> {
                   try {
                     double weight = double.parse(value);
                     if (weight > 1000) {
-                      return "Value too large!";
+                      return "Value must be 1000 or less";
                     }
                     if (weight < 1) {
-                      return 'Value too small!';
+                      return 'Value must be at least 1';
                     }
-                  } catch (numberFormatException) {}
+                  } catch (numberFormatException) {
+                    return "";
+                  }
                 }
               },
             ),
