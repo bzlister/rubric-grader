@@ -16,7 +16,7 @@ void main() {
             Rubric.empty(context.read<Grader>().defaultAssignmentName),
         update: (context, grader, rubric) {
           if (grader.currentRubric != null &&
-              grader.currentRubric!.xid != rubric!.xid) {
+              grader.currentRubric!.xid != rubric?.xid) {
             return grader.currentRubric!;
           } else if (rubric != null) {
             return rubric;
@@ -26,14 +26,16 @@ void main() {
         },
       ),
       ChangeNotifierProxyProvider<Rubric, GradedAssignment>(
-        create: (context) => GradedAssignment.empty(context.read<Rubric>()),
+        create: (context) => GradedAssignment.empty(),
         update: (context, rubric, gradedAssignment) {
-          print("updating graded assignment");
-          if (gradedAssignment != null) {
-            return gradedAssignment..rubric = rubric;
+          if (rubric.currentGradedAssignment != null &&
+              rubric.currentGradedAssignment!.xid != gradedAssignment?.xid) {
+            return rubric.currentGradedAssignment!;
+          } else if (gradedAssignment != null) {
+            return gradedAssignment;
           }
           throw Exception(
-              "error in graded assignment provider. ${gradedAssignment == null}");
+              "error in graded assignment provider. ${rubric.currentGradedAssignment == null} ${gradedAssignment == null}");
         },
       )
     ],

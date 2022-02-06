@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:flapp/models/graded_assignment.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:xid/xid.dart';
 
@@ -8,6 +9,8 @@ class Rubric extends ChangeNotifier {
   List<Category> _categories;
   String _latePolicy;
   double _latePercentagePerDay;
+  List<GradedAssignment> _gradedAssignments;
+  GradedAssignment? _currentGradedAssignment;
   Xid xid;
 
   Rubric(
@@ -16,6 +19,8 @@ class Rubric extends ChangeNotifier {
     this._categories,
     this._latePolicy,
     this._latePercentagePerDay,
+    this._gradedAssignments,
+    this._currentGradedAssignment,
   ) : xid = Xid();
 
   Rubric.empty(this._assignmentName)
@@ -29,6 +34,7 @@ class Rubric extends ChangeNotifier {
         _categories = [],
         _latePolicy = "total",
         _latePercentagePerDay = 20,
+        _gradedAssignments = [],
         xid = Xid();
 
   Rubric.example()
@@ -49,7 +55,15 @@ class Rubric extends ChangeNotifier {
         ],
         _latePolicy = "total",
         _latePercentagePerDay = 20,
+        _gradedAssignments = [],
         xid = Xid();
+
+  set currentGradedAssignment(GradedAssignment? gradedAssignment) {
+    _currentGradedAssignment = gradedAssignment;
+    notifyListeners();
+  }
+
+  GradedAssignment? get currentGradedAssignment => _currentGradedAssignment;
 
   String get assignmentName => _assignmentName;
 
@@ -66,6 +80,15 @@ class Rubric extends ChangeNotifier {
 
   double? getScoreByXid(Xid xid) =>
       _scoreBins.singleWhereOrNull((scoreBin) => scoreBin.xid == xid)?.weight;
+
+  int? getScoreIndexByXid(Xid xid) {
+    for (var i = 0; i < _scoreBins.length; i++) {
+      if (_scoreBins[i].xid == xid) {
+        return i;
+      }
+    }
+    return null;
+  }
 
   void updateScore(int index, double newWeight) {
     _scoreBins = [..._scoreBins];

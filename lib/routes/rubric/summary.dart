@@ -1,11 +1,13 @@
 import 'package:flapp/grading_scale.dart';
 import 'package:flapp/models/graded_assignment.dart';
 import 'package:flapp/models/grader.dart';
+import 'package:flapp/models/models_util.dart';
 import 'package:flapp/routes/rubric/late_penalty_selector.dart';
 import 'package:flapp/models/rubric.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
+import 'package:xid/xid.dart';
 
 class Summary extends StatelessWidget {
   final double width = 110;
@@ -30,13 +32,13 @@ class Summary extends StatelessWidget {
               const Spacer(),
               Align(
                 alignment: Alignment.bottomRight,
-                child: Selector<GradedAssignment, double>(
+                child: Selector2<Rubric, GradedAssignment, double>(
                   builder: (context, earned, child) => Text(
                     earned.toStringAsFixed(1),
                     style: const TextStyle(fontSize: 16),
                   ),
-                  selector: (context, gradedAssignment) =>
-                      gradedAssignment.earnedPoints,
+                  selector: (context, rubric, gradedAssignment) =>
+                      ModelsUtil.calcEarnedPoints(rubric, gradedAssignment),
                 ),
               ),
               SizedBox(
@@ -60,7 +62,7 @@ class Summary extends StatelessWidget {
               Align(
                 alignment: Alignment.bottomRight,
                 child: TextButton(
-                  child: Selector<GradedAssignment, String>(
+                  child: Selector2<Rubric, GradedAssignment, String>(
                     builder: (context, latePenaltyText, child) => Text(
                       latePenaltyText,
                       style: const TextStyle(
@@ -69,8 +71,8 @@ class Summary extends StatelessWidget {
                         fontSize: 16,
                       ),
                     ),
-                    selector: (context, gradedAssignment) =>
-                        '- ${gradedAssignment.latePenalty.toStringAsFixed(1)}',
+                    selector: (context, rubric, gradedAssignment) =>
+                        '- ${ModelsUtil.calcLatePenalty(rubric, gradedAssignment).toStringAsFixed(1)}',
                   ),
                   style: TextButton.styleFrom(
                     alignment: Alignment.centerRight,
@@ -101,14 +103,18 @@ class Summary extends StatelessWidget {
               const Spacer(),
               Align(
                 alignment: Alignment.bottomRight,
-                child: Selector2<Grader, GradedAssignment, String>(
-                  builder: (context, letterGradeText, child) => Text(
-                    letterGradeText,
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  selector: (context, grader, gradedAssignment) {
+                child: Selector3<Grader, Rubric, GradedAssignment, String>(
+                  builder: (context, letterGradeText, child) {
+                    print("Rebuilding final score");
+                    return Text(
+                      letterGradeText,
+                      style: const TextStyle(fontSize: 16),
+                    );
+                  },
+                  selector: (context, grader, rubric, gradedAssignment) {
+                    print("Recalculating final score");
                     Tuple2<String, double> finalScore =
-                        gradedAssignment.calcGrade(grader.gradingScale);
+                        ModelsUtil.calcGrade(grader, rubric, gradedAssignment);
                     return '${finalScore.item1} (${finalScore.item2.toStringAsFixed(1)}%)';
                   },
                 ),

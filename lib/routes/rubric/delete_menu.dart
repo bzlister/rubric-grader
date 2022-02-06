@@ -1,3 +1,4 @@
+import 'package:flapp/models/graded_assignment.dart';
 import 'package:flapp/models/rubric.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +17,10 @@ class DeleteMenu extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () {
+              context
+                  .read<GradedAssignment>()
+                  .selections
+                  .remove(context.read<Rubric>().categories[index].xid);
               context.read<Rubric>().removeCategory(index);
               Navigator.of(context).pop();
             },
