@@ -1,5 +1,3 @@
-import 'dart:js';
-
 import 'package:flapp/models/graded_assignment.dart';
 import 'package:flapp/models/grader.dart';
 import 'package:flapp/models/rubric.dart';
@@ -14,9 +12,11 @@ void main() {
     providers: [
       ChangeNotifierProvider(create: (context) => Grader.init()),
       ChangeNotifierProxyProvider<Grader, Rubric>(
-        create: (context) => Rubric.empty(),
+        create: (context) =>
+            Rubric.empty(context.read<Grader>().defaultAssignmentName),
         update: (context, grader, rubric) {
-          if (grader.currentRubric != null) {
+          if (grader.currentRubric != null &&
+              grader.currentRubric!.xid != rubric!.xid) {
             return grader.currentRubric!;
           } else if (rubric != null) {
             return rubric;
@@ -26,8 +26,9 @@ void main() {
         },
       ),
       ChangeNotifierProxyProvider<Rubric, GradedAssignment>(
-        create: (context) => GradedAssignment.empty(),
+        create: (context) => GradedAssignment.empty(context.read<Rubric>()),
         update: (context, rubric, gradedAssignment) {
+          print("updating graded assignment");
           if (gradedAssignment != null) {
             return gradedAssignment..rubric = rubric;
           }

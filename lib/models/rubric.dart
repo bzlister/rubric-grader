@@ -1,57 +1,55 @@
-import 'dart:math';
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:xid/xid.dart';
 
 class Rubric extends ChangeNotifier {
   String _assignmentName;
-  List<SemanticValue> _scoreBins;
-  List<Category> categories;
+  List<ScoreBin> _scoreBins;
+  List<Category> _categories;
   String _latePolicy;
   double _latePercentagePerDay;
-  String _comment;
+  Xid xid;
 
   Rubric(
     this._assignmentName,
     this._scoreBins,
-    this.categories,
+    this._categories,
     this._latePolicy,
     this._latePercentagePerDay,
-    this._comment,
-  );
+  ) : xid = Xid();
 
-  Rubric.empty()
-      : _assignmentName = "Assignment 1",
-        _scoreBins = [
-          SemanticValue(weight: 100),
-          SemanticValue(weight: 85),
-          SemanticValue(weight: 75),
-          SemanticValue(weight: 70),
-          SemanticValue(weight: 60),
+  Rubric.empty(this._assignmentName)
+      : _scoreBins = [
+          ScoreBin(100),
+          ScoreBin(90),
+          ScoreBin(80),
+          ScoreBin(70),
+          ScoreBin(60),
         ],
-        categories = [],
+        _categories = [],
         _latePolicy = "total",
         _latePercentagePerDay = 20,
-        _comment = "";
+        xid = Xid();
 
   Rubric.example()
       : _assignmentName = "Assignment 1",
         _scoreBins = [
-          SemanticValue(weight: 100),
-          SemanticValue(weight: 85),
-          SemanticValue(weight: 75),
-          SemanticValue(weight: 70),
-          SemanticValue(weight: 60),
+          ScoreBin(100),
+          ScoreBin(90),
+          ScoreBin(80),
+          ScoreBin(70),
+          ScoreBin(60),
         ],
-        categories = [
-          Category(label: "Audience & Genre", weight: 60),
-          Category(label: "Thesis & Support", weight: 60),
-          Category(label: "Reasoning", weight: 40),
-          Category(label: "Organization & Style", weight: 30),
-          Category(label: "Correctness", weight: 10)
+        _categories = [
+          Category(60, "Audience & Genre"),
+          Category(60, "Thesis & Support"),
+          Category(40, "Reasoning"),
+          Category(30, "Organization & Style"),
+          Category(10, "Correctness"),
         ],
         _latePolicy = "total",
         _latePercentagePerDay = 20,
-        _comment = "";
+        xid = Xid();
 
   String get assignmentName => _assignmentName;
 
@@ -60,41 +58,49 @@ class Rubric extends ChangeNotifier {
     notifyListeners();
   }
 
-  double get totalPoints => categories.map((c) => c.weight).sum;
+  double get totalPoints => _categories.map((c) => c.weight).sum;
 
-  List<SemanticValue> get scoreBins => _scoreBins;
+  List<ScoreBin> get scoreBins => _scoreBins;
 
   double getScore(int index) => _scoreBins[index].weight;
 
+  double? getScoreByXid(Xid xid) =>
+      _scoreBins.singleWhereOrNull((scoreBin) => scoreBin.xid == xid)?.weight;
+
   void updateScore(int index, double newWeight) {
     _scoreBins = [..._scoreBins];
-    _scoreBins[index].weight = newWeight;
+    _scoreBins[index] = ScoreBin.update(newWeight, _scoreBins[index].xid);
     notifyListeners();
   }
 
-  Category getCategory(int index) => categories[index];
+  List<Category> get categories => _categories;
+
+  Category getCategory(int index) => _categories[index];
+
+  Category? getCategoryByXid(Xid xid) =>
+      _categories.singleWhereOrNull((category) => category.xid == xid);
 
   void updateCategory(int index, String newLabel, double newWeight) {
-    categories = [...categories];
-    categories[index].label = newLabel;
-    categories[index].weight = newWeight;
+    _categories = [..._categories];
+    _categories[index] =
+        Category.update(newWeight, newLabel, _categories[index].xid);
     notifyListeners();
   }
 
   void addCategory(String label, double weight) {
-    categories.add(Category(label: label, weight: weight));
+    _categories.add(Category(weight, label));
     notifyListeners();
   }
 
   void removeCategory(int index) {
-    categories.removeAt(index);
+    _categories.removeAt(index);
     notifyListeners();
   }
 
   bool isCategoryLabelUsed(int index, String label) {
     bool retval = false;
-    for (int i = 0; i < categories.length; i++) {
-      if (categories[i].label == label && i != index) {
+    for (int i = 0; i < _categories.length; i++) {
+      if (_categories[i].label == label && i != index) {
         retval = true;
         break;
       }
@@ -119,15 +125,24 @@ class Rubric extends ChangeNotifier {
   }
 }
 
-class SemanticValue {
-  double weight;
+class ScoreBin {
+  final double _weight;
+  final Xid xid;
 
-  SemanticValue({required this.weight});
+  ScoreBin(this._weight) : xid = Xid();
+
+  ScoreBin.update(this._weight, this.xid);
+
+  double get weight => _weight;
 }
 
-class Category extends SemanticValue {
-  String label;
+class Category extends ScoreBin {
+  final String _label;
 
-  Category({required this.label, required double weight})
-      : super(weight: weight);
+  Category(double _weight, this._label) : super(_weight);
+
+  Category.update(double _weight, this._label, Xid xid)
+      : super.update(_weight, xid);
+
+  String get label => _label;
 }

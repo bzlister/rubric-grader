@@ -21,7 +21,7 @@ class Grader extends ChangeNotifier {
   );
 
   Grader.init()
-      : _savedRubrics = [Rubric.example()],
+      : _savedRubrics = [],
         _gradingScale = GradingScale.collegeBoard(),
         _scoreSelectionParadigm = ScoreSelectionParadigm.bin,
         _themeData = ThemeData.dark();
@@ -31,5 +31,29 @@ class Grader extends ChangeNotifier {
   set gradingScale(GradingScale scale) {
     _gradingScale = scale;
     notifyListeners();
+  }
+
+  get defaultAssignmentName {
+    try {
+      List<String> matches = [];
+      for (var i = 0; i < _savedRubrics.length; i++) {
+        if (RegExp(r"^Assignment \d+$")
+            .hasMatch(_savedRubrics[i].assignmentName)) {
+          matches.add(_savedRubrics[i].assignmentName);
+        }
+      }
+
+      int greatest = 0;
+      for (var j = 0; j < matches.length; j++) {
+        int defaultAssignmentNum =
+            int.parse(matches[j].substring(matches[j].indexOf(" ")));
+        if (defaultAssignmentNum > greatest) {
+          greatest = defaultAssignmentNum;
+        }
+      }
+      return "Assignment ${greatest + 1}";
+    } catch (exception) {
+      return "Assignment 1";
+    }
   }
 }

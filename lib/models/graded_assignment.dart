@@ -4,27 +4,32 @@ import 'package:flapp/grading_scale.dart';
 import 'package:flapp/models/rubric.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:tuple/tuple.dart';
+import 'package:xid/xid.dart';
 
 class GradedAssignment extends ChangeNotifier {
-  final HashMap<Category, SemanticValue> _scoreSelections;
+  final HashMap<Xid, Xid> _scoreSelections;
   int _daysLate;
-  late Rubric _rubric;
+  Rubric _rubric;
   String? _comment;
   String? _name;
+  Xid xid;
 
   GradedAssignment(
+    this._rubric,
     this._scoreSelections,
     this._daysLate,
     this._comment,
     this._name,
-  );
+  ) : xid = Xid();
 
-  GradedAssignment.empty()
-      : _scoreSelections = HashMap<Category, SemanticValue>(),
-        _daysLate = 0;
+  GradedAssignment.empty(this._rubric)
+      : _scoreSelections = HashMap<Xid, Xid>(),
+        _daysLate = 0,
+        xid = Xid();
 
   set rubric(Rubric newRubric) {
     _rubric = newRubric;
+    notifyListeners();
   }
 
   int get daysLate => _daysLate;
@@ -36,26 +41,31 @@ class GradedAssignment extends ChangeNotifier {
 
   double get earnedPoints {
     double points = 0;
-    for (MapEntry<Category, SemanticValue> entry in _scoreSelections.entries) {
-      points += entry.key.weight * entry.value.weight * 0.01;
+    for (MapEntry<Xid, Xid> entry in _scoreSelections.entries) {
+      Category? category = _rubric.getCategoryByXid(entry.key);
+      double? score = _rubric.getScoreByXid(entry.value);
+      if (category != null && score != null) {
+        points += category.weight * score * 0.01;
+      }
     }
     return points;
   }
 
-  select(int rowNum, int colNum) {
-    _scoreSelections[_rubric.categories[rowNum]] = _rubric.scoreBins[colNum];
+  void select(int rowNum, int colNum) {
+    _scoreSelections[_rubric.categories[rowNum].xid] =
+        _rubric.scoreBins[colNum].xid;
     notifyListeners();
   }
 
-  deselect(int rowNum) {
-    _scoreSelections.remove(_rubric.categories[rowNum]);
+  void deselect(int rowNum) {
+    _scoreSelections.remove(_rubric.categories[rowNum].xid);
     notifyListeners();
   }
 
-  getSelection(int rowNum) {
-    SemanticValue? selected = _scoreSelections[_rubric.categories[rowNum]];
+  int getSelection(int rowNum) {
+    Xid? selected = _scoreSelections[_rubric.categories[rowNum].xid];
     if (selected != null) {
-      return _rubric.scoreBins.indexWhere((val) => val == selected);
+      return _rubric.scoreBins.indexWhere((val) => val.xid == selected);
     }
     return -1;
   }

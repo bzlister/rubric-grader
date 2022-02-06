@@ -38,6 +38,7 @@ dependencies:
   provider: ^6.0.1
   fl_chart: ^0.40.6
   tuple: ^2.0.0
+  xid: ^1.0.7
 
 dev_dependencies:
   flutter_test:

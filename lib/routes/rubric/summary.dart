@@ -109,7 +109,7 @@ class Summary extends StatelessWidget {
                   selector: (context, grader, gradedAssignment) {
                     Tuple2<String, double> finalScore =
                         gradedAssignment.calcGrade(grader.gradingScale);
-                    return '${finalScore.item1} (${finalScore.item2.toStringAsFixed(1)})';
+                    return '${finalScore.item1} (${finalScore.item2.toStringAsFixed(1)}%)';
                   },
                 ),
               ),
