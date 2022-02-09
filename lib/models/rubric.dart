@@ -65,6 +65,8 @@ class Rubric extends ChangeNotifier {
 
   GradedAssignment? get currentGradedAssignment => _currentGradedAssignment;
 
+  List<GradedAssignment> get gradedAssignments => _gradedAssignments;
+
   String get assignmentName => _assignmentName;
 
   set assignmentName(String name) {

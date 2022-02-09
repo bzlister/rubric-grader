@@ -105,9 +105,13 @@ class RubricContainer extends StatelessWidget {
                             child: Summary(),
                           ),
                         ])
-                      : const Center(
-                          child: Text(
-                              "Tap the '+' button to add a category to your rubric"),
+                      : Center(
+                          child: Selector<Rubric, String>(
+                            builder: (context, assignmentName, child) => Text(
+                                "Tap the '+' button to add a category to $assignmentName"),
+                            selector: (context, rubric) =>
+                                rubric.assignmentName,
+                          ),
                         ),
                   selector: (context, rubric) => rubric.totalPoints > 0,
                 ),

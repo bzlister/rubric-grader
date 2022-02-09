@@ -72,33 +72,14 @@ class Menu extends StatelessWidget {
                         ));
               },
             ),
+            const Divider(),
             ListTile(
-              leading: const Icon(Icons.folder_open),
-              title: const Text("Open"),
+              leading: const Icon(Icons.home),
+              title: const Text("Home"),
               onTap: () {
                 Navigator.pop(context);
-                if (ModalRoute.of(context)?.settings.name != "/files/open") {
-                  Navigator.pushNamed(context, '/files/open');
-                }
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.save),
-              title: const Text("Save"),
-              onTap: () {
-                Navigator.pop(context);
-                if (ModalRoute.of(context)?.settings.name != "/files/save") {
-                  Navigator.pushNamed(context, '/files/save');
-                }
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.import_export),
-              title: const Text("Export"),
-              onTap: () {
-                Navigator.pop(context);
-                if (ModalRoute.of(context)?.settings.name != "/files/export") {
-                  Navigator.pushNamed(context, '/files/export');
+                if (ModalRoute.of(context)?.settings.name != "/home") {
+                  Navigator.pushNamed(context, '/home');
                 }
               },
             ),

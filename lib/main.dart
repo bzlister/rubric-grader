@@ -2,6 +2,7 @@ import 'package:flapp/models/graded_assignment.dart';
 import 'package:flapp/models/grader.dart';
 import 'package:flapp/models/rubric.dart';
 import 'package:flapp/routes/files/file_explorer.dart';
+import 'package:flapp/routes/home/home.dart';
 import 'package:flapp/routes/options/options.dart';
 import 'package:flapp/routes/rubric/rubric_container.dart';
 import 'package:flutter/material.dart';
@@ -60,13 +61,11 @@ class MyApp extends StatelessWidget {
           selectionColor: Colors.orange,
         ),
       ),
-      initialRoute: '/rubric',
+      initialRoute: '/home',
       routes: {
         '/rubric': (context) => const RubricContainer(),
-        '/files/save': (context) => const FileExplorer.save(),
-        '/files/open': (context) => const FileExplorer.open(),
-        '/files/export': (context) => const FileExplorer.export(),
         '/options': (context) => const Options(),
+        '/home': (context) => const Home()
       },
     );
   }
