@@ -25,17 +25,20 @@ class Menu extends StatelessWidget {
               title: const Text("New"),
               onTap: () {
                 Navigator.pop(context);
+                bool wasOnRubric = true;
                 if (ModalRoute.of(context)?.settings.name != "/rubric") {
                   Navigator.pushNamed(context, '/rubric');
+                  wasOnRubric = false;
                 }
                 Rubric rubric = context.read<Rubric>();
                 Grader grader = context.read<Grader>();
+
+                String? oldState = grader.findRubricByXid(rubric.xid)?.getState();
                 print(rubric.getState());
-                print(grader.currentRubric?.getState());
-                if (rubric.getState() !=
-                    (grader.currentRubric != null
-                        ? grader.currentRubric!.getState()
-                        : "Assignment 1;100.0,90.0,80.0,70.0,60.0;;total;20.0;null")) {
+                print(oldState);
+                bool edited = rubric.getState() != (oldState ?? Rubric.empty(grader.defaultAssignmentName).getState());
+
+                if (edited) {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) => AlertDialog(
@@ -47,14 +50,14 @@ class Menu extends StatelessWidget {
                           onPressed: () {
                             Navigator.pop(context);
                             grader.saveRubric(rubric);
-                            grader.currentRubric = Rubric.empty(grader.defaultAssignmentName);
+                            rubric.reset(grader.defaultAssignmentName);
                           },
                           child: const Text('Yes'),
                         ),
                         TextButton(
                           onPressed: () {
                             Navigator.pop(context);
-                            grader.currentRubric = Rubric.empty(grader.defaultAssignmentName);
+                            rubric.reset(grader.defaultAssignmentName);
                           },
                           child: const Text('No'),
                         ),
@@ -68,7 +71,10 @@ class Menu extends StatelessWidget {
                     ),
                   );
                 } else {
-                  grader.currentRubric = Rubric.empty(grader.defaultAssignmentName);
+                  if (wasOnRubric && rubric.assignmentName == grader.defaultAssignmentName) {
+                    grader.incrementOffset();
+                  }
+                  context.read<Rubric>().reset(grader.defaultAssignmentName);
                 }
               },
             ),

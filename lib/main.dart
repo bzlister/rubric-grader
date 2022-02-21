@@ -11,32 +11,11 @@ void main() {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (context) => Grader.init()),
-      ChangeNotifierProxyProvider<Grader, Rubric>(
-        create: (context) =>
-            Rubric.empty(context.read<Grader>().defaultAssignmentName),
-        update: (context, grader, rubric) {
-          if (grader.currentRubric != null &&
-              grader.currentRubric!.xid != rubric?.xid) {
-            return grader.currentRubric!;
-          } else if (rubric != null) {
-            return rubric;
-          }
-          throw Exception(
-              "error in rubric provider. ${grader.currentRubric == null} ${rubric == null}");
-        },
+      ChangeNotifierProvider(
+        create: (context) => Rubric.empty(context.read<Grader>().defaultAssignmentName),
       ),
-      ChangeNotifierProxyProvider<Rubric, GradedAssignment>(
+      ChangeNotifierProvider(
         create: (context) => GradedAssignment.empty(),
-        update: (context, rubric, gradedAssignment) {
-          if (rubric.currentGradedAssignment != null &&
-              rubric.currentGradedAssignment!.xid != gradedAssignment?.xid) {
-            return rubric.currentGradedAssignment!;
-          } else if (gradedAssignment != null) {
-            return gradedAssignment;
-          }
-          throw Exception(
-              "error in graded assignment provider. ${rubric.currentGradedAssignment == null} ${gradedAssignment == null}");
-        },
       )
     ],
     child: const MyApp(),

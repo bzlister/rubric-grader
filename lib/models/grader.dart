@@ -7,14 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:xid/xid.dart';
 
 class Grader extends ChangeNotifier {
-  Rubric? _currentRubric;
   List<Rubric> _savedRubrics;
   GradingScale _gradingScale;
   ScoreSelectionParadigm _scoreSelectionParadigm;
   ThemeData _themeData;
+  int _assignmentNum = 1;
+  int _offset = 0;
 
   Grader(
-    this._currentRubric,
     this._savedRubrics,
     this._gradingScale,
     this._scoreSelectionParadigm,
@@ -27,13 +27,6 @@ class Grader extends ChangeNotifier {
         _scoreSelectionParadigm = ScoreSelectionParadigm.bin,
         _themeData = ThemeData.dark();
 
-  set currentRubric(Rubric? rubric) {
-    _currentRubric = rubric;
-    notifyListeners();
-  }
-
-  Rubric? get currentRubric => _currentRubric;
-
   void saveRubric(Rubric rubric) {
     int indx = -1;
     for (var i = 0; i < _savedRubrics.length; i++) {
@@ -43,11 +36,14 @@ class Grader extends ChangeNotifier {
       }
     }
 
+    Rubric copy = Rubric(rubric.assignmentName, rubric.scoreBins, rubric.categories, rubric.latePolicy,
+        rubric.latePercentagePerDay, rubric.gradedAssignments, rubric.xid);
     if (indx != -1) {
-      _savedRubrics[indx] = rubric;
+      _savedRubrics[indx] = copy;
     } else {
-      _savedRubrics.add(rubric);
+      _savedRubrics.add(copy);
     }
+    _assignmentNum = _calcDefaultAssignmentNum();
     notifyListeners();
   }
 
@@ -60,31 +56,41 @@ class Grader extends ChangeNotifier {
     notifyListeners();
   }
 
-  get defaultAssignmentName {
+  String get defaultAssignmentName => 'Assignment $_assignmentNum';
+
+  incrementOffset() {
+    _offset += 1;
+    _assignmentNum = _calcDefaultAssignmentNum();
+    notifyListeners();
+  }
+
+  int _calcDefaultAssignmentNum() {
     try {
       List<String> matches = [];
       for (var i = 0; i < _savedRubrics.length; i++) {
-        if (RegExp(r"^Assignment \d+$")
-            .hasMatch(_savedRubrics[i].assignmentName)) {
+        if (RegExp(r"^Assignment \d+$").hasMatch(_savedRubrics[i].assignmentName)) {
           matches.add(_savedRubrics[i].assignmentName);
         }
       }
 
-      int greatest = 0;
+      int greatest = _offset;
       for (var j = 0; j < matches.length; j++) {
-        int defaultAssignmentNum =
-            int.parse(matches[j].substring(matches[j].indexOf(" ")));
+        int defaultAssignmentNum = int.parse(matches[j].substring(matches[j].indexOf(" ")));
         if (defaultAssignmentNum > greatest) {
           greatest = defaultAssignmentNum;
         }
       }
-      return "Assignment ${greatest + 1}";
+      return greatest + 1;
     } catch (exception) {
-      return "Assignment 1";
+      return _assignmentNum;
     }
   }
 
-  Rubric findRubricByXid(Xid xid) {
-    return _savedRubrics.firstWhere((element) => element.xid == xid);
+  Rubric? findRubricByXid(Xid xid) {
+    try {
+      return _savedRubrics.firstWhere((element) => element.xid == xid);
+    } on StateError {
+      return null;
+    }
   }
 }

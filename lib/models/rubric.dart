@@ -12,18 +12,10 @@ class Rubric extends ChangeNotifier {
   String _latePolicy;
   double _latePercentagePerDay;
   List<GradedAssignment> _gradedAssignments;
-  GradedAssignment? _currentGradedAssignment;
   Xid xid;
 
-  Rubric(
-    this._assignmentName,
-    this._scoreBins,
-    this._categories,
-    this._latePolicy,
-    this._latePercentagePerDay,
-    this._gradedAssignments,
-    this._currentGradedAssignment,
-  ) : xid = Xid();
+  Rubric(this._assignmentName, this._scoreBins, this._categories, this._latePolicy, this._latePercentagePerDay,
+      this._gradedAssignments, this.xid);
 
   Rubric.empty(this._assignmentName)
       : _scoreBins = [
@@ -60,12 +52,17 @@ class Rubric extends ChangeNotifier {
         _gradedAssignments = [],
         xid = Xid();
 
-  set currentGradedAssignment(GradedAssignment? gradedAssignment) {
-    _currentGradedAssignment = gradedAssignment;
+  reset(String assignmentName) {
+    Rubric newRubric = Rubric.empty(assignmentName);
+    _assignmentName = newRubric.assignmentName;
+    _scoreBins = newRubric._scoreBins;
+    _categories = newRubric._categories;
+    _latePolicy = newRubric._latePolicy;
+    _latePercentagePerDay = newRubric._latePercentagePerDay;
+    _gradedAssignments = newRubric._gradedAssignments;
+    xid = newRubric.xid;
     notifyListeners();
   }
-
-  GradedAssignment? get currentGradedAssignment => _currentGradedAssignment;
 
   List<GradedAssignment> get gradedAssignments => _gradedAssignments;
 
@@ -157,7 +154,7 @@ class Rubric extends ChangeNotifier {
             .map((category) => '${category.label}:${category.weight}')
             .reduce((value, element) => '$value,$element')
         : "";
-    return '$_assignmentName;$fromScores;$fromCategories;$_latePolicy;$_latePercentagePerDay;${_currentGradedAssignment?.getState()}';
+    return '$_assignmentName;$fromScores;$fromCategories;$_latePolicy;$_latePercentagePerDay';
   }
 }
 
