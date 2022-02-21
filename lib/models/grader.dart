@@ -1,9 +1,10 @@
 import 'package:flapp/grading_scale.dart';
 import 'package:flapp/models/rubric.dart';
-import 'package:flapp/routes/options/components/theme_option.dart';
+import 'package:flapp/routes/options/theme_option.dart';
 import 'package:flapp/score_selection_paradigm.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:xid/xid.dart';
 
 class Grader extends ChangeNotifier {
   Rubric? _currentRubric;
@@ -81,5 +82,9 @@ class Grader extends ChangeNotifier {
     } catch (exception) {
       return "Assignment 1";
     }
+  }
+
+  Rubric findRubricByXid(Xid xid) {
+    return _savedRubrics.firstWhere((element) => element.xid == xid);
   }
 }

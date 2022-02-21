@@ -32,24 +32,10 @@ class GradedAssignment extends ChangeNotifier {
     notifyListeners();
   }
 
-/*
-  void select(int rowNum, int colNum) {
-    _scoreSelections[_rubric.categories[rowNum].xid] =
-        _rubric.scoreBins[colNum].xid;
-    notifyListeners();
-  }
-*/
   void select(Xid row, Xid col) {
     _scoreSelections[row] = col;
     notifyListeners();
   }
-
-/*
-  void deselect(int rowNum) {
-    _scoreSelections.remove(_rubric.categories[rowNum].xid);
-    notifyListeners();
-  }
-*/
 
   void deselect(Xid row) {
     _scoreSelections.remove(row);
@@ -60,20 +46,27 @@ class GradedAssignment extends ChangeNotifier {
 
   HashMap<Xid, Xid> get selections => _scoreSelections;
 
-/*
-  int getSelection(int rowNum) {
-    Xid? selected = _scoreSelections[_rubric.categories[rowNum].xid];
-    if (selected != null) {
-      return _rubric.scoreBins.indexWhere((val) => val.xid == selected);
-    }
-    return -1;
-  }
-*/
-
   String? get comment => _comment;
 
   set comment(String? newComment) {
     _comment = newComment;
     notifyListeners();
+  }
+
+  String? get name => _name;
+
+  set name(String? newName) {
+    _name = newName;
+    notifyListeners();
+  }
+
+  String getState() {
+    String fromSelections = _scoreSelections.isNotEmpty
+        ? _scoreSelections.entries
+            .map((entry) => '${entry.key.hashCode}:${entry.value.hashCode}')
+            .reduce((value, element) => '$value,$element')
+        : "";
+
+    return '$fromSelections;$_daysLate;$_comment;$_name';
   }
 }

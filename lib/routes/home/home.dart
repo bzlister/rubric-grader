@@ -1,6 +1,7 @@
 import 'package:flapp/menu.dart';
 import 'package:flapp/models/grader.dart';
 import 'package:flapp/models/rubric.dart';
+import 'package:flapp/routes/home/saved_rubric_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -20,31 +21,7 @@ class Home extends StatelessWidget {
             builder: (context, savedRubrics, child) => Column(
               children: List.generate(
                 savedRubrics.length,
-                (index) => Padding(
-                  padding: const EdgeInsets.all(1.0),
-                  child: Card(
-                    margin: const EdgeInsets.only(
-                        left: 4, right: 4, top: 2, bottom: 2),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Align(
-                            alignment: Alignment.bottomLeft,
-                            child: Text(savedRubrics[index].assignmentName),
-                          ),
-                          const Spacer(),
-                          Align(
-                              alignment: Alignment.bottomRight,
-                              child: Text(
-                                  "${savedRubrics[index].gradedAssignments.length} graded"))
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                (index) => SavedRubricCard(rubric: savedRubrics[index]),
               ),
             ),
             selector: (context, grader) => grader.savedRubrics,

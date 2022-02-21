@@ -1,7 +1,7 @@
 import 'package:flapp/menu.dart';
-import 'package:flapp/routes/options/components/grading_scale_option.dart';
-import 'package:flapp/routes/options/components/score_selection_option.dart';
-import 'package:flapp/routes/options/components/theme_option.dart';
+import 'package:flapp/routes/options/grading_scale_option.dart';
+import 'package:flapp/routes/options/score_selection_option.dart';
+import 'package:flapp/routes/options/theme_option.dart';
 import 'package:flapp/routes/options/option_group.dart';
 import 'package:flutter/material.dart';
 

@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:collection/collection.dart';
 import 'package:flapp/models/graded_assignment.dart';
 import 'package:flutter/cupertino.dart';
@@ -34,7 +36,7 @@ class Rubric extends ChangeNotifier {
         _categories = [],
         _latePolicy = "total",
         _latePercentagePerDay = 20,
-        _gradedAssignments = [],
+        _gradedAssignments = [GradedAssignment(HashMap<Xid, Xid>(), 0, "Bad", "Bad student")],
         xid = Xid();
 
   Rubric.example()
@@ -80,8 +82,7 @@ class Rubric extends ChangeNotifier {
 
   double getScore(int index) => _scoreBins[index].weight;
 
-  double? getScoreByXid(Xid xid) =>
-      _scoreBins.singleWhereOrNull((scoreBin) => scoreBin.xid == xid)?.weight;
+  double? getScoreByXid(Xid xid) => _scoreBins.singleWhereOrNull((scoreBin) => scoreBin.xid == xid)?.weight;
 
   int? getScoreIndexByXid(Xid xid) {
     for (var i = 0; i < _scoreBins.length; i++) {
@@ -102,13 +103,11 @@ class Rubric extends ChangeNotifier {
 
   Category getCategory(int index) => _categories[index];
 
-  Category? getCategoryByXid(Xid xid) =>
-      _categories.singleWhereOrNull((category) => category.xid == xid);
+  Category? getCategoryByXid(Xid xid) => _categories.singleWhereOrNull((category) => category.xid == xid);
 
   void updateCategory(int index, String newLabel, double newWeight) {
     _categories = [..._categories];
-    _categories[index] =
-        Category.update(newWeight, newLabel, _categories[index].xid);
+    _categories[index] = Category.update(newWeight, newLabel, _categories[index].xid);
     notifyListeners();
   }
 
@@ -148,6 +147,18 @@ class Rubric extends ChangeNotifier {
     _latePercentagePerDay = percentage;
     notifyListeners();
   }
+
+  String getState() {
+    String fromScores = _scoreBins.isNotEmpty
+        ? _scoreBins.map((scoreBin) => '${scoreBin._weight}').reduce((value, element) => '$value,$element')
+        : "";
+    String fromCategories = _categories.isNotEmpty
+        ? _categories
+            .map((category) => '${category.label}:${category.weight}')
+            .reduce((value, element) => '$value,$element')
+        : "";
+    return '$_assignmentName;$fromScores;$fromCategories;$_latePolicy;$_latePercentagePerDay;${_currentGradedAssignment?.getState()}';
+  }
 }
 
 class ScoreBin {
@@ -166,8 +177,7 @@ class Category extends ScoreBin {
 
   Category(double _weight, this._label) : super(_weight);
 
-  Category.update(double _weight, this._label, Xid xid)
-      : super.update(_weight, xid);
+  Category.update(double _weight, this._label, Xid xid) : super.update(_weight, xid);
 
   String get label => _label;
 }

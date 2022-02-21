@@ -1,4 +1,5 @@
 import 'package:flapp/menu.dart';
+import 'package:flapp/models/grader.dart';
 import 'package:flapp/models/rubric.dart';
 import 'package:flapp/routes/rubric/grades_selector.dart';
 import 'package:flapp/routes/rubric/rubric_table.dart';
@@ -61,22 +62,19 @@ class RubricContainer extends StatelessWidget {
                                     ),
                                     child: Center(
                                       child: Selector<Rubric, double>(
-                                        builder: (context, score, child) =>
-                                            Text(
+                                        builder: (context, score, child) => Text(
                                           "${score.truncate()}%",
                                           style: const TextStyle(
                                             fontSize: 15,
                                           ),
                                         ),
-                                        selector: (context, rubric) =>
-                                            rubric.getScore(index),
+                                        selector: (context, rubric) => rubric.getScore(index),
                                       ),
                                     ),
                                     onPressed: () {
                                       showDialog(
                                         context: context,
-                                        builder: (BuildContext context) =>
-                                            const ScoresSelector(),
+                                        builder: (BuildContext context) => const ScoresSelector(),
                                       );
                                     }),
                               ),
@@ -107,10 +105,9 @@ class RubricContainer extends StatelessWidget {
                         ])
                       : Center(
                           child: Selector<Rubric, String>(
-                            builder: (context, assignmentName, child) => Text(
-                                "Tap the '+' button to add a category to $assignmentName"),
-                            selector: (context, rubric) =>
-                                rubric.assignmentName,
+                            builder: (context, assignmentName, child) =>
+                                Text("Tap the '+' button to add a category to $assignmentName"),
+                            selector: (context, rubric) => rubric.assignmentName,
                           ),
                         ),
                   selector: (context, rubric) => rubric.totalPoints > 0,

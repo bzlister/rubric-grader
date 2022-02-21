@@ -39,6 +39,7 @@ dependencies:
   fl_chart: ^0.40.6
   tuple: ^2.0.0
   xid: ^1.0.7
+  expansion_tile_card: ^2.0.0
 
 dev_dependencies:
   flutter_test:

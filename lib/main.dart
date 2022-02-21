@@ -1,7 +1,6 @@
 import 'package:flapp/models/graded_assignment.dart';
 import 'package:flapp/models/grader.dart';
 import 'package:flapp/models/rubric.dart';
-import 'package:flapp/routes/files/file_explorer.dart';
 import 'package:flapp/routes/home/home.dart';
 import 'package:flapp/routes/options/options.dart';
 import 'package:flapp/routes/rubric/rubric_container.dart';

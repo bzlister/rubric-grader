@@ -28,48 +28,48 @@ class Menu extends StatelessWidget {
                 if (ModalRoute.of(context)?.settings.name != "/rubric") {
                   Navigator.pushNamed(context, '/rubric');
                 }
-                showDialog(
+                Rubric rubric = context.read<Rubric>();
+                Grader grader = context.read<Grader>();
+                print(rubric.getState());
+                print(grader.currentRubric?.getState());
+                if (rubric.getState() !=
+                    (grader.currentRubric != null
+                        ? grader.currentRubric!.getState()
+                        : "Assignment 1;100.0,90.0,80.0,70.0,60.0;;total;20.0;null")) {
+                  showDialog(
                     context: context,
                     builder: (BuildContext context) => AlertDialog(
-                          content: Selector<Rubric, String>(
-                            builder: (context, assignmentName, child) => Text(
-                              "Save rubric '$assignmentName'?",
-                            ),
-                            selector: (context, rubric) =>
-                                rubric.assignmentName,
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                                context
-                                    .read<Grader>()
-                                    .saveRubric(context.read<Rubric>());
-                                context.read<Grader>().currentRubric =
-                                    Rubric.empty(context
-                                        .read<Grader>()
-                                        .defaultAssignmentName);
-                              },
-                              child: const Text('Yes'),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                                context.read<Grader>().currentRubric =
-                                    Rubric.empty(context
-                                        .read<Grader>()
-                                        .defaultAssignmentName);
-                              },
-                              child: const Text('No'),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text("Cancel"),
-                            )
-                          ],
-                        ));
+                      content: Text(
+                        "Save rubric '${rubric.assignmentName}'?",
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            grader.saveRubric(rubric);
+                            grader.currentRubric = Rubric.empty(grader.defaultAssignmentName);
+                          },
+                          child: const Text('Yes'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            grader.currentRubric = Rubric.empty(grader.defaultAssignmentName);
+                          },
+                          child: const Text('No'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text("Cancel"),
+                        )
+                      ],
+                    ),
+                  );
+                } else {
+                  grader.currentRubric = Rubric.empty(grader.defaultAssignmentName);
+                }
               },
             ),
             const Divider(),
