@@ -7,10 +7,10 @@ import 'package:tuple/tuple.dart';
 import 'package:xid/xid.dart';
 
 class GradedAssignment extends ChangeNotifier {
-  final HashMap<Xid, Xid> _scoreSelections;
+  HashMap<Xid, Xid> _scoreSelections;
   int _daysLate;
   String? _comment;
-  String? _name;
+  String _name;
   Xid xid;
 
   GradedAssignment(
@@ -20,10 +20,22 @@ class GradedAssignment extends ChangeNotifier {
     this._name,
   ) : xid = Xid();
 
-  GradedAssignment.empty()
+  GradedAssignment.empty(this._name)
       : _scoreSelections = HashMap<Xid, Xid>(),
         _daysLate = 0,
         xid = Xid();
+
+  GradedAssignment copy() {
+    return GradedAssignment(HashMap<Xid, Xid>.from({..._scoreSelections}), _daysLate, _comment, _name);
+  }
+
+  void reset(String defaultStudentName) {
+    GradedAssignment newGradedAssignment = GradedAssignment.empty(defaultStudentName);
+    _scoreSelections = newGradedAssignment.selections;
+    _daysLate = newGradedAssignment._daysLate;
+    _comment = newGradedAssignment._comment;
+    _name = newGradedAssignment._name;
+  }
 
   int get daysLate => _daysLate;
 
@@ -53,9 +65,9 @@ class GradedAssignment extends ChangeNotifier {
     notifyListeners();
   }
 
-  String? get name => _name;
+  String get name => _name;
 
-  set name(String? newName) {
+  set name(String newName) {
     _name = newName;
     notifyListeners();
   }

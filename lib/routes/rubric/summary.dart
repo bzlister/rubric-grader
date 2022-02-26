@@ -80,8 +80,7 @@ class Summary extends StatelessWidget {
                   ),
                   onPressed: () => showDialog(
                     context: context,
-                    builder: (BuildContext context) =>
-                        const LatePenaltySelector(),
+                    builder: (BuildContext context) => const LatePenaltySelector(),
                   ),
                 ),
               ),
@@ -105,16 +104,13 @@ class Summary extends StatelessWidget {
                 alignment: Alignment.bottomRight,
                 child: Selector3<Grader, Rubric, GradedAssignment, String>(
                   builder: (context, letterGradeText, child) {
-                    print("Rebuilding final score");
                     return Text(
                       letterGradeText,
                       style: const TextStyle(fontSize: 16),
                     );
                   },
                   selector: (context, grader, rubric, gradedAssignment) {
-                    print("Recalculating final score");
-                    Tuple2<String, double> finalScore =
-                        ModelsUtil.calcGrade(grader, rubric, gradedAssignment);
+                    Tuple2<String, double> finalScore = ModelsUtil.calcGrade(grader, rubric, gradedAssignment);
                     return '${finalScore.item1} (${finalScore.item2.toStringAsFixed(1)}%)';
                   },
                 ),
@@ -129,17 +125,13 @@ class Summary extends StatelessWidget {
           height: 35,
           child: Selector<GradedAssignment, String>(
             builder: (context, comment, child) => TextFormField(
-              controller: TextEditingController(
-                  text: comment), // see if wrapping in Selector here works
-              style: const TextStyle(
-                  fontStyle: FontStyle.italic, decorationThickness: 0),
+              controller: TextEditingController(text: comment), // see if wrapping in Selector here works
+              style: const TextStyle(fontStyle: FontStyle.italic, decorationThickness: 0),
               keyboardType: TextInputType.text,
               decoration: const InputDecoration(hintText: "Add a comment"),
-              onFieldSubmitted: (value) =>
-                  context.read<GradedAssignment>().comment = value,
+              onFieldSubmitted: (value) => context.read<GradedAssignment>().comment = value,
             ),
-            selector: (context, gradedAssignment) =>
-                gradedAssignment.comment ?? "",
+            selector: (context, gradedAssignment) => gradedAssignment.comment ?? "",
           ),
         )
       ],

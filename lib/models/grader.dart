@@ -36,8 +36,9 @@ class Grader extends ChangeNotifier {
       }
     }
 
-    Rubric copy = Rubric(rubric.assignmentName, rubric.scoreBins, rubric.categories, rubric.latePolicy,
-        rubric.latePercentagePerDay, rubric.gradedAssignments, rubric.xid);
+    Rubric copy = Rubric(rubric.assignmentName, [...rubric.scoreBins], [...rubric.categories], rubric.latePolicy,
+        rubric.latePercentagePerDay, [...rubric.gradedAssignments], rubric.xid);
+
     if (indx != -1) {
       _savedRubrics[indx] = copy;
     } else {

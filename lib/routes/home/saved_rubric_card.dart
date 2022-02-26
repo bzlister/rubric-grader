@@ -34,7 +34,7 @@ class _SavedRubricCardState extends State<SavedRubricCard> {
                   width: 6,
                 ),
                 Text(
-                  element.name!,
+                  element.name.length > 100 ? '${element.name.substring(0, 100)}...' : element.name,
                   textAlign: TextAlign.left,
                 )
               ],

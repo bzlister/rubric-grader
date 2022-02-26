@@ -15,7 +15,7 @@ void main() {
         create: (context) => Rubric.empty(context.read<Grader>().defaultAssignmentName),
       ),
       ChangeNotifierProvider(
-        create: (context) => GradedAssignment.empty(),
+        create: (context) => GradedAssignment.empty(context.read<Rubric>().defaultStudentName),
       )
     ],
     child: const MyApp(),
@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
           selectionColor: Colors.orange,
         ),
       ),
-      initialRoute: '/home',
+      initialRoute: '/rubric',
       routes: {
         '/rubric': (context) => const RubricContainer(),
         '/options': (context) => const Options(),

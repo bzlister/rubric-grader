@@ -1,5 +1,7 @@
 import 'package:flapp/menu.dart';
+import 'package:flapp/models/graded_assignment.dart';
 import 'package:flapp/models/grader.dart';
+import 'package:flapp/models/models_util.dart';
 import 'package:flapp/models/rubric.dart';
 import 'package:flapp/routes/rubric/grades_selector.dart';
 import 'package:flapp/routes/rubric/rubric_table.dart';
@@ -14,6 +16,22 @@ class RubricContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: Selector3<Grader, Rubric, GradedAssignment, bool>(
+          selector: (context, grader, rubric, gradedAssignment) =>
+              ModelsUtil.isEdited(grader, rubric, gradedAssignment) != EditedStatus.none,
+          builder: (context, shouldRender, child) => Visibility(
+                visible: shouldRender,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: FloatingActionButton(
+                    child: const Icon(Icons.save),
+                    onPressed: () {
+                      context.read<Rubric>().saveGradedAssignment(context.read<GradedAssignment>());
+                      context.read<Grader>().saveRubric(context.read<Rubric>());
+                    },
+                  ),
+                ),
+              )),
       appBar: AppBar(
         title: Selector<Rubric, String>(
           builder: (context, assignmentName, child) => TextField(

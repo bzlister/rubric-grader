@@ -20,12 +20,10 @@ class ModelsUtil {
   }
 
   static calcLatePenalty(Rubric rubric, GradedAssignment gradedAssignment) {
-    double percentageOff =
-        gradedAssignment.daysLate * rubric.latePercentagePerDay * 0.01;
+    double percentageOff = gradedAssignment.daysLate * rubric.latePercentagePerDay * 0.01;
     double earnedPoints = calcEarnedPoints(rubric, gradedAssignment);
     return min(
-      percentageOff *
-          (rubric.latePolicy == "total" ? rubric.totalPoints : earnedPoints),
+      percentageOff * (rubric.latePolicy == "total" ? rubric.totalPoints : earnedPoints),
       earnedPoints,
     );
   }
@@ -39,10 +37,8 @@ class ModelsUtil {
     if (total == 0) {
       return const Tuple2("", 0);
     }
-    double finalScore = (calcEarnedPoints(rubric, gradedAssignment) -
-            calcLatePenalty(rubric, gradedAssignment)) /
-        total *
-        100;
+    double finalScore =
+        (calcEarnedPoints(rubric, gradedAssignment) - calcLatePenalty(rubric, gradedAssignment)) / total * 100;
     String label = grader.gradingScale.scale[0].item1;
     for (int i = 0; i < grader.gradingScale.scale.length; i++) {
       if (grader.gradingScale.scale[i].item2 <= finalScore) {
@@ -52,4 +48,37 @@ class ModelsUtil {
     }
     return Tuple2(label, finalScore);
   }
+
+  static EditedStatus isEdited(Grader grader, Rubric rubric, GradedAssignment gradedAssignment) {
+    bool rubricEdited = false;
+    bool assignmentEdited = false;
+    Rubric? oldRubric = grader.findRubricByXid(rubric.xid);
+    String oldRubricState = oldRubric?.getState() ?? Rubric.empty(grader.defaultAssignmentName).getState();
+    String oldAssignmentState = oldRubric?.findGradedAssignmentByXid(gradedAssignment.xid)?.getState() ??
+        GradedAssignment.empty(rubric.defaultStudentName).getState();
+    rubricEdited = rubric.getState() != oldRubricState;
+    assignmentEdited = gradedAssignment.getState() != oldAssignmentState;
+    print("Current: ${gradedAssignment.getState()}");
+    print("Old: ${oldAssignmentState}");
+
+    if (rubricEdited && assignmentEdited) {
+      print("both");
+      return EditedStatus.rubricAndAssignment;
+    }
+
+    if (!rubricEdited && assignmentEdited) {
+      print("assignment");
+      return EditedStatus.assignment;
+    }
+
+    if (rubricEdited && !assignmentEdited) {
+      print("rubric");
+      return EditedStatus.rubric;
+    }
+
+    print("none");
+    return EditedStatus.none;
+  }
 }
+
+enum EditedStatus { none, rubric, assignment, rubricAndAssignment }

@@ -13,6 +13,7 @@ class Rubric extends ChangeNotifier {
   double _latePercentagePerDay;
   List<GradedAssignment> _gradedAssignments;
   Xid xid;
+  String _defaultStudentName = "Student 1";
 
   Rubric(this._assignmentName, this._scoreBins, this._categories, this._latePolicy, this._latePercentagePerDay,
       this._gradedAssignments, this.xid);
@@ -28,7 +29,7 @@ class Rubric extends ChangeNotifier {
         _categories = [],
         _latePolicy = "total",
         _latePercentagePerDay = 20,
-        _gradedAssignments = [GradedAssignment(HashMap<Xid, Xid>(), 0, "Bad", "Bad student")],
+        _gradedAssignments = [],
         xid = Xid();
 
   Rubric.example()
@@ -52,7 +53,7 @@ class Rubric extends ChangeNotifier {
         _gradedAssignments = [],
         xid = Xid();
 
-  reset(String assignmentName) {
+  void reset(String assignmentName) {
     Rubric newRubric = Rubric.empty(assignmentName);
     _assignmentName = newRubric.assignmentName;
     _scoreBins = newRubric._scoreBins;
@@ -65,6 +66,58 @@ class Rubric extends ChangeNotifier {
   }
 
   List<GradedAssignment> get gradedAssignments => _gradedAssignments;
+
+  void saveGradedAssignment(GradedAssignment gradedAssignment) {
+    int indx = -1;
+    for (var i = 0; i < _gradedAssignments.length; i++) {
+      if (_gradedAssignments[i].xid == gradedAssignment.xid) {
+        indx = i;
+        break;
+      }
+    }
+
+    GradedAssignment copy = gradedAssignment.copy();
+    copy.xid = gradedAssignment.xid;
+    if (indx != -1) {
+      _gradedAssignments[indx] = copy;
+    } else {
+      _gradedAssignments.add(copy);
+    }
+    calcDefaultStudentName();
+    notifyListeners();
+  }
+
+  String get defaultStudentName => _defaultStudentName;
+
+  calcDefaultStudentName() {
+    try {
+      List<String> matches = [];
+      for (var i = 0; i < _gradedAssignments.length; i++) {
+        if (RegExp(r"^Student \d+$").hasMatch(_gradedAssignments[i].name)) {
+          matches.add(_gradedAssignments[i].name);
+        }
+      }
+
+      int greatest = 0;
+      for (var j = 0; j < matches.length; j++) {
+        int defaultStudentNum = int.parse(matches[j].substring(matches[j].indexOf(" ")));
+        if (defaultStudentNum > greatest) {
+          greatest = defaultStudentNum;
+        }
+      }
+      _defaultStudentName = 'Student ${greatest + 1}';
+    } catch (exception) {
+      _defaultStudentName = "Student 1";
+    }
+  }
+
+  GradedAssignment? findGradedAssignmentByXid(Xid xid) {
+    try {
+      return _gradedAssignments.firstWhere((element) => element.xid == xid);
+    } on StateError {
+      return null;
+    }
+  }
 
   String get assignmentName => _assignmentName;
 

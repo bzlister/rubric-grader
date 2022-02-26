@@ -1,10 +1,110 @@
+import 'package:flapp/models/graded_assignment.dart';
 import 'package:flapp/models/grader.dart';
+import 'package:flapp/models/models_util.dart';
 import 'package:flapp/models/rubric.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Menu extends StatelessWidget {
   const Menu({Key? key}) : super(key: key);
+
+  onSaveAssignment(
+    BuildContext context,
+    Grader grader,
+    Rubric rubric,
+    GradedAssignment gradedAssignment,
+  ) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        content: SizedBox(
+          width: double.maxFinite,
+          child: ListView(
+            shrinkWrap: true,
+            children: [
+              Text("Save graded ${context.read<Rubric>().assignmentName}?"),
+              Selector<GradedAssignment, String>(
+                  builder: (context, name, child) => IntrinsicWidth(
+                        child: TextField(
+                          decoration: const InputDecoration(labelText: "Student name:"),
+                          onSubmitted: (value) => gradedAssignment.name = value,
+                          textInputAction: TextInputAction.go,
+                          controller: TextEditingController(text: name),
+                        ),
+                      ),
+                  selector: (context, gradedAssignment) => gradedAssignment.name),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              rubric.saveGradedAssignment(gradedAssignment);
+              grader.saveRubric(rubric);
+              rubric.reset(grader.defaultAssignmentName);
+              gradedAssignment.reset(context.read<Rubric>().defaultStudentName);
+            },
+            child: const Text('Yes'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              if (rubric.assignmentName == grader.defaultAssignmentName) {
+                grader.incrementOffset();
+              }
+              rubric.reset(grader.defaultAssignmentName);
+              gradedAssignment.reset(context.read<Rubric>().defaultStudentName);
+            },
+            child: const Text('No'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text("Cancel"),
+          )
+        ],
+      ),
+    );
+  }
+
+  onSaveRubric(BuildContext context, Rubric rubric, Grader grader) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        content: Text(
+          "Save rubric '${rubric.assignmentName}'?",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              grader.saveRubric(rubric);
+              rubric.reset(grader.defaultAssignmentName);
+            },
+            child: const Text('Yes'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              if (rubric.assignmentName == grader.defaultAssignmentName) {
+                grader.incrementOffset();
+              }
+              rubric.reset(grader.defaultAssignmentName);
+            },
+            child: const Text('No'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text("Cancel"),
+          )
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,56 +125,31 @@ class Menu extends StatelessWidget {
               title: const Text("New"),
               onTap: () {
                 Navigator.pop(context);
-                bool wasOnRubric = true;
                 if (ModalRoute.of(context)?.settings.name != "/rubric") {
                   Navigator.pushNamed(context, '/rubric');
-                  wasOnRubric = false;
                 }
                 Rubric rubric = context.read<Rubric>();
                 Grader grader = context.read<Grader>();
+                GradedAssignment gradedAssignment = context.read<GradedAssignment>();
 
-                String? oldState = grader.findRubricByXid(rubric.xid)?.getState();
-                print(rubric.getState());
-                print(oldState);
-                bool edited = rubric.getState() != (oldState ?? Rubric.empty(grader.defaultAssignmentName).getState());
+                EditedStatus editedStatus = ModelsUtil.isEdited(grader, rubric, context.read<GradedAssignment>());
 
-                if (edited) {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) => AlertDialog(
-                      content: Text(
-                        "Save rubric '${rubric.assignmentName}'?",
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            grader.saveRubric(rubric);
-                            rubric.reset(grader.defaultAssignmentName);
-                          },
-                          child: const Text('Yes'),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            rubric.reset(grader.defaultAssignmentName);
-                          },
-                          child: const Text('No'),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: const Text("Cancel"),
-                        )
-                      ],
-                    ),
-                  );
-                } else {
-                  if (wasOnRubric && rubric.assignmentName == grader.defaultAssignmentName) {
-                    grader.incrementOffset();
-                  }
-                  context.read<Rubric>().reset(grader.defaultAssignmentName);
+                switch (editedStatus) {
+                  case EditedStatus.none:
+                    if (rubric.assignmentName == grader.defaultAssignmentName) {
+                      grader.incrementOffset();
+                    }
+                    context.read<Rubric>().reset(grader.defaultAssignmentName);
+                    break;
+                  case EditedStatus.assignment:
+                    onSaveAssignment(context, grader, rubric, gradedAssignment);
+                    break;
+                  case EditedStatus.rubric:
+                    onSaveRubric(context, rubric, grader);
+                    break;
+                  case EditedStatus.rubricAndAssignment:
+                    onSaveAssignment(context, grader, rubric, gradedAssignment);
+                    break;
                 }
               },
             ),
