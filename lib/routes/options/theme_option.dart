@@ -1,4 +1,7 @@
+import 'package:flapp/models/grader.dart';
+import 'package:flapp/themes.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ThemeOption extends StatefulWidget {
   const ThemeOption({Key? key}) : super(key: key);
@@ -13,7 +16,7 @@ class _ThemeOptionState extends State<ThemeOption> {
   @override
   void initState() {
     super.initState();
-    _darkMode = false;
+    _darkMode = context.read<Grader>().themeData.brightness == Brightness.dark;
   }
 
   @override
@@ -32,6 +35,7 @@ class _ThemeOptionState extends State<ThemeOption> {
             onChanged: (x) {
               setState(() {
                 _darkMode = x;
+                context.read<Grader>().themeData = _darkMode ? Themes.dark : Themes.light;
               });
             },
           ),

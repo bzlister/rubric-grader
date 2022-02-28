@@ -9,43 +9,6 @@ import 'package:provider/provider.dart';
 class Menu extends StatelessWidget {
   const Menu({Key? key}) : super(key: key);
 
-  onSaveRubric(BuildContext context, Rubric rubric, Grader grader) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        content: Text(
-          "Save rubric '${rubric.assignmentName}'?",
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              grader.saveRubric(rubric);
-              rubric.reset(grader.defaultAssignmentName);
-            },
-            child: const Text('Yes'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              if (rubric.assignmentName == grader.defaultAssignmentName) {
-                grader.incrementOffset();
-              }
-              rubric.reset(grader.defaultAssignmentName);
-            },
-            child: const Text('No'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: const Text("Cancel"),
-          )
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -60,52 +23,42 @@ class Menu extends StatelessWidget {
               style: TextStyle(fontSize: 16, color: Colors.blue),
             )),
             const Divider(),
-            ListTile(
-              leading: const Icon(Icons.new_label),
-              title: const Text("New"),
-              onTap: () {
-                Navigator.pop(context);
-                if (ModalRoute.of(context)?.settings.name != "/rubric") {
-                  Navigator.pushNamed(context, '/rubric');
-                }
-                Rubric rubric = context.read<Rubric>();
-                Grader grader = context.read<Grader>();
-                GradedAssignment gradedAssignment = context.read<GradedAssignment>();
+            Selector<Rubric, String>(
+                builder: (context, assignmentName, child) => ListTile(
+                      leading: const Icon(Icons.new_releases),
+                      title: Text(assignmentName),
+                      onTap: () {
+                        Navigator.pop(context);
+                        if (ModalRoute.of(context)?.settings.name != "/rubric") {
+                          Navigator.pushNamed(context, '/rubric');
+                        }
+                      },
+                    ),
+                selector: (context, rubric) => rubric.assignmentName),
+            Selector2<Rubric, GradedAssignment, bool>(
+              builder: (context, isChanged, child) {
+                return Visibility(
+                  visible: isChanged,
+                  child: ListTile(
+                    leading: const Icon(Icons.new_label),
+                    title: const Text("New rubric"),
+                    onTap: () {
+                      Navigator.pop(context);
+                      if (ModalRoute.of(context)?.settings.name != "/rubric") {
+                        Navigator.pushNamed(context, '/rubric');
+                      }
+                      Rubric rubric = context.read<Rubric>();
+                      Grader grader = context.read<Grader>();
+                      GradedAssignment gradedAssignment = context.read<GradedAssignment>();
 
-                EditedStatus editedStatus = ModelsUtil.isEdited(grader, rubric, context.read<GradedAssignment>());
-
-                switch (editedStatus) {
-                  case EditedStatus.none:
-                    if (rubric.assignmentName == grader.defaultAssignmentName) {
-                      grader.incrementOffset();
-                    }
-                    context.read<Rubric>().reset(grader.defaultAssignmentName);
-                    break;
-                  case EditedStatus.assignment:
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) => SaveAssignmentPopup(
-                        grader: grader,
-                        rubric: rubric,
-                        gradedAssignment: gradedAssignment,
-                      ),
-                    );
-                    break;
-                  case EditedStatus.rubric:
-                    onSaveRubric(context, rubric, grader);
-                    break;
-                  case EditedStatus.rubricAndAssignment:
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) => SaveAssignmentPopup(
-                        grader: grader,
-                        rubric: rubric,
-                        gradedAssignment: gradedAssignment,
-                      ),
-                    );
-                    break;
-                }
+                      ModelsUtil.onSave(grader, rubric, gradedAssignment, context, true);
+                    },
+                  ),
+                );
               },
+              selector: (context, rubric, gradedAssignment) =>
+                  rubric.getState() != Rubric.empty(context.read<Grader>().defaultAssignmentName).getState() ||
+                  gradedAssignment.getState() != GradedAssignment.empty(rubric.defaultStudentName).getState(),
             ),
             const Divider(),
             ListTile(

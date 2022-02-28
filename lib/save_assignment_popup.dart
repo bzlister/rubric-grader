@@ -8,8 +8,10 @@ class SaveAssignmentPopup extends StatefulWidget {
   final Grader grader;
   final Rubric rubric;
   final GradedAssignment gradedAssignment;
+  final bool resetRubric;
 
-  const SaveAssignmentPopup({Key? key, required this.grader, required this.rubric, required this.gradedAssignment})
+  const SaveAssignmentPopup(
+      {Key? key, required this.grader, required this.rubric, required this.gradedAssignment, required this.resetRubric})
       : super(key: key);
 
   @override
@@ -36,6 +38,16 @@ class _SaveAssignmentPopupState extends State<SaveAssignmentPopup> {
           shrinkWrap: true,
           children: [
             Text("Save graded ${context.read<Rubric>().assignmentName}?"),
+            Visibility(
+              visible: context.read<Rubric>().gradedAssignments.isNotEmpty,
+              child: const Text(
+                "You have already graded assignments with this rubric. Saving changes to the rubric may cause scores to be recalculated.",
+                style: TextStyle(
+                  color: Colors.red,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ),
             IntrinsicWidth(
               child: TextField(
                 keyboardType: TextInputType.text,
@@ -63,7 +75,9 @@ class _SaveAssignmentPopupState extends State<SaveAssignmentPopup> {
             widget.gradedAssignment.name = _name;
             widget.rubric.saveGradedAssignment(widget.gradedAssignment);
             widget.grader.saveRubric(widget.rubric);
-            widget.rubric.reset(widget.grader.defaultAssignmentName);
+            if (widget.resetRubric) {
+              widget.rubric.reset(widget.grader.defaultAssignmentName);
+            }
             widget.gradedAssignment.reset(context.read<Rubric>().defaultStudentName);
           },
           child: const Text('Yes'),
@@ -74,7 +88,9 @@ class _SaveAssignmentPopupState extends State<SaveAssignmentPopup> {
             if (widget.rubric.assignmentName == widget.grader.defaultAssignmentName) {
               widget.grader.incrementOffset();
             }
-            widget.rubric.reset(widget.grader.defaultAssignmentName);
+            if (widget.resetRubric) {
+              widget.rubric.reset(widget.grader.defaultAssignmentName);
+            }
             widget.gradedAssignment.reset(context.read<Rubric>().defaultStudentName);
           },
           child: const Text('No'),

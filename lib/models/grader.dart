@@ -2,6 +2,7 @@ import 'package:flapp/grading_scale.dart';
 import 'package:flapp/models/rubric.dart';
 import 'package:flapp/routes/options/theme_option.dart';
 import 'package:flapp/score_selection_paradigm.dart';
+import 'package:flapp/themes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:xid/xid.dart';
@@ -25,7 +26,14 @@ class Grader extends ChangeNotifier {
       : _savedRubrics = [],
         _gradingScale = GradingScale.collegeBoard(),
         _scoreSelectionParadigm = ScoreSelectionParadigm.bin,
-        _themeData = ThemeData.dark();
+        _themeData = Themes.dark;
+
+  ThemeData get themeData => _themeData;
+
+  set themeData(ThemeData theme) {
+    _themeData = theme;
+    notifyListeners();
+  }
 
   void saveRubric(Rubric rubric) {
     int indx = -1;

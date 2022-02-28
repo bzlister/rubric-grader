@@ -13,10 +13,8 @@ class RubricContainer extends StatelessWidget {
   final double leftColumnWidth = 85;
   const RubricContainer({Key? key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: Selector3<Grader, Rubric, GradedAssignment, bool>(
+  /*
+        floatingActionButton: Selector3<Grader, Rubric, GradedAssignment, bool>(
           selector: (context, grader, rubric, gradedAssignment) =>
               ModelsUtil.isEdited(grader, rubric, gradedAssignment) != EditedStatus.none,
           builder: (context, shouldRender, child) => Visibility(
@@ -32,6 +30,42 @@ class RubricContainer extends StatelessWidget {
                   ),
                 ),
               )),
+  */
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      bottomNavigationBar: SizedBox(
+        height: 40,
+        child: Row(
+          children: [
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () {
+                  ModelsUtil.onSave(
+                      context.read<Grader>(), context.read<Rubric>(), context.read<GradedAssignment>(), context, true);
+                },
+                child: const Icon(
+                  Icons.save,
+                  semanticLabel: "Save",
+                ),
+              ),
+            ),
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () {
+                  ModelsUtil.onSave(
+                      context.read<Grader>(), context.read<Rubric>(), context.read<GradedAssignment>(), context, false);
+                },
+                child: const Icon(
+                  Icons.reset_tv,
+                  semanticLabel: "Grade new student",
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
       appBar: AppBar(
         title: Selector<Rubric, String>(
           builder: (context, assignmentName, child) => TextField(

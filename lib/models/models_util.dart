@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:flapp/models/graded_assignment.dart';
 import 'package:flapp/models/grader.dart';
 import 'package:flapp/models/rubric.dart';
+import 'package:flapp/save_assignment_popup.dart';
+import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
 import 'package:xid/xid.dart';
 
@@ -58,26 +60,112 @@ class ModelsUtil {
         GradedAssignment.empty(rubric.defaultStudentName).getState();
     rubricEdited = rubric.getState() != oldRubricState;
     assignmentEdited = gradedAssignment.getState() != oldAssignmentState;
-    print("Current: ${gradedAssignment.getState()}");
-    print("Old: ${oldAssignmentState}");
 
     if (rubricEdited && assignmentEdited) {
-      print("both");
       return EditedStatus.rubricAndAssignment;
     }
 
     if (!rubricEdited && assignmentEdited) {
-      print("assignment");
       return EditedStatus.assignment;
     }
 
     if (rubricEdited && !assignmentEdited) {
-      print("rubric");
       return EditedStatus.rubric;
     }
 
-    print("none");
     return EditedStatus.none;
+  }
+
+  static void onSave(
+      Grader grader, Rubric rubric, GradedAssignment gradedAssignment, BuildContext context, bool resetRubric) {
+    EditedStatus editedStatus = ModelsUtil.isEdited(grader, rubric, gradedAssignment);
+
+    switch (editedStatus) {
+      case EditedStatus.none:
+        if (rubric.assignmentName == grader.defaultAssignmentName) {
+          grader.incrementOffset();
+        }
+        rubric.reset(grader.defaultAssignmentName);
+        break;
+      case EditedStatus.assignment:
+        showDialog(
+          context: context,
+          builder: (BuildContext context) => SaveAssignmentPopup(
+            grader: grader,
+            rubric: rubric,
+            gradedAssignment: gradedAssignment,
+            resetRubric: resetRubric,
+          ),
+        );
+        break;
+      case EditedStatus.rubric:
+        showDialog(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+            content: IntrinsicHeight(
+              child: Column(
+                children: [
+                  Text(
+                    "Save rubric '${rubric.assignmentName}'?",
+                  ),
+                  Visibility(
+                    visible: rubric.gradedAssignments.isNotEmpty,
+                    child: const Text(
+                      "You have already graded assignments with this rubric. Saving changes to the rubric may cause scores to be recalculated.",
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  grader.saveRubric(rubric);
+                  if (resetRubric) {
+                    rubric.reset(grader.defaultAssignmentName);
+                  }
+                },
+                child: const Text('Yes'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  if (rubric.assignmentName == grader.defaultAssignmentName) {
+                    grader.incrementOffset();
+                  }
+                  if (resetRubric) {
+                    rubric.reset(grader.defaultAssignmentName);
+                  }
+                },
+                child: const Text('No'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text("Cancel"),
+              )
+            ],
+          ),
+        );
+        break;
+      case EditedStatus.rubricAndAssignment:
+        showDialog(
+          context: context,
+          builder: (BuildContext context) => SaveAssignmentPopup(
+            grader: grader,
+            rubric: rubric,
+            gradedAssignment: gradedAssignment,
+            resetRubric: resetRubric,
+          ),
+        );
+        break;
+    }
   }
 }
 

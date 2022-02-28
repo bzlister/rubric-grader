@@ -27,24 +27,20 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Rubric Grader',
-      theme: ThemeData(
-        primarySwatch: Colors.blueGrey,
-        fontFamily: 'Allison',
-        brightness: Brightness.dark,
-        textSelectionTheme: const TextSelectionThemeData(
-          cursorColor: Colors.orange,
-          selectionHandleColor: Colors.orange,
-          selectionColor: Colors.orange,
-        ),
-      ),
-      initialRoute: '/rubric',
-      routes: {
-        '/rubric': (context) => const RubricContainer(),
-        '/options': (context) => const Options(),
-        '/home': (context) => const Home()
+    return Selector<Grader, ThemeData>(
+      builder: (context, theme, child) {
+        return MaterialApp(
+          title: 'Rubric Grader',
+          theme: theme,
+          initialRoute: '/rubric',
+          routes: {
+            '/rubric': (context) => const RubricContainer(),
+            '/options': (context) => const Options(),
+            '/home': (context) => const Home()
+          },
+        );
       },
+      selector: (context, grader) => grader.themeData,
     );
   }
 }
