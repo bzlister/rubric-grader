@@ -82,9 +82,6 @@ class ModelsUtil {
 
     switch (editedStatus) {
       case EditedStatus.none:
-        if (rubric.assignmentName == grader.defaultAssignmentName) {
-          grader.incrementOffset();
-        }
         rubric.reset(grader.defaultAssignmentName);
         break;
       case EditedStatus.assignment:
@@ -95,6 +92,7 @@ class ModelsUtil {
             rubric: rubric,
             gradedAssignment: gradedAssignment,
             resetRubric: resetRubric,
+            canShowWarning: true,
           ),
         );
         break;
@@ -135,9 +133,6 @@ class ModelsUtil {
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  if (rubric.assignmentName == grader.defaultAssignmentName) {
-                    grader.incrementOffset();
-                  }
                   if (resetRubric) {
                     rubric.reset(grader.defaultAssignmentName);
                   }
@@ -162,6 +157,7 @@ class ModelsUtil {
             rubric: rubric,
             gradedAssignment: gradedAssignment,
             resetRubric: resetRubric,
+            canShowWarning: true,
           ),
         );
         break;

@@ -6,6 +6,7 @@ import 'package:flapp/models/rubric.dart';
 import 'package:flapp/routes/rubric/grades_selector.dart';
 import 'package:flapp/routes/rubric/rubric_table.dart';
 import 'package:flapp/routes/rubric/summary.dart';
+import 'package:flapp/save_assignment_popup.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -44,8 +45,50 @@ class RubricContainer extends StatelessWidget {
                 builder: (context, isEdited, child) => IconButton(
                   onPressed: isEdited
                       ? () {
-                          ModelsUtil.onSave(context.read<Grader>(), context.read<Rubric>(),
-                              context.read<GradedAssignment>(), context, true);
+                          Grader grader = context.read<Grader>();
+                          Rubric rubric = context.read<Rubric>();
+                          GradedAssignment gradedAssignment = context.read<GradedAssignment>();
+                          EditedStatus editedStatus = ModelsUtil.isEdited(grader, rubric, gradedAssignment);
+                          if (rubric.gradedAssignments.isNotEmpty &&
+                              (editedStatus == EditedStatus.rubric ||
+                                  editedStatus == EditedStatus.rubricAndAssignment)) {
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                content: const Text(
+                                  "You have already graded assignments with this rubric. Saving changes to the rubric may cause scores to be recalculated.",
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      if (editedStatus == EditedStatus.rubricAndAssignment) {
+                                        rubric.saveGradedAssignment(gradedAssignment);
+                                      }
+                                      grader.saveRubric(rubric);
+                                    },
+                                    child: const Text('Save'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text('Cancel'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          } else {
+                            if (editedStatus == EditedStatus.assignment ||
+                                editedStatus == EditedStatus.rubricAndAssignment) {
+                              rubric.saveGradedAssignment(gradedAssignment);
+                            }
+                            grader.saveRubric(rubric);
+                          }
                         }
                       : null,
                   icon: isEdited
@@ -53,7 +96,7 @@ class RubricContainer extends StatelessWidget {
                           Icons.save,
                           semanticLabel: "Save",
                         )
-                      : const Text("Saved  ✓"),
+                      : const Icon(Icons.check),
                   disabledColor: Colors.grey,
                 ),
                 selector: (context, grader, rubric, gradedAssignment) =>
@@ -65,8 +108,21 @@ class RubricContainer extends StatelessWidget {
                   builder: (context, isEdited, child) => IconButton(
                         onPressed: isEdited
                             ? () {
-                                ModelsUtil.onSave(context.read<Grader>(), context.read<Rubric>(),
-                                    context.read<GradedAssignment>(), context, false);
+                                Grader grader = context.read<Grader>();
+                                Rubric rubric = context.read<Rubric>();
+                                GradedAssignment gradedAssignment = context.read<GradedAssignment>();
+                                if (ModelsUtil.isEdited(grader, rubric, gradedAssignment) == EditedStatus.assignment) {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) => SaveAssignmentPopup(
+                                          grader: grader,
+                                          rubric: rubric,
+                                          gradedAssignment: gradedAssignment,
+                                          resetRubric: false,
+                                          canShowWarning: false));
+                                } else {
+                                  gradedAssignment.reset(rubric.defaultStudentName);
+                                }
                               }
                             : null,
                         icon: const Icon(
@@ -77,7 +133,9 @@ class RubricContainer extends StatelessWidget {
                       ),
                   selector: (context, grader, rubric, gradedAssignment) {
                     EditedStatus edit = ModelsUtil.isEdited(grader, rubric, gradedAssignment);
-                    return edit == EditedStatus.assignment || edit == EditedStatus.rubricAndAssignment;
+                    return edit == EditedStatus.assignment ||
+                        edit == EditedStatus.none &&
+                            gradedAssignment.getState() != GradedAssignment.empty(rubric.defaultStudentName).getState();
                   }),
             ),
           ],

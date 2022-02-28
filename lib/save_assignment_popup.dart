@@ -9,9 +9,15 @@ class SaveAssignmentPopup extends StatefulWidget {
   final Rubric rubric;
   final GradedAssignment gradedAssignment;
   final bool resetRubric;
+  final bool canShowWarning;
 
   const SaveAssignmentPopup(
-      {Key? key, required this.grader, required this.rubric, required this.gradedAssignment, required this.resetRubric})
+      {Key? key,
+      required this.grader,
+      required this.rubric,
+      required this.gradedAssignment,
+      required this.resetRubric,
+      required this.canShowWarning})
       : super(key: key);
 
   @override
@@ -39,7 +45,7 @@ class _SaveAssignmentPopupState extends State<SaveAssignmentPopup> {
           children: [
             Text("Save graded ${context.read<Rubric>().assignmentName}?"),
             Visibility(
-              visible: context.read<Rubric>().gradedAssignments.isNotEmpty,
+              visible: context.read<Rubric>().gradedAssignments.isNotEmpty && widget.canShowWarning,
               child: const Text(
                 "You have already graded assignments with this rubric. Saving changes to the rubric may cause scores to be recalculated.",
                 style: TextStyle(
@@ -85,9 +91,6 @@ class _SaveAssignmentPopupState extends State<SaveAssignmentPopup> {
         TextButton(
           onPressed: () {
             Navigator.pop(context);
-            if (widget.rubric.assignmentName == widget.grader.defaultAssignmentName) {
-              widget.grader.incrementOffset();
-            }
             if (widget.resetRubric) {
               widget.rubric.reset(widget.grader.defaultAssignmentName);
             }

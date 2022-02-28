@@ -67,12 +67,6 @@ class Grader extends ChangeNotifier {
 
   String get defaultAssignmentName => 'Assignment $_assignmentNum';
 
-  incrementOffset() {
-    _offset += 1;
-    _assignmentNum = _calcDefaultAssignmentNum();
-    notifyListeners();
-  }
-
   int _calcDefaultAssignmentNum() {
     try {
       List<String> matches = [];
