@@ -2,7 +2,6 @@ import 'package:flapp/models/graded_assignment.dart';
 import 'package:flapp/models/grader.dart';
 import 'package:flapp/models/models_util.dart';
 import 'package:flapp/models/rubric.dart';
-import 'package:flapp/save_assignment_popup.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -35,7 +34,7 @@ class Menu extends StatelessWidget {
                       },
                     ),
                 selector: (context, rubric) => rubric.assignmentName),
-            Selector2<Rubric, GradedAssignment, bool>(
+            Selector3<Grader, Rubric, GradedAssignment, bool>(
               builder: (context, isChanged, child) {
                 return Visibility(
                   visible: isChanged,
@@ -56,9 +55,8 @@ class Menu extends StatelessWidget {
                   ),
                 );
               },
-              selector: (context, rubric, gradedAssignment) =>
-                  rubric.getState() != Rubric.empty(context.read<Grader>().defaultAssignmentName).getState() ||
-                  gradedAssignment.getState() != GradedAssignment.empty(rubric.defaultStudentName).getState(),
+              selector: (context, grader, rubric, gradedAssignment) =>
+                  ModelsUtil.isEdited(grader, rubric, gradedAssignment) != EditedStatus.none,
             ),
             const Divider(),
             ListTile(

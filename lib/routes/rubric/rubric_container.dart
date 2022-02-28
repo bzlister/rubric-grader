@@ -40,28 +40,45 @@ class RubricContainer extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-              child: ElevatedButton(
-                onPressed: () {
-                  ModelsUtil.onSave(
-                      context.read<Grader>(), context.read<Rubric>(), context.read<GradedAssignment>(), context, true);
-                },
-                child: const Icon(
-                  Icons.save,
-                  semanticLabel: "Save",
+              child: Selector3<Grader, Rubric, GradedAssignment, bool>(
+                builder: (context, isEdited, child) => IconButton(
+                  onPressed: isEdited
+                      ? () {
+                          ModelsUtil.onSave(context.read<Grader>(), context.read<Rubric>(),
+                              context.read<GradedAssignment>(), context, true);
+                        }
+                      : null,
+                  icon: isEdited
+                      ? const Icon(
+                          Icons.save,
+                          semanticLabel: "Save",
+                        )
+                      : const Text("Saved  ✓"),
+                  disabledColor: Colors.grey,
                 ),
+                selector: (context, grader, rubric, gradedAssignment) =>
+                    ModelsUtil.isEdited(grader, rubric, gradedAssignment) != EditedStatus.none,
               ),
             ),
             Expanded(
-              child: ElevatedButton(
-                onPressed: () {
-                  ModelsUtil.onSave(
-                      context.read<Grader>(), context.read<Rubric>(), context.read<GradedAssignment>(), context, false);
-                },
-                child: const Icon(
-                  Icons.reset_tv,
-                  semanticLabel: "Grade new student",
-                ),
-              ),
+              child: Selector3<Grader, Rubric, GradedAssignment, bool>(
+                  builder: (context, isEdited, child) => IconButton(
+                        onPressed: isEdited
+                            ? () {
+                                ModelsUtil.onSave(context.read<Grader>(), context.read<Rubric>(),
+                                    context.read<GradedAssignment>(), context, false);
+                              }
+                            : null,
+                        icon: const Icon(
+                          Icons.reset_tv,
+                          semanticLabel: "Grade new student",
+                        ),
+                        disabledColor: Colors.grey,
+                      ),
+                  selector: (context, grader, rubric, gradedAssignment) {
+                    EditedStatus edit = ModelsUtil.isEdited(grader, rubric, gradedAssignment);
+                    return edit == EditedStatus.assignment || edit == EditedStatus.rubricAndAssignment;
+                  }),
             ),
           ],
         ),
