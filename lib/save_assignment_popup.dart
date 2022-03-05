@@ -40,38 +40,10 @@ class _SaveAssignmentPopupState extends State<SaveAssignmentPopup> {
     return AlertDialog(
       content: SizedBox(
         width: double.maxFinite,
-        child: ListView(
-          shrinkWrap: true,
-          children: [
-            Text("Save graded ${context.read<Rubric>().assignmentName}?"),
-            Visibility(
-              visible: context.read<Rubric>().gradedAssignments.isNotEmpty && widget.canShowWarning,
-              child: const Text(
-                "You have already graded assignments with this rubric. Saving changes to the rubric may cause scores to be recalculated.",
-                style: TextStyle(
-                  color: Colors.red,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-            ),
-            IntrinsicWidth(
-              child: TextField(
-                keyboardType: TextInputType.text,
-                maxLength: 30,
-                onChanged: (value) {
-                  setState(() {
-                    _name = value.trim();
-                  });
-                },
-                maxLines: 1,
-                autofocus: widget.rubric.defaultStudentName == widget.gradedAssignment.name,
-                decoration: const InputDecoration(labelText: "Student name:"),
-                onSubmitted: (value) => widget.gradedAssignment.name = value,
-                textInputAction: TextInputAction.go,
-                controller: _controller,
-              ),
-            ),
-          ],
+        child: Selector2<Rubric, GradedAssignment, String>(
+          builder: (context, str, child) => Text(str),
+          selector: (context, rubric, gradedAssignment) =>
+              'Save changes to ${gradedAssignment}\'s ${rubric.assignmentName}?',
         ),
       ),
       actions: [
