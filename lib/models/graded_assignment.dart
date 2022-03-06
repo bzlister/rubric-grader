@@ -35,7 +35,6 @@ class GradedAssignment extends ChangeNotifier {
     daysLate = newGradedAssignment._daysLate;
     comment = newGradedAssignment._comment;
     name = newGradedAssignment._name;
-    print('old: $xid new: ${newGradedAssignment.xid}');
     xid = newGradedAssignment.xid;
     notifyListeners();
   }

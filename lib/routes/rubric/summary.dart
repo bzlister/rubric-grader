@@ -7,7 +7,6 @@ import 'package:flapp/models/rubric.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
-import 'package:xid/xid.dart';
 
 class Summary extends StatelessWidget {
   final double width = 110;

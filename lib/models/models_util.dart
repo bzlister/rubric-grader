@@ -83,6 +83,7 @@ class ModelsUtil {
     switch (editedStatus) {
       case EditedStatus.none:
         rubric.reset(grader.defaultAssignmentName);
+        gradedAssignment.reset(rubric.defaultStudentName);
         break;
       case EditedStatus.assignment:
         showDialog(
