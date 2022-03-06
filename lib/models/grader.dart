@@ -28,6 +28,13 @@ class Grader extends ChangeNotifier {
         _scoreSelectionParadigm = ScoreSelectionParadigm.bin,
         _themeData = Themes.light;
 
+  ScoreSelectionParadigm get scoreSelectionParadigm => _scoreSelectionParadigm;
+
+  set scoreSelectionParadigm(ScoreSelectionParadigm newParadigm) {
+    _scoreSelectionParadigm = newParadigm;
+    notifyListeners();
+  }
+
   ThemeData get themeData => _themeData;
 
   set themeData(ThemeData theme) {

@@ -29,6 +29,10 @@ class _ThemeOptionState extends State<ThemeOption> {
           child: Text("Theme"),
         ),
         const Spacer(),
+        Selector<Grader, Color>(
+          builder: (context, highlight, child) => Text("Light", style: _darkMode ? TextStyle(color: highlight) : null),
+          selector: (context, grader) => grader.themeData.highlightColor,
+        ),
         SizedBox(
           width: 100,
           child: Switch(
@@ -43,6 +47,10 @@ class _ThemeOptionState extends State<ThemeOption> {
               });
             },
           ),
+        ),
+        Selector<Grader, Color>(
+          builder: (context, highlight, child) => Text("Dark", style: _darkMode ? null : TextStyle(color: highlight)),
+          selector: (context, grader) => grader.themeData.highlightColor,
         ),
       ],
     );
