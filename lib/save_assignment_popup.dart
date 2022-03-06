@@ -43,7 +43,7 @@ class _SaveAssignmentPopupState extends State<SaveAssignmentPopup> {
         child: Selector2<Rubric, GradedAssignment, String>(
           builder: (context, str, child) => Text(str),
           selector: (context, rubric, gradedAssignment) =>
-              'Save changes to ${gradedAssignment}\'s ${rubric.assignmentName}?',
+              'Save changes to ${gradedAssignment.name}\'s ${rubric.assignmentName}?',
         ),
       ),
       actions: [

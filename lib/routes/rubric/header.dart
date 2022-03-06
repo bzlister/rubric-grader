@@ -2,65 +2,52 @@ import 'package:flapp/models/graded_assignment.dart';
 import 'package:flapp/models/rubric.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:xid/xid.dart';
 
-class Header extends StatefulWidget {
-  final String assignmentName;
-  final String studentName;
-
-  const Header({Key? key, required this.assignmentName, required this.studentName}) : super(key: key);
-
-  @override
-  State<StatefulWidget> createState() => _HeaderState();
-}
-
-class _HeaderState extends State<Header> {
-  late TextEditingController _assignmentNameController;
-  late TextEditingController _studentNameController;
-
-  @override
-  void initState() {
-    _assignmentNameController = TextEditingController(text: widget.assignmentName);
-    _studentNameController = TextEditingController(text: widget.studentName);
-    super.initState();
-  }
+class Header extends StatelessWidget {
+  const Header({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        TextField(
-          decoration: const InputDecoration(
-            isDense: true,
-          ),
-          style: const TextStyle(
-            fontSize: 20,
-            color: Colors.white,
-          ),
-          onSubmitted: (value) {
-            context.read<Rubric>().assignmentName = value;
+        Selector<Rubric, Xid>(
+          builder: (context, _, child) {
+            return TextFormField(
+              controller: TextEditingController(text: context.read<Rubric>().assignmentName),
+              decoration: const InputDecoration(
+                isDense: true,
+              ),
+              style: const TextStyle(
+                fontSize: 20,
+                color: Colors.white,
+              ),
+              onChanged: (value) {
+                context.read<Rubric>().assignmentName = value;
+              },
+              textInputAction: TextInputAction.go,
+            );
           },
-          onChanged: (value) {
-            context.read<Rubric>().assignmentName = value;
-          },
-          textInputAction: TextInputAction.go,
-          controller: _assignmentNameController,
+          selector: (context, rubric) => rubric.xid,
         ),
-        TextField(
-          decoration: const InputDecoration(
-            isDense: true,
-          ),
-          style: const TextStyle(
-            fontSize: 18,
-            color: Colors.white,
-          ),
-          onSubmitted: (value) {
-            context.read<GradedAssignment>().name = value;
+        Selector<GradedAssignment, Xid>(
+          builder: (context, _, child) {
+            return TextFormField(
+              controller: TextEditingController(text: context.read<GradedAssignment>().name),
+              decoration: const InputDecoration(
+                isDense: true,
+              ),
+              style: const TextStyle(
+                fontSize: 18,
+                color: Colors.white,
+              ),
+              onChanged: (value) {
+                context.read<GradedAssignment>().name = value;
+              },
+              textInputAction: TextInputAction.go,
+            );
           },
-          onChanged: (value) {
-            context.read<GradedAssignment>().name = value;
-          },
-          textInputAction: TextInputAction.go,
-          controller: _studentNameController,
+          selector: (context, gradedAssignment) => gradedAssignment.xid,
         ),
       ],
     );

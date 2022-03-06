@@ -26,7 +26,7 @@ class Grader extends ChangeNotifier {
       : _savedRubrics = [],
         _gradingScale = GradingScale.collegeBoard(),
         _scoreSelectionParadigm = ScoreSelectionParadigm.bin,
-        _themeData = Themes.dark;
+        _themeData = Themes.light;
 
   ThemeData get themeData => _themeData;
 

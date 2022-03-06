@@ -24,7 +24,7 @@ class Menu extends StatelessWidget {
             const Divider(),
             Selector<Rubric, String>(
                 builder: (context, assignmentName, child) => ListTile(
-                      leading: const Icon(Icons.new_releases),
+                      leading: const Icon(Icons.assignment),
                       title: Text(assignmentName),
                       onTap: () {
                         Navigator.pop(context);
@@ -34,29 +34,20 @@ class Menu extends StatelessWidget {
                       },
                     ),
                 selector: (context, rubric) => rubric.assignmentName),
-            Selector3<Grader, Rubric, GradedAssignment, bool>(
-              builder: (context, isChanged, child) {
-                return Visibility(
-                  visible: isChanged,
-                  child: ListTile(
-                    leading: const Icon(Icons.new_label),
-                    title: const Text("New rubric"),
-                    onTap: () {
-                      Navigator.pop(context);
-                      if (ModalRoute.of(context)?.settings.name != "/rubric") {
-                        Navigator.pushNamed(context, '/rubric');
-                      }
-                      Rubric rubric = context.read<Rubric>();
-                      Grader grader = context.read<Grader>();
-                      GradedAssignment gradedAssignment = context.read<GradedAssignment>();
+            ListTile(
+              leading: const Icon(Icons.new_label),
+              title: const Text("New rubric"),
+              onTap: () {
+                Navigator.pop(context);
+                if (ModalRoute.of(context)?.settings.name != "/rubric") {
+                  Navigator.pushNamed(context, '/rubric');
+                }
+                Rubric rubric = context.read<Rubric>();
+                Grader grader = context.read<Grader>();
+                GradedAssignment gradedAssignment = context.read<GradedAssignment>();
 
-                      ModelsUtil.onSave(grader, rubric, gradedAssignment, context, true);
-                    },
-                  ),
-                );
+                ModelsUtil.onSave(grader, rubric, gradedAssignment, context, true);
               },
-              selector: (context, grader, rubric, gradedAssignment) =>
-                  ModelsUtil.isEdited(grader, rubric, gradedAssignment) != EditedStatus.none,
             ),
             const Divider(),
             ListTile(

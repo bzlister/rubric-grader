@@ -1,3 +1,4 @@
+import 'package:flapp/icon_image_provider.dart';
 import 'package:flapp/models/grader.dart';
 import 'package:flapp/themes.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +32,9 @@ class _ThemeOptionState extends State<ThemeOption> {
         SizedBox(
           width: 100,
           child: Switch(
+            splashRadius: 50,
+            activeThumbImage: IconImageProvider(Icons.mode_night_rounded),
+            inactiveThumbImage: IconImageProvider(Icons.wb_sunny_rounded, color: Colors.grey),
             value: _darkMode,
             onChanged: (x) {
               setState(() {

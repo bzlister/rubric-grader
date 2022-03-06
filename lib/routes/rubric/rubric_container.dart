@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class RubricContainer extends StatelessWidget {
-  final double leftColumnWidth = 85;
+  final double leftColumnWidth = 100;
   const RubricContainer({Key? key}) : super(key: key);
 
   @override
@@ -20,124 +20,112 @@ class RubricContainer extends StatelessWidget {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        bottomNavigationBar: SizedBox(
-          height: 40,
-          child: Row(
-            children: [
-              Expanded(
-                child: Selector3<Grader, Rubric, GradedAssignment, bool>(
-                  builder: (context, isEdited, child) => IconButton(
-                    onPressed: isEdited
-                        ? () {
-                            Grader grader = context.read<Grader>();
-                            Rubric rubric = context.read<Rubric>();
-                            GradedAssignment gradedAssignment = context.read<GradedAssignment>();
-                            EditedStatus editedStatus = ModelsUtil.isEdited(grader, rubric, gradedAssignment);
-                            if (rubric.gradedAssignments.isNotEmpty &&
-                                (editedStatus == EditedStatus.rubric ||
-                                    editedStatus == EditedStatus.rubricAndAssignment)) {
-                              showDialog(
-                                context: context,
-                                builder: (context) => AlertDialog(
-                                  content: const Text(
-                                    "You have already graded assignments with this rubric. Saving changes to the rubric may cause scores to be recalculated.",
-                                    style: TextStyle(
-                                      color: Colors.red,
-                                      fontStyle: FontStyle.italic,
-                                    ),
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                        if (editedStatus == EditedStatus.rubricAndAssignment) {
-                                          rubric.saveGradedAssignment(gradedAssignment);
-                                        }
-                                        grader.saveRubric(rubric);
-                                      },
-                                      child: const Text('Save'),
-                                    ),
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: const Text('Cancel'),
-                                    ),
-                                  ],
+        bottomNavigationBar: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Selector3<Grader, Rubric, GradedAssignment, bool>(
+              builder: (context, isEdited, child) => IconButton(
+                onPressed: isEdited
+                    ? () {
+                        Grader grader = context.read<Grader>();
+                        Rubric rubric = context.read<Rubric>();
+                        GradedAssignment gradedAssignment = context.read<GradedAssignment>();
+                        EditedStatus editedStatus = ModelsUtil.isEdited(grader, rubric, gradedAssignment);
+                        if (rubric.gradedAssignments.isNotEmpty &&
+                            (editedStatus == EditedStatus.rubric || editedStatus == EditedStatus.rubricAndAssignment)) {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              content: const Text(
+                                "You have already graded assignments with this rubric. Saving changes to the rubric may cause scores to be recalculated.",
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontStyle: FontStyle.italic,
                                 ),
-                              );
-                            } else {
-                              if (editedStatus == EditedStatus.assignment ||
-                                  editedStatus == EditedStatus.rubricAndAssignment) {
-                                rubric.saveGradedAssignment(gradedAssignment);
-                              }
-                              grader.saveRubric(rubric);
-                            }
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    if (editedStatus == EditedStatus.rubricAndAssignment) {
+                                      rubric.saveGradedAssignment(gradedAssignment);
+                                    }
+                                    grader.saveRubric(rubric);
+                                  },
+                                  child: const Text('Save'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('Cancel'),
+                                ),
+                              ],
+                            ),
+                          );
+                        } else {
+                          if (editedStatus == EditedStatus.assignment ||
+                              editedStatus == EditedStatus.rubricAndAssignment) {
+                            rubric.saveGradedAssignment(gradedAssignment);
                           }
-                        : null,
-                    icon: isEdited
-                        ? const Icon(
-                            Icons.save,
-                            semanticLabel: "Save",
-                          )
-                        : const Icon(Icons.check),
-                    disabledColor: Colors.grey,
-                  ),
-                  selector: (context, grader, rubric, gradedAssignment) =>
-                      ModelsUtil.isEdited(grader, rubric, gradedAssignment) != EditedStatus.none,
-                ),
+                          grader.saveRubric(rubric);
+                        }
+                      }
+                    : null,
+                icon: isEdited
+                    ? const Icon(
+                        Icons.save,
+                        semanticLabel: "Save",
+                      )
+                    : const Icon(Icons.check),
+                disabledColor: Colors.grey,
               ),
-              Expanded(
-                child: Selector3<Grader, Rubric, GradedAssignment, bool>(
-                    builder: (context, isEdited, child) => IconButton(
-                          onPressed: isEdited
-                              ? () {
-                                  Grader grader = context.read<Grader>();
-                                  Rubric rubric = context.read<Rubric>();
-                                  GradedAssignment gradedAssignment = context.read<GradedAssignment>();
-                                  if (ModelsUtil.isEdited(grader, rubric, gradedAssignment) ==
-                                      EditedStatus.assignment) {
-                                    showDialog(
-                                        context: context,
-                                        builder: (context) => SaveAssignmentPopup(
-                                            grader: grader,
-                                            rubric: rubric,
-                                            gradedAssignment: gradedAssignment,
-                                            resetRubric: false,
-                                            canShowWarning: false));
-                                  } else {
-                                    gradedAssignment.reset(rubric.defaultStudentName);
-                                  }
-                                }
-                              : null,
-                          icon: const Icon(
-                            Icons.reset_tv,
-                            semanticLabel: "Grade new student",
-                          ),
-                          disabledColor: Colors.grey,
-                        ),
-                    selector: (context, grader, rubric, gradedAssignment) {
-                      EditedStatus edit = ModelsUtil.isEdited(grader, rubric, gradedAssignment);
-                      return edit == EditedStatus.assignment ||
-                          edit == EditedStatus.none &&
-                              gradedAssignment.getState() !=
-                                  GradedAssignment.empty(rubric.defaultStudentName).getState();
-                    }),
-              ),
-            ],
-          ),
+              selector: (context, grader, rubric, gradedAssignment) =>
+                  ModelsUtil.isEdited(grader, rubric, gradedAssignment) != EditedStatus.none,
+            ),
+            Selector3<Grader, Rubric, GradedAssignment, bool>(
+                builder: (context, isEdited, child) => IconButton(
+                      onPressed: isEdited
+                          ? () {
+                              Grader grader = context.read<Grader>();
+                              Rubric rubric = context.read<Rubric>();
+                              GradedAssignment gradedAssignment = context.read<GradedAssignment>();
+                              if (ModelsUtil.isEdited(grader, rubric, gradedAssignment) == EditedStatus.assignment) {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) => SaveAssignmentPopup(
+                                        grader: grader,
+                                        rubric: rubric,
+                                        gradedAssignment: gradedAssignment,
+                                        resetRubric: false,
+                                        canShowWarning: false));
+                              } else {
+                                gradedAssignment.reset(rubric.defaultStudentName);
+                              }
+                            }
+                          : null,
+                      icon: const Icon(
+                        Icons.person_add,
+                        semanticLabel: "Grade new student",
+                      ),
+                      disabledColor: Colors.grey,
+                    ),
+                selector: (context, grader, rubric, gradedAssignment) {
+                  EditedStatus edit = ModelsUtil.isEdited(grader, rubric, gradedAssignment);
+                  return edit == EditedStatus.assignment ||
+                      edit == EditedStatus.none &&
+                          gradedAssignment.getState() != GradedAssignment.empty(rubric.defaultStudentName).getState();
+                }),
+          ],
         ),
         appBar: AppBar(
-          title: Header(
-            assignmentName: context.read<Rubric>().assignmentName,
-            studentName: context.read<GradedAssignment>().name,
-          ),
+          title: const Header(),
           toolbarHeight: 85,
         ),
         drawer: const Menu(),
         resizeToAvoidBottomInset: true,
         body: Padding(
-          padding: const EdgeInsets.only(left: 5, right: 5, top: 10),
+          padding: const EdgeInsets.only(left: 1, right: 1, top: 10),
           child: CustomScrollView(
             slivers: <Widget>[
               SliverToBoxAdapter(
@@ -199,14 +187,20 @@ class RubricContainer extends StatelessWidget {
                         ? Column(mainAxisSize: MainAxisSize.max, children: const [
                             Spacer(),
                             Padding(
-                              padding: EdgeInsets.only(bottom: 20),
+                              padding: EdgeInsets.only(bottom: 5),
                               child: Summary(),
                             ),
                           ])
                         : Center(
                             child: Selector<Rubric, String>(
-                              builder: (context, assignmentName, child) =>
-                                  Text("Tap the '+' button to add a category to $assignmentName"),
+                              builder: (context, assignmentName, child) => Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Text("Tap"),
+                                  const Icon(Icons.add_box),
+                                  Text("to add a category to $assignmentName"),
+                                ],
+                              ),
                               selector: (context, rubric) => rubric.assignmentName,
                             ),
                           ),
