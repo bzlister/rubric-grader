@@ -1,9 +1,5 @@
 import 'dart:collection';
-import 'dart:math';
-import 'package:flapp/grading_scale.dart';
-import 'package:flapp/models/rubric.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:tuple/tuple.dart';
+import 'package:flutter/material.dart';
 import 'package:xid/xid.dart';
 
 class GradedAssignment extends ChangeNotifier {
@@ -29,13 +25,22 @@ class GradedAssignment extends ChangeNotifier {
     return GradedAssignment(HashMap<Xid, Xid>.from({..._scoreSelections}), _daysLate, _comment, _name);
   }
 
+  void load(GradedAssignment toLoad) {
+    _scoreSelections = toLoad._scoreSelections;
+    _daysLate = toLoad._daysLate;
+    _comment = toLoad._comment;
+    _name = toLoad._name;
+    _xid = toLoad._xid;
+    notifyListeners();
+  }
+
   void reset(String defaultStudentName) {
     GradedAssignment newGradedAssignment = GradedAssignment.empty(defaultStudentName);
     _scoreSelections = newGradedAssignment.selections;
-    daysLate = newGradedAssignment._daysLate;
-    comment = newGradedAssignment._comment;
-    name = newGradedAssignment._name;
-    xid = newGradedAssignment.xid;
+    _daysLate = newGradedAssignment._daysLate;
+    _comment = newGradedAssignment._comment;
+    _name = newGradedAssignment._name;
+    _xid = newGradedAssignment._xid;
     notifyListeners();
   }
 

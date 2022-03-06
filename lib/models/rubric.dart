@@ -65,6 +65,17 @@ class Rubric extends ChangeNotifier {
     notifyListeners();
   }
 
+  void load(Rubric toLoad) {
+    _assignmentName = toLoad._assignmentName;
+    _scoreBins = toLoad._scoreBins;
+    _categories = toLoad._categories;
+    _latePolicy = toLoad._latePolicy;
+    _latePercentagePerDay = toLoad._latePercentagePerDay;
+    _gradedAssignments = toLoad._gradedAssignments;
+    xid = toLoad.xid;
+    notifyListeners();
+  }
+
   List<GradedAssignment> get gradedAssignments => _gradedAssignments;
 
   void saveGradedAssignment(GradedAssignment gradedAssignment) {
@@ -83,6 +94,12 @@ class Rubric extends ChangeNotifier {
     } else {
       _gradedAssignments.add(copy);
     }
+    calcDefaultStudentName();
+    notifyListeners();
+  }
+
+  void deleteGradedAssignments(List<Xid> xids) {
+    _gradedAssignments = [..._gradedAssignments.where((ga) => xids.contains(ga.xid) == false)];
     calcDefaultStudentName();
     notifyListeners();
   }

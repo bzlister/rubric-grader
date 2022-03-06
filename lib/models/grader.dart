@@ -63,6 +63,12 @@ class Grader extends ChangeNotifier {
     notifyListeners();
   }
 
+  void deleteRubric(Rubric rubric) {
+    _savedRubrics = [..._savedRubrics.where((r) => r.xid != rubric.xid)];
+    _assignmentNum = _calcDefaultAssignmentNum();
+    notifyListeners();
+  }
+
   List<Rubric> get savedRubrics => _savedRubrics;
 
   GradingScale get gradingScale => _gradingScale;

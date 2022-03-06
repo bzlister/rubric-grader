@@ -1,8 +1,10 @@
 import 'package:flapp/models/grader.dart';
 import 'package:flapp/models/models_util.dart';
 import 'package:flapp/models/rubric.dart';
+import 'package:flapp/routes/home/home_state.dart';
 import 'package:flutter/material.dart';
 import 'package:expansion_tile_card/expansion_tile_card.dart';
+import 'package:provider/src/provider.dart';
 import 'package:tuple/tuple.dart';
 
 class SavedRubricCard extends StatefulWidget {
@@ -38,25 +40,39 @@ class _SavedRubricCardState extends State<SavedRubricCard> {
         Tuple2<String, double> grade = ModelsUtil.calcGrade(widget.grader, widget.rubric, element);
         return Padding(
           padding: const EdgeInsets.only(left: 25, bottom: 2),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                '\u2022',
-                style: TextStyle(
-                  fontSize: 17,
+          child: GestureDetector(
+            onTap: () {
+              context.read<HomeState>().bottomNavigationMode = BottomNavigationMode.singleStudentOptions;
+              context.read<HomeState>().setSelected(widget.rubric, [element]);
+            },
+            onLongPress: () {
+              context.read<HomeState>().bottomNavigationMode = BottomNavigationMode.multiStudentOptions;
+              context.read<HomeState>().setSelected(widget.rubric, widget.rubric.gradedAssignments);
+            },
+            child: AbsorbPointer(
+              child: Container(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      '\u2022',
+                      style: TextStyle(
+                        fontSize: 17,
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 6,
+                    ),
+                    Text(
+                      element.name.length > 100 ? '${element.name.substring(0, 100)}...' : element.name,
+                      textAlign: TextAlign.left,
+                    ),
+                    const Spacer(),
+                    Text('${grade.item1} (${grade.item2.toStringAsFixed(1)}%)')
+                  ],
                 ),
               ),
-              const SizedBox(
-                width: 6,
-              ),
-              Text(
-                element.name.length > 100 ? '${element.name.substring(0, 100)}...' : element.name,
-                textAlign: TextAlign.left,
-              ),
-              const Spacer(),
-              Text('${grade.item1} (${grade.item2.toStringAsFixed(1)}%)')
-            ],
+            ),
           ),
         );
       },
