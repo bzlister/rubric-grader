@@ -9,13 +9,13 @@ import 'package:flapp/routes/home/saved_rubric_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
+import 'package:xid/xid.dart';
 
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    List<GlobalKey<ExpansionTileCardState>> cardKeyList = [];
     return ChangeNotifierProxyProvider<Grader, HomeState>(
       update: (context, grader, _) =>
           HomeState(showBottomNavigationVotes: List.filled(grader.savedRubrics.length, false)),
@@ -67,34 +67,16 @@ class Home extends StatelessWidget {
         body: Padding(
           padding: const EdgeInsets.only(top: 5.0, left: 1, right: 1, bottom: 1),
           child: SingleChildScrollView(
-            child: Selector<Grader, Grader>(
-              builder: (context, grader, child) => Column(
+            child: Selector<Grader, int>(
+              builder: (context, numRubrics, child) => Column(
                 children: List.generate(
-                  grader.savedRubrics.length,
-                  (index) {
-                    cardKeyList.add(GlobalKey());
-                    return SavedRubricCard(
-                      grader: grader,
-                      rubric: grader.savedRubrics[index],
-                      tileKey: cardKeyList[index],
-                      onExpansionChanged: (opened) {
-                        if (opened) {
-                          context.read<HomeState>().setVote(index, true);
-                          for (int i = 0; i < grader.savedRubrics.length; i++) {
-                            if (index != i) {
-                              context.read<HomeState>().setVote(i, false);
-                              cardKeyList[i].currentState?.collapse();
-                            }
-                          }
-                        } else {
-                          context.read<HomeState>().setVote(index, false);
-                        }
-                      },
-                    );
-                  },
+                  numRubrics,
+                  (index) => Selector<Grader, Rubric>(
+                      selector: (context, grader) => grader.savedRubrics[index],
+                      builder: (context, rubric, child) => SavedRubricCard(rubric: rubric)),
                 ),
               ),
-              selector: (context, grader) => grader,
+              selector: (context, grader) => grader.savedRubrics.length,
             ),
           ),
         ),

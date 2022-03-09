@@ -1,24 +1,19 @@
 import 'package:flapp/models/grader.dart';
 import 'package:flapp/models/models_util.dart';
 import 'package:flapp/models/rubric.dart';
+import 'package:flapp/routes/home/expandable_list_tile.dart';
 import 'package:flapp/routes/home/home_state.dart';
 import 'package:flutter/material.dart';
-import 'package:expansion_tile_card/expansion_tile_card.dart';
+import 'package:provider/provider.dart';
 import 'package:provider/src/provider.dart';
 import 'package:tuple/tuple.dart';
 
 class SavedRubricCard extends StatefulWidget {
-  final Grader grader;
   final Rubric rubric;
-  final Key tileKey;
-  final void Function(bool) onExpansionChanged;
 
   const SavedRubricCard({
     Key? key,
-    required this.grader,
     required this.rubric,
-    required this.tileKey,
-    required this.onExpansionChanged,
   }) : super(key: key);
 
   @override
@@ -27,27 +22,30 @@ class SavedRubricCard extends StatefulWidget {
 
 class _SavedRubricCardState extends State<SavedRubricCard> {
   late Widget _collapsedContent;
-  late List<Widget> _expandedContent;
+  late Widget _expandedContent;
+  late bool _expanded;
 
   @override
   void initState() {
+    _expanded = false;
     _collapsedContent = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [Text(widget.rubric.assignmentName), Text('(${widget.rubric.gradedAssignments.length})')],
     );
-    _expandedContent = widget.rubric.gradedAssignments.map(
+    _expandedContent = Column(
+        children: widget.rubric.gradedAssignments.map(
       (element) {
-        Tuple2<String, double> grade = ModelsUtil.calcGrade(widget.grader, widget.rubric, element);
+        Tuple2<String, double> grade = ModelsUtil.calcGrade(context.read<Grader>(), widget.rubric, element);
         return Padding(
           padding: const EdgeInsets.only(left: 25, bottom: 2),
           child: GestureDetector(
             onTap: () {
               context.read<HomeState>().bottomNavigationMode = BottomNavigationMode.singleStudentOptions;
-              context.read<HomeState>().setSelected(widget.rubric, [element]);
+              // context.read<HomeState>().setSelected(widget.rubric, [element]);
             },
             onLongPress: () {
               context.read<HomeState>().bottomNavigationMode = BottomNavigationMode.multiStudentOptions;
-              context.read<HomeState>().setSelected(widget.rubric, widget.rubric.gradedAssignments);
+              // context.read<HomeState>().setSelected(widget.rubric, widget.rubric.gradedAssignments);
             },
             child: AbsorbPointer(
               child: Container(
@@ -76,7 +74,7 @@ class _SavedRubricCardState extends State<SavedRubricCard> {
           ),
         );
       },
-    ).toList();
+    ).toList());
     super.initState();
   }
 
@@ -85,12 +83,19 @@ class _SavedRubricCardState extends State<SavedRubricCard> {
     return Padding(
       padding: const EdgeInsets.only(top: 1, bottom: 1, left: 5, right: 5),
       child: SingleChildScrollView(
-        child: ExpansionTileCard(
-          key: widget.tileKey,
-          onExpansionChanged: widget.onExpansionChanged,
-          title: _collapsedContent,
-          children: _expandedContent,
-          baseColor: Theme.of(context).cardColor,
+        child: Selector<HomeState, bool>(
+          builder: (context, shouldExpand, child) {
+            return ExpandableListTile(
+              expanded: shouldExpand,
+              onExpandPressed: () {
+                context.read<HomeState>().minimize(shouldExpand ? null : widget.rubric.xid);
+              },
+              title: _collapsedContent,
+              child: _expandedContent,
+              // baseColor: Theme.of(context).cardColor,
+            );
+          },
+          selector: (context, homeState) => homeState.shouldExpand(widget.rubric.xid),
         ),
       ),
     );

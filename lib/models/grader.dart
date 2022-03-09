@@ -59,6 +59,7 @@ class Grader extends ChangeNotifier {
     } else {
       _savedRubrics.add(copy);
     }
+    _savedRubrics = [..._savedRubrics];
     _assignmentNum = _calcDefaultAssignmentNum();
     notifyListeners();
   }

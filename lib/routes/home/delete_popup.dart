@@ -23,13 +23,14 @@ class DeletePopup extends StatelessWidget {
           onPressed: () {
             Navigator.pop(context);
             List<Xid> xids = assignmentsToDelete.map((a) => a.xid).toList();
+            bool deleteRubric = assignmentsToDelete.length == containingRubric.gradedAssignments.length;
             containingRubric.deleteGradedAssignments(xids);
             Grader grader = context.read<Grader>();
             grader.saveRubric(containingRubric);
             if (xids.contains(context.read<GradedAssignment>().xid)) {
               context.read<GradedAssignment>().reset(containingRubric.defaultStudentName);
             }
-            if (assignmentsToDelete.length == containingRubric.gradedAssignments.length) {
+            if (deleteRubric) {
               grader.deleteRubric(containingRubric);
               if (context.read<Rubric>().xid == containingRubric.xid) {
                 context.read<Rubric>().reset(grader.defaultAssignmentName);
