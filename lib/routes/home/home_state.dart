@@ -38,6 +38,8 @@ class HomeState extends ChangeNotifier {
   }
 
   void minimize(Xid? singleExpanded) {
+    _selectedGradedAssignments = [];
+    _bottomNavigationMode = BottomNavigationMode.singleStudentOptions;
     if (singleExpanded != null) {
       _expandCardState[singleExpanded] = true;
     }
@@ -51,9 +53,22 @@ class HomeState extends ChangeNotifier {
 
   Rubric get rubric => _selectedRubric!;
 
-  setSelected(Rubric rubric, List<GradedAssignment> selection) {
-    _selectedRubric = rubric;
-    _selectedGradedAssignments = [...selection];
+  void addSelected(GradedAssignment gradedAssignment) {
+    _selectedGradedAssignments = <GradedAssignment>{..._selectedGradedAssignments, gradedAssignment}.toList();
+    notifyListeners();
+  }
+
+  void removeSelected(GradedAssignment gradedAssignment) {
+    _selectedGradedAssignments = [..._selectedGradedAssignments.where((ga) => ga != gradedAssignment)];
+    notifyListeners();
+  }
+
+  void clear(GradedAssignment? gradedAssignment) {
+    if (gradedAssignment != null) {
+      _selectedGradedAssignments = [gradedAssignment];
+    } else {
+      _selectedGradedAssignments = [];
+    }
     notifyListeners();
   }
 }

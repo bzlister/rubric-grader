@@ -9,7 +9,6 @@ import 'package:flapp/routes/home/saved_rubric_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
-import 'package:xid/xid.dart';
 
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
@@ -43,11 +42,12 @@ class Home extends StatelessWidget {
                     IconButton(
                         onPressed: () {
                           showDialog(
-                              context: context,
-                              builder: (context) => DeletePopup(
-                                    containingRubric: data.item1,
-                                    assignmentsToDelete: data.item2,
-                                  ));
+                            context: context,
+                            builder: (context) => DeletePopup(
+                              containingRubric: data.item1,
+                              assignmentsToDelete: data.item2,
+                            ),
+                          );
                         },
                         icon: const Icon(Icons.delete))
                   ],
