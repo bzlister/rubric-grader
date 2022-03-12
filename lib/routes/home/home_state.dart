@@ -4,25 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:xid/xid.dart';
 
 class HomeState extends ChangeNotifier {
-  List<bool> _showBottomNavigationVotes;
   List<GradedAssignment> _selectedGradedAssignments;
   Rubric? _selectedRubric;
   Map<Xid, bool> _expandCardState;
   BottomNavigationMode _bottomNavigationMode;
 
   HomeState({required showBottomNavigationVotes})
-      : _showBottomNavigationVotes = showBottomNavigationVotes,
-        _bottomNavigationMode = BottomNavigationMode.singleStudentOptions,
+      : _bottomNavigationMode = BottomNavigationMode.singleStudentOptions,
         _selectedGradedAssignments = [],
         _expandCardState = {},
         super();
 
-  bool shouldShow() => _selectedGradedAssignments.isNotEmpty && _showBottomNavigationVotes.any((vote) => vote);
-
-  void setVote(int index, bool value) {
-    _showBottomNavigationVotes[index] = value;
-    notifyListeners();
-  }
+  bool shouldShow() => _selectedGradedAssignments.isNotEmpty;
 
   BottomNavigationMode get bottomNavigationMode => _bottomNavigationMode;
 
@@ -37,14 +30,15 @@ class HomeState extends ChangeNotifier {
     return _expandCardState[xid] ?? false;
   }
 
-  void minimize(Xid? singleExpanded) {
+  void minimize(Rubric? singleExpanded) {
     _selectedGradedAssignments = [];
     _bottomNavigationMode = BottomNavigationMode.singleStudentOptions;
     if (singleExpanded != null) {
-      _expandCardState[singleExpanded] = true;
+      _selectedRubric = singleExpanded;
+      _expandCardState[singleExpanded.xid] = true;
     }
     for (Xid xid in _expandCardState.keys) {
-      if (xid != singleExpanded) {
+      if (xid != singleExpanded?.xid) {
         _expandCardState[xid] = false;
       }
     }

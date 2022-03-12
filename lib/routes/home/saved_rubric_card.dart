@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
-class SavedRubricCard extends StatefulWidget {
+class SavedRubricCard extends StatelessWidget {
   final Rubric rubric;
 
   const SavedRubricCard({
@@ -16,23 +16,7 @@ class SavedRubricCard extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _SavedRubricCardState createState() => _SavedRubricCardState();
-}
-
-class _SavedRubricCardState extends State<SavedRubricCard> {
-  late Widget _collapsedContent;
-
-  @override
-  void initState() {
-    _collapsedContent = Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [Text(widget.rubric.assignmentName), Text('(${widget.rubric.gradedAssignments.length})')],
-    );
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext buildContext) {
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 1, bottom: 1, left: 5, right: 5),
       child: SingleChildScrollView(
@@ -40,43 +24,50 @@ class _SavedRubricCardState extends State<SavedRubricCard> {
           builder: (context, shouldExpand, child) => ExpandableListTile(
             expanded: shouldExpand,
             onExpandPressed: () {
-              context.read<HomeState>().minimize(shouldExpand ? null : widget.rubric.xid);
+              context.read<HomeState>().minimize(shouldExpand ? null : rubric);
             },
-            title: _collapsedContent,
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [Text(rubric.assignmentName), Text('(${rubric.gradedAssignments.length})')],
+            ),
             child: Selector<HomeState, BottomNavigationMode>(
               builder: (context, bottomNavMode, child) => Column(
-                  children: widget.rubric.gradedAssignments.map(
+                  children: rubric.gradedAssignments.map(
                 (element) {
-                  Tuple2<String, double> grade = ModelsUtil.calcGrade(context.read<Grader>(), widget.rubric, element);
+                  Tuple2<String, double> grade = ModelsUtil.calcGrade(context.read<Grader>(), rubric, element);
                   return Selector<HomeState, bool>(
                     builder: (context, isSelected, child) {
-                      return Padding(
-                        padding: const EdgeInsets.only(left: 25, bottom: 2),
-                        child: GestureDetector(
-                          onTap: () {
-                            if (isSelected) {
-                              context.read<HomeState>().removeSelected(element);
+                      Color? color = isSelected ? context.read<Grader>().themeData.toggleableActiveColor : null;
+                      FontWeight? weight = isSelected ? FontWeight.bold : null;
+                      return GestureDetector(
+                        onTap: () {
+                          if (isSelected) {
+                            context.read<HomeState>().removeSelected(element);
+                          } else {
+                            if (bottomNavMode == BottomNavigationMode.singleStudentOptions) {
+                              context.read<HomeState>().clear(element);
                             } else {
-                              if (bottomNavMode == BottomNavigationMode.singleStudentOptions) {
-                                context.read<HomeState>().clear(element);
-                              } else {
-                                context.read<HomeState>().addSelected(element);
-                              }
+                              context.read<HomeState>().addSelected(element);
                             }
-                          },
-                          onLongPress: () {
-                            context.read<HomeState>().bottomNavigationMode = BottomNavigationMode.multiStudentOptions;
-                            context.read<HomeState>().addSelected(element);
-                          },
-                          child: AbsorbPointer(
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                bottomNavMode == BottomNavigationMode.singleStudentOptions
-                                    ? const Text(
-                                        '\u2022',
-                                        style: TextStyle(
-                                          fontSize: 17,
+                          }
+                        },
+                        onLongPress: () {
+                          context.read<HomeState>().bottomNavigationMode = BottomNavigationMode.multiStudentOptions;
+                          context.read<HomeState>().addSelected(element);
+                        },
+                        child: AbsorbPointer(
+                          child: ListTile(
+                            minLeadingWidth: 1,
+                            leading: SizedBox(
+                                width: 50,
+                                child: bottomNavMode == BottomNavigationMode.singleStudentOptions
+                                    ? Center(
+                                        child: Text(
+                                          '-',
+                                          style: TextStyle(
+                                              fontSize: 17,
+                                              fontWeight: isSelected ? FontWeight.bold : null,
+                                              color: color),
                                         ),
                                       )
                                     : Checkbox(
@@ -88,20 +79,20 @@ class _SavedRubricCardState extends State<SavedRubricCard> {
                                             context.read<HomeState>().removeSelected(element);
                                           }
                                         },
-                                      ),
-                                const SizedBox(
-                                  width: 6,
-                                ),
+                                      )),
+                            title: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
                                 Text(
-                                  element.name.length > 100 ? '${element.name.substring(0, 100)}...' : element.name,
+                                  element.name.length > 20 ? '${element.name.substring(0, 20)}...' : element.name,
                                   textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                      color: isSelected
-                                          ? context.read<Grader>().themeData.textSelectionTheme.selectionColor
-                                          : null),
+                                  style: TextStyle(color: color, fontWeight: weight),
                                 ),
                                 const Spacer(),
-                                Text('${grade.item1} (${grade.item2.toStringAsFixed(1)}%)')
+                                Text(
+                                  '${grade.item1} (${grade.item2.toStringAsFixed(1)}%)',
+                                  style: TextStyle(color: color, fontWeight: weight),
+                                )
                               ],
                             ),
                           ),
@@ -116,7 +107,7 @@ class _SavedRubricCardState extends State<SavedRubricCard> {
             ),
             // baseColor: Theme.of(context).cardColor,
           ),
-          selector: (context, homeState) => homeState.shouldExpand(widget.rubric.xid),
+          selector: (context, homeState) => homeState.shouldExpand(rubric.xid),
         ),
       ),
     );

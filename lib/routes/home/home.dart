@@ -35,6 +35,7 @@ class Home extends StatelessWidget {
                           onPressed: () {
                             context.read<GradedAssignment>().load(data.item2[0]);
                             context.read<Rubric>().load(data.item1);
+                            Navigator.pushNamed(context, '/rubric');
                           },
                           icon: const Icon(Icons.edit))
                     ],
@@ -53,11 +54,14 @@ class Home extends StatelessWidget {
                   ],
                 );
               },
-              selector: (context, homeState) => Tuple3<Rubric, List<GradedAssignment>, BottomNavigationMode>(
-                homeState.rubric,
-                homeState.selected,
-                homeState.bottomNavigationMode,
-              ),
+              selector: (context, homeState) {
+                HomeState x = homeState;
+                return Tuple3<Rubric, List<GradedAssignment>, BottomNavigationMode>(
+                  homeState.rubric,
+                  homeState.selected,
+                  homeState.bottomNavigationMode,
+                );
+              },
             ),
           ),
           selector: (context, homeState) => homeState.shouldShow(),
