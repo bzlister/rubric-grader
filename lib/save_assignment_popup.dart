@@ -25,7 +25,7 @@ class SaveAssignmentPopup extends StatefulWidget {
 }
 
 class _SaveAssignmentPopupState extends State<SaveAssignmentPopup> {
-  late String _name;
+  late String? _name;
   late TextEditingController _controller;
 
   @override
@@ -43,20 +43,20 @@ class _SaveAssignmentPopupState extends State<SaveAssignmentPopup> {
         child: Selector2<Rubric, GradedAssignment, String>(
           builder: (context, str, child) => Text(str),
           selector: (context, rubric, gradedAssignment) =>
-              'Save changes to ${gradedAssignment.name}\'s ${rubric.assignmentName}?',
+              'Save changes to ${gradedAssignment.name ?? rubric.defaultStudentName}\'s ${rubric.assignmentName}?',
         ),
       ),
       actions: [
         TextButton(
           onPressed: () {
             Navigator.pop(context);
-            widget.gradedAssignment.name = _name;
+            widget.gradedAssignment.name = _name ?? widget.rubric.defaultStudentName;
             widget.rubric.saveGradedAssignment(widget.gradedAssignment);
             widget.grader.saveRubric(widget.rubric);
             if (widget.resetRubric) {
               widget.rubric.reset(widget.grader.defaultAssignmentName);
             }
-            widget.gradedAssignment.reset(context.read<Rubric>().defaultStudentName);
+            widget.gradedAssignment.reset();
           },
           child: const Text('Yes'),
         ),
@@ -66,7 +66,7 @@ class _SaveAssignmentPopupState extends State<SaveAssignmentPopup> {
             if (widget.resetRubric) {
               widget.rubric.reset(widget.grader.defaultAssignmentName);
             }
-            widget.gradedAssignment.reset(context.read<Rubric>().defaultStudentName);
+            widget.gradedAssignment.reset();
           },
           child: const Text('No'),
         ),

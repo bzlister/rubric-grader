@@ -56,8 +56,8 @@ class ModelsUtil {
     bool assignmentEdited = false;
     Rubric? oldRubric = grader.findRubricByXid(rubric.xid);
     String oldRubricState = oldRubric?.getState() ?? Rubric.empty(grader.defaultAssignmentName).getState();
-    String oldAssignmentState = oldRubric?.findGradedAssignmentByXid(gradedAssignment.xid)?.getState() ??
-        GradedAssignment.empty(rubric.defaultStudentName).getState();
+    String oldAssignmentState =
+        oldRubric?.findGradedAssignmentByXid(gradedAssignment.xid)?.getState() ?? GradedAssignment.empty().getState();
     rubricEdited = rubric.getState() != oldRubricState;
     assignmentEdited = gradedAssignment.getState() != oldAssignmentState;
 
@@ -83,7 +83,7 @@ class ModelsUtil {
     switch (editedStatus) {
       case EditedStatus.none:
         rubric.reset(grader.defaultAssignmentName);
-        gradedAssignment.reset(rubric.defaultStudentName);
+        gradedAssignment.reset();
         break;
       case EditedStatus.assignment:
         showDialog(

@@ -84,7 +84,7 @@ class SavedRubricCard extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  element.name.length > 20 ? '${element.name.substring(0, 20)}...' : element.name,
+                                  element.name!.length > 20 ? '${element.name!.substring(0, 20)}...' : element.name!,
                                   textAlign: TextAlign.left,
                                   style: TextStyle(color: color, fontWeight: weight),
                                 ),

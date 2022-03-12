@@ -34,7 +34,8 @@ class Header extends StatelessWidget {
           builder: (context, _, child) {
             return TextFormField(
               controller: TextEditingController(text: context.read<GradedAssignment>().name),
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
+                hintText: context.read<Rubric>().defaultStudentName,
                 isDense: true,
               ),
               style: const TextStyle(

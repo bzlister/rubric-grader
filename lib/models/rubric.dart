@@ -106,12 +106,12 @@ class Rubric extends ChangeNotifier {
 
   String get defaultStudentName => _defaultStudentName;
 
-  calcDefaultStudentName() {
+  void calcDefaultStudentName() {
     try {
       List<String> matches = [];
       for (var i = 0; i < _gradedAssignments.length; i++) {
-        if (RegExp(r"^Student \d+$").hasMatch(_gradedAssignments[i].name)) {
-          matches.add(_gradedAssignments[i].name);
+        if (RegExp(r"^Student \d+$").hasMatch(_gradedAssignments[i].name!)) {
+          matches.add(_gradedAssignments[i].name!);
         }
       }
 

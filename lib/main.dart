@@ -15,7 +15,7 @@ void main() {
         create: (context) => Rubric.empty(context.read<Grader>().defaultAssignmentName),
       ),
       ChangeNotifierProvider(
-        create: (context) => GradedAssignment.empty(context.read<Rubric>().defaultStudentName),
+        create: (context) => GradedAssignment.empty(),
       )
     ],
     child: const MyApp(),

@@ -48,6 +48,7 @@ class RubricContainer extends StatelessWidget {
                                   onPressed: () {
                                     Navigator.pop(context);
                                     if (editedStatus == EditedStatus.rubricAndAssignment) {
+                                      gradedAssignment.name ??= rubric.defaultStudentName;
                                       rubric.saveGradedAssignment(gradedAssignment);
                                     }
                                     grader.saveRubric(rubric);
@@ -66,6 +67,7 @@ class RubricContainer extends StatelessWidget {
                         } else {
                           if (editedStatus == EditedStatus.assignment ||
                               editedStatus == EditedStatus.rubricAndAssignment) {
+                            gradedAssignment.name ??= rubric.defaultStudentName;
                             rubric.saveGradedAssignment(gradedAssignment);
                           }
                           grader.saveRubric(rubric);
@@ -100,7 +102,7 @@ class RubricContainer extends StatelessWidget {
                                         resetRubric: false,
                                         canShowWarning: false));
                               } else {
-                                gradedAssignment.reset(rubric.defaultStudentName);
+                                gradedAssignment.reset();
                               }
                             }
                           : null,
@@ -113,8 +115,7 @@ class RubricContainer extends StatelessWidget {
                 selector: (context, grader, rubric, gradedAssignment) {
                   EditedStatus edit = ModelsUtil.isEdited(grader, rubric, gradedAssignment);
                   return edit == EditedStatus.assignment ||
-                      edit == EditedStatus.none &&
-                          gradedAssignment.getState() != GradedAssignment.empty(rubric.defaultStudentName).getState();
+                      edit == EditedStatus.none && gradedAssignment.getState() != GradedAssignment.empty().getState();
                 }),
           ],
         ),

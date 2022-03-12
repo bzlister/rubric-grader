@@ -6,7 +6,7 @@ class GradedAssignment extends ChangeNotifier {
   HashMap<Xid, Xid> _scoreSelections;
   int _daysLate;
   String? _comment;
-  String _name;
+  String? _name;
   Xid _xid;
 
   GradedAssignment(
@@ -16,9 +16,10 @@ class GradedAssignment extends ChangeNotifier {
     this._name,
   ) : _xid = Xid();
 
-  GradedAssignment.empty(this._name)
+  GradedAssignment.empty()
       : _scoreSelections = HashMap<Xid, Xid>(),
         _daysLate = 0,
+        _name = null,
         _xid = Xid();
 
   GradedAssignment copy() {
@@ -34,13 +35,13 @@ class GradedAssignment extends ChangeNotifier {
     notifyListeners();
   }
 
-  void reset(String defaultStudentName) {
-    GradedAssignment newGradedAssignment = GradedAssignment.empty(defaultStudentName);
+  void reset() {
+    GradedAssignment newGradedAssignment = GradedAssignment.empty();
     _scoreSelections = newGradedAssignment.selections;
     _daysLate = newGradedAssignment._daysLate;
     _comment = newGradedAssignment._comment;
-    _name = newGradedAssignment._name;
     _xid = newGradedAssignment._xid;
+    _name = newGradedAssignment._name;
     notifyListeners();
   }
 
@@ -79,9 +80,9 @@ class GradedAssignment extends ChangeNotifier {
     notifyListeners();
   }
 
-  String get name => _name;
+  String? get name => _name;
 
-  set name(String newName) {
+  set name(String? newName) {
     _name = newName;
     notifyListeners();
   }

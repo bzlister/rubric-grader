@@ -28,7 +28,7 @@ class DeletePopup extends StatelessWidget {
             Grader grader = context.read<Grader>();
             grader.saveRubric(containingRubric);
             if (xids.contains(context.read<GradedAssignment>().xid)) {
-              context.read<GradedAssignment>().reset(containingRubric.defaultStudentName);
+              context.read<GradedAssignment>().reset();
             }
             if (deleteRubric) {
               grader.deleteRubric(containingRubric);
