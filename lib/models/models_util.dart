@@ -55,7 +55,7 @@ class ModelsUtil {
     bool rubricEdited = false;
     bool assignmentEdited = false;
     Rubric? oldRubric = grader.findRubricByXid(rubric.xid);
-    String oldRubricState = oldRubric?.getState() ?? Rubric.empty(grader.defaultAssignmentName).getState();
+    String oldRubricState = oldRubric?.getState() ?? Rubric.empty().getState();
     String oldAssignmentState =
         oldRubric?.findGradedAssignmentByXid(gradedAssignment.xid)?.getState() ?? GradedAssignment.empty().getState();
     rubricEdited = rubric.getState() != oldRubricState;
@@ -82,7 +82,7 @@ class ModelsUtil {
 
     switch (editedStatus) {
       case EditedStatus.none:
-        rubric.reset(grader.defaultAssignmentName);
+        rubric.reset();
         gradedAssignment.reset();
         break;
       case EditedStatus.assignment:
@@ -124,9 +124,10 @@ class ModelsUtil {
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
+                  rubric.assignmentName ??= grader.defaultAssignmentName;
                   grader.saveRubric(rubric);
                   if (resetRubric) {
-                    rubric.reset(grader.defaultAssignmentName);
+                    rubric.reset();
                   }
                 },
                 child: const Text('Yes'),
@@ -135,7 +136,7 @@ class ModelsUtil {
                 onPressed: () {
                   Navigator.pop(context);
                   if (resetRubric) {
-                    rubric.reset(grader.defaultAssignmentName);
+                    rubric.reset();
                   }
                 },
                 child: const Text('No'),

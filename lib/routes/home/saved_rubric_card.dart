@@ -28,7 +28,7 @@ class SavedRubricCard extends StatelessWidget {
             },
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [Text(rubric.assignmentName), Text('(${rubric.gradedAssignments.length})')],
+              children: [Text(rubric.assignmentName!), Text('(${rubric.gradedAssignments.length})')],
             ),
             child: Selector<HomeState, BottomNavigationMode>(
               builder: (context, bottomNavMode, child) => Column(

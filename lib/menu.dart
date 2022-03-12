@@ -22,7 +22,7 @@ class Menu extends StatelessWidget {
               style: TextStyle(fontSize: 16, color: Colors.blue),
             )),
             const Divider(),
-            Selector<Rubric, String>(
+            Selector2<Grader, Rubric, String>(
                 builder: (context, assignmentName, child) => ListTile(
                       leading: const Icon(Icons.assignment),
                       title: Text(assignmentName),
@@ -33,7 +33,7 @@ class Menu extends StatelessWidget {
                         }
                       },
                     ),
-                selector: (context, rubric) => rubric.assignmentName),
+                selector: (context, grader, rubric) => rubric.assignmentName ?? grader.defaultAssignmentName),
             ListTile(
               leading: const Icon(Icons.new_label),
               title: const Text("New rubric"),

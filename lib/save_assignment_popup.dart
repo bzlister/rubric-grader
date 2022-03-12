@@ -4,7 +4,7 @@ import 'package:flapp/models/graded_assignment.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class SaveAssignmentPopup extends StatefulWidget {
+class SaveAssignmentPopup extends StatelessWidget {
   final Grader grader;
   final Rubric rubric;
   final GradedAssignment gradedAssignment;
@@ -21,21 +21,6 @@ class SaveAssignmentPopup extends StatefulWidget {
       : super(key: key);
 
   @override
-  _SaveAssignmentPopupState createState() => _SaveAssignmentPopupState();
-}
-
-class _SaveAssignmentPopupState extends State<SaveAssignmentPopup> {
-  late String? _name;
-  late TextEditingController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _name = widget.gradedAssignment.name;
-    _controller = TextEditingController(text: _name);
-  }
-
-  @override
   Widget build(BuildContext context) {
     return AlertDialog(
       content: SizedBox(
@@ -50,23 +35,24 @@ class _SaveAssignmentPopupState extends State<SaveAssignmentPopup> {
         TextButton(
           onPressed: () {
             Navigator.pop(context);
-            widget.gradedAssignment.name = _name ?? widget.rubric.defaultStudentName;
-            widget.rubric.saveGradedAssignment(widget.gradedAssignment);
-            widget.grader.saveRubric(widget.rubric);
-            if (widget.resetRubric) {
-              widget.rubric.reset(widget.grader.defaultAssignmentName);
+            gradedAssignment.name ??= rubric.defaultStudentName;
+            rubric.saveGradedAssignment(gradedAssignment);
+            rubric.assignmentName ??= grader.defaultAssignmentName;
+            grader.saveRubric(rubric);
+            if (resetRubric) {
+              rubric.reset();
             }
-            widget.gradedAssignment.reset();
+            gradedAssignment.reset();
           },
           child: const Text('Yes'),
         ),
         TextButton(
           onPressed: () {
             Navigator.pop(context);
-            if (widget.resetRubric) {
-              widget.rubric.reset(widget.grader.defaultAssignmentName);
+            if (resetRubric) {
+              rubric.reset();
             }
-            widget.gradedAssignment.reset();
+            gradedAssignment.reset();
           },
           child: const Text('No'),
         ),

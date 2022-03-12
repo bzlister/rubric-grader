@@ -12,7 +12,7 @@ void main() {
     providers: [
       ChangeNotifierProvider(create: (context) => Grader.init()),
       ChangeNotifierProvider(
-        create: (context) => Rubric.empty(context.read<Grader>().defaultAssignmentName),
+        create: (context) => Rubric.empty(),
       ),
       ChangeNotifierProvider(
         create: (context) => GradedAssignment.empty(),

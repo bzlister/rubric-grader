@@ -1,4 +1,5 @@
 import 'package:flapp/models/graded_assignment.dart';
+import 'package:flapp/models/grader.dart';
 import 'package:flapp/models/rubric.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -15,7 +16,8 @@ class Header extends StatelessWidget {
           builder: (context, _, child) {
             return TextFormField(
               controller: TextEditingController(text: context.read<Rubric>().assignmentName),
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
+                hintText: context.read<Grader>().defaultAssignmentName,
                 isDense: true,
               ),
               style: const TextStyle(

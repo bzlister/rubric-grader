@@ -6,7 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:xid/xid.dart';
 
 class Rubric extends ChangeNotifier {
-  String _assignmentName;
+  String? _assignmentName;
   List<ScoreBin> _scoreBins;
   List<Category> _categories;
   String _latePolicy;
@@ -18,7 +18,7 @@ class Rubric extends ChangeNotifier {
   Rubric(this._assignmentName, this._scoreBins, this._categories, this._latePolicy, this._latePercentagePerDay,
       this._gradedAssignments, this.xid);
 
-  Rubric.empty(this._assignmentName)
+  Rubric.empty()
       : _scoreBins = [
           ScoreBin(100),
           ScoreBin(90),
@@ -30,6 +30,7 @@ class Rubric extends ChangeNotifier {
         _latePolicy = "total",
         _latePercentagePerDay = 20,
         _gradedAssignments = [],
+        _assignmentName = null,
         xid = Xid();
 
   Rubric.example()
@@ -53,9 +54,9 @@ class Rubric extends ChangeNotifier {
         _gradedAssignments = [],
         xid = Xid();
 
-  void reset(String assignmentName) {
-    Rubric newRubric = Rubric.empty(assignmentName);
-    _assignmentName = newRubric.assignmentName;
+  void reset() {
+    Rubric newRubric = Rubric.empty();
+    _assignmentName = newRubric._assignmentName;
     _scoreBins = newRubric._scoreBins;
     _categories = newRubric._categories;
     _latePolicy = newRubric._latePolicy;
@@ -94,19 +95,19 @@ class Rubric extends ChangeNotifier {
     } else {
       _gradedAssignments.add(copy);
     }
-    calcDefaultStudentName();
+    _calcDefaultStudentName();
     notifyListeners();
   }
 
   void deleteGradedAssignments(List<Xid> xids) {
     _gradedAssignments = [..._gradedAssignments.where((ga) => xids.contains(ga.xid) == false)];
-    calcDefaultStudentName();
+    _calcDefaultStudentName();
     notifyListeners();
   }
 
   String get defaultStudentName => _defaultStudentName;
 
-  void calcDefaultStudentName() {
+  void _calcDefaultStudentName() {
     try {
       List<String> matches = [];
       for (var i = 0; i < _gradedAssignments.length; i++) {
@@ -136,9 +137,9 @@ class Rubric extends ChangeNotifier {
     }
   }
 
-  String get assignmentName => _assignmentName;
+  String? get assignmentName => _assignmentName;
 
-  set assignmentName(String name) {
+  set assignmentName(String? name) {
     _assignmentName = name;
     notifyListeners();
   }

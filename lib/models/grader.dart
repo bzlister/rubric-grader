@@ -1,9 +1,7 @@
 import 'package:flapp/grading_scale.dart';
 import 'package:flapp/models/rubric.dart';
-import 'package:flapp/routes/options/theme_option.dart';
 import 'package:flapp/score_selection_paradigm.dart';
 import 'package:flapp/themes.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:xid/xid.dart';
 
@@ -85,8 +83,8 @@ class Grader extends ChangeNotifier {
     try {
       List<String> matches = [];
       for (var i = 0; i < _savedRubrics.length; i++) {
-        if (RegExp(r"^Assignment \d+$").hasMatch(_savedRubrics[i].assignmentName)) {
-          matches.add(_savedRubrics[i].assignmentName);
+        if (RegExp(r"^Assignment \d+$").hasMatch(_savedRubrics[i].assignmentName!)) {
+          matches.add(_savedRubrics[i].assignmentName!);
         }
       }
 

@@ -51,6 +51,7 @@ class RubricContainer extends StatelessWidget {
                                       gradedAssignment.name ??= rubric.defaultStudentName;
                                       rubric.saveGradedAssignment(gradedAssignment);
                                     }
+                                    rubric.assignmentName ??= grader.defaultAssignmentName;
                                     grader.saveRubric(rubric);
                                   },
                                   child: const Text('Save'),
@@ -70,6 +71,7 @@ class RubricContainer extends StatelessWidget {
                             gradedAssignment.name ??= rubric.defaultStudentName;
                             rubric.saveGradedAssignment(gradedAssignment);
                           }
+                          rubric.assignmentName ??= grader.defaultAssignmentName;
                           grader.saveRubric(rubric);
                         }
                       }
@@ -193,7 +195,7 @@ class RubricContainer extends StatelessWidget {
                             ),
                           ])
                         : Center(
-                            child: Selector<Rubric, String>(
+                            child: Selector2<Grader, Rubric, String>(
                               builder: (context, assignmentName, child) => Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -202,7 +204,8 @@ class RubricContainer extends StatelessWidget {
                                   Text("to add a category to $assignmentName"),
                                 ],
                               ),
-                              selector: (context, rubric) => rubric.assignmentName,
+                              selector: (context, grader, rubric) =>
+                                  rubric.assignmentName ?? grader.defaultAssignmentName,
                             ),
                           ),
                     selector: (context, rubric) => rubric.totalPoints > 0,
