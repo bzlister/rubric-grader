@@ -56,13 +56,13 @@ class _GradingScaleSelectorState extends State<GradingScaleSelector> {
                   keyboardType: TextInputType.text,
                   controller: TextEditingController(text: _letterGrade),
                   inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r"^[A-Za-z][-+]?$")),
-                    LengthLimitingTextInputFormatter(2)
+                    FilteringTextInputFormatter.allow(RegExp(r"^[A-Za-z]{1,2}[-+]?$")),
+                    LengthLimitingTextInputFormatter(3)
                   ],
                   onSubmitted: (val) {
                     widget.onLetterGradeChange(val);
                     setState(() {
-                      _letterGrade = val;
+                      _letterGrade = val.toUpperCase();
                     });
                   },
                 ),

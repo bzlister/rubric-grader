@@ -22,26 +22,8 @@ class GradingScaleOption extends StatelessWidget {
               onPressed: () {
                 showDialog(
                   context: context,
-                  builder: (context) => AlertDialog(
-                    content: SingleChildScrollView(
-                      child: GradingScaleMenu(
-                        gradingScale: gradingScale,
-                      ),
-                    ),
-                    actions: [
-                      TextButton(
-                        child: Text("Save"),
-                        onPressed: () {},
-                      ),
-                      TextButton(
-                        child: Text("Restore default"),
-                        onPressed: () {},
-                      ),
-                      TextButton(
-                        child: Text("Cancel"),
-                        onPressed: () {},
-                      ),
-                    ],
+                  builder: (context) => GradingScaleMenu(
+                    gradingScale: gradingScale,
                   ),
                 );
               },
