@@ -2,6 +2,7 @@ import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:flapp/menu.dart';
 import 'package:flapp/models/graded_assignment.dart';
 import 'package:flapp/models/grader.dart';
+import 'package:flapp/models/models_util.dart';
 import 'package:flapp/models/rubric.dart';
 import 'package:flapp/routes/home/delete_popup.dart';
 import 'package:flapp/routes/home/home_state.dart';
@@ -70,18 +71,38 @@ class Home extends StatelessWidget {
         resizeToAvoidBottomInset: true,
         body: Padding(
           padding: const EdgeInsets.only(top: 5.0, left: 1, right: 1, bottom: 1),
-          child: SingleChildScrollView(
-            child: Selector<Grader, int>(
-              builder: (context, numRubrics, child) => Column(
-                children: List.generate(
-                  numRubrics,
-                  (index) => Selector<Grader, Rubric>(
-                      selector: (context, grader) => grader.savedRubrics[index],
-                      builder: (context, rubric, child) => SavedRubricCard(rubric: rubric)),
-                ),
-              ),
-              selector: (context, grader) => grader.savedRubrics.length,
-            ),
+          child: Selector<Grader, int>(
+            builder: (context, numRubrics, child) => numRubrics > 0
+                ? SingleChildScrollView(
+                    child: Column(
+                      children: List.generate(
+                        numRubrics,
+                        (index) => Selector<Grader, Rubric>(
+                            selector: (context, grader) => grader.savedRubrics[index],
+                            builder: (context, rubric, child) => SavedRubricCard(rubric: rubric)),
+                      ),
+                    ),
+                  )
+                : Center(
+                    child: TextButton(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Icon(Icons.new_label),
+                          Text("Create a new rubric"),
+                        ],
+                      ),
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/rubric');
+                        Rubric rubric = context.read<Rubric>();
+                        Grader grader = context.read<Grader>();
+                        GradedAssignment gradedAssignment = context.read<GradedAssignment>();
+
+                        ModelsUtil.onSave(grader, rubric, gradedAssignment, context, true);
+                      },
+                    ),
+                  ),
+            selector: (context, grader) => grader.savedRubrics.length,
           ),
         ),
       ),

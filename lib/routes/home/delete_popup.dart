@@ -23,7 +23,7 @@ class DeletePopup extends StatelessWidget {
           onPressed: () {
             Navigator.pop(context);
             List<Xid> xids = assignmentsToDelete.map((a) => a.xid).toList();
-            bool deleteRubric = assignmentsToDelete.length == containingRubric.gradedAssignments.length;
+            bool couldDeleteRubric = assignmentsToDelete.length == containingRubric.gradedAssignments.length;
             containingRubric.deleteGradedAssignments(xids);
             Grader grader = context.read<Grader>();
             containingRubric.assignmentName ??= grader.defaultAssignmentName;
@@ -31,11 +31,28 @@ class DeletePopup extends StatelessWidget {
             if (xids.contains(context.read<GradedAssignment>().xid)) {
               context.read<GradedAssignment>().reset();
             }
-            if (deleteRubric) {
-              grader.deleteRubric(containingRubric);
-              if (context.read<Rubric>().xid == containingRubric.xid) {
-                context.read<Rubric>().reset();
-              }
+            if (couldDeleteRubric) {
+              showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                        content: Text("Delete rubric ${containingRubric.assignmentName}?"),
+                        actions: [
+                          TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                grader.deleteRubric(containingRubric);
+                                if (context.read<Rubric>().xid == containingRubric.xid) {
+                                  context.read<Rubric>().reset();
+                                }
+                              },
+                              child: const Text("Yes")),
+                          TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text("No"))
+                        ],
+                      ));
             }
           },
           child: const Text('Yes'),
