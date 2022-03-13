@@ -32,16 +32,22 @@ class Home extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     if (data.item3 == BottomNavigationMode.singleStudentOptions) ...[
-                      IconButton(
-                          onPressed: () {
-                            context.read<GradedAssignment>().load(data.item2[0]);
-                            context.read<Rubric>().load(data.item1);
-                            Navigator.pushNamed(context, '/rubric');
-                          },
-                          icon: const Icon(Icons.edit))
+                      TextButton.icon(
+                        label: const Text("Edit"),
+                        onPressed: () {
+                          context.read<GradedAssignment>().load(data.item2[0]);
+                          context.read<Rubric>().load(data.item1);
+                          Navigator.pushNamed(context, '/rubric');
+                        },
+                        icon: const Icon(Icons.edit),
+                      )
                     ],
-                    IconButton(onPressed: () {}, icon: const Icon(Icons.import_export)),
-                    IconButton(
+                    TextButton.icon(
+                        label: Text(data.item3 == BottomNavigationMode.singleStudentOptions ? "Export" : "Export all"),
+                        onPressed: () {},
+                        icon: const Icon(Icons.import_export)),
+                    TextButton.icon(
+                        label: Text(data.item3 == BottomNavigationMode.singleStudentOptions ? "Delete" : "Delete all"),
                         onPressed: () {
                           showDialog(
                             context: context,

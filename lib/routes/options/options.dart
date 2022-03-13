@@ -22,16 +22,18 @@ class Options extends StatelessWidget {
       drawer: const Menu(),
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
-        child: Column(
-          children: const [
-            OptionGroup(
-              optionsList: [
-                ScoreSelectionOption(),
-                GradingScaleOption(),
-              ],
-            ),
-            OptionGroup(optionsList: [ThemeOption()]),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.only(top: 5),
+          child: Column(
+            children: const [
+              OptionGroup(
+                optionsList: [
+                  GradingScaleOption(),
+                ],
+              ),
+              OptionGroup(optionsList: [ThemeOption()]),
+            ],
+          ),
         ),
       ),
     );

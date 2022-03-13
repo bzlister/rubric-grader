@@ -22,45 +22,48 @@ class SavedRubricCard extends StatelessWidget {
       padding: const EdgeInsets.only(top: 1, bottom: 1, left: 5, right: 5),
       child: SingleChildScrollView(
         child: Selector<HomeState, bool>(
-          builder: (context, shouldExpand, child) => ExpandableListTile(
-            expanded: shouldExpand,
-            onExpandPressed: () {
-              context.read<HomeState>().minimize(shouldExpand ? null : rubric);
-            },
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [Text(rubric.assignmentName!), Text('(${rubric.gradedAssignments.length})')],
-            ),
-            child: Selector<HomeState, BottomNavigationMode>(
-              builder: (context, bottomNavMode, child) => Column(children: [
-                ...rubric.gradedAssignments.map(
-                  (element) {
-                    Tuple2<String, double> grade = ModelsUtil.calcGrade(context.read<Grader>(), rubric, element);
-                    return Selector<HomeState, bool>(
-                      builder: (context, isSelected, child) {
-                        Color? color = isSelected ? context.read<Grader>().themeData.toggleableActiveColor : null;
-                        FontWeight? weight = isSelected ? FontWeight.bold : null;
-                        return GestureDetector(
-                          onTap: () {
-                            if (isSelected) {
-                              context.read<HomeState>().removeSelected(element);
-                            } else {
-                              if (bottomNavMode == BottomNavigationMode.singleStudentOptions) {
-                                context.read<HomeState>().clear(element);
+          builder: (context, shouldExpand, child) => Card(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            child: ExpandableListTile(
+              expanded: shouldExpand,
+              onExpandPressed: () {
+                context.read<HomeState>().minimize(shouldExpand ? null : rubric);
+              },
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [Text(rubric.assignmentName!), Text('(${rubric.gradedAssignments.length})')],
+              ),
+              child: Selector<HomeState, BottomNavigationMode>(
+                builder: (context, bottomNavMode, child) => Column(children: [
+                  ...rubric.gradedAssignments.map(
+                    (element) {
+                      Tuple2<String, double> grade = ModelsUtil.calcGrade(context.read<Grader>(), rubric, element);
+                      return Selector<HomeState, bool>(
+                        builder: (context, isSelected, child) {
+                          Color? color = isSelected ? context.read<Grader>().themeData.toggleableActiveColor : null;
+                          FontWeight? weight = isSelected ? FontWeight.bold : null;
+                          return GestureDetector(
+                            onTap: () {
+                              if (isSelected) {
+                                context.read<HomeState>().removeSelected(element);
                               } else {
-                                context.read<HomeState>().addSelected(element);
+                                if (bottomNavMode == BottomNavigationMode.singleStudentOptions) {
+                                  context.read<HomeState>().clear(element);
+                                } else {
+                                  context.read<HomeState>().addSelected(element);
+                                }
                               }
-                            }
-                          },
-                          onLongPress: () {
-                            context.read<HomeState>().bottomNavigationMode = BottomNavigationMode.multiStudentOptions;
-                            context.read<HomeState>().addSelected(element);
-                          },
-                          child: AbsorbPointer(
-                            child: ListTile(
-                              minLeadingWidth: 1,
-                              leading: SizedBox(
-                                  width: 50,
+                            },
+                            onLongPress: () {
+                              context.read<HomeState>().bottomNavigationMode = BottomNavigationMode.multiStudentOptions;
+                              context.read<HomeState>().addSelected(element);
+                            },
+                            child: AbsorbPointer(
+                              child: ListTile(
+                                visualDensity: const VisualDensity(vertical: -4),
+                                minLeadingWidth: 1,
+                                leading: SizedBox(
+                                  width: 20,
                                   child: bottomNavMode == BottomNavigationMode.singleStudentOptions
                                       ? Center(
                                           child: Text(
@@ -80,42 +83,46 @@ class SavedRubricCard extends StatelessWidget {
                                               context.read<HomeState>().removeSelected(element);
                                             }
                                           },
-                                        )),
-                              title: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    element.name!.length > 20 ? '${element.name!.substring(0, 20)}...' : element.name!,
-                                    textAlign: TextAlign.left,
-                                    style: TextStyle(color: color, fontWeight: weight),
-                                  ),
-                                  const Spacer(),
-                                  Text(
-                                    '${grade.item1} (${grade.item2.toStringAsFixed(1)}%)',
-                                    style: TextStyle(color: color, fontWeight: weight),
-                                  )
-                                ],
+                                        ),
+                                ),
+                                title: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      element.name!.length > 20
+                                          ? '${element.name!.substring(0, 20)}...'
+                                          : element.name!,
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(color: color, fontWeight: weight),
+                                    ),
+                                    const Spacer(),
+                                    Text(
+                                      '${grade.item1} (${grade.item2.toStringAsFixed(1)}%)',
+                                      style: TextStyle(color: color, fontWeight: weight),
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        );
-                      },
-                      selector: (context, homeState) => homeState.selected.contains(element),
-                    );
-                  },
-                ).toList(),
-                TextButton(
-                  child: Text("+ Grade new"),
-                  onPressed: () {
-                    context.read<Rubric>().load(rubric);
-                    context.read<GradedAssignment>().reset();
-                    Navigator.pushNamed(context, '/rubric');
-                  },
-                )
-              ]),
-              selector: (context, homeState) => homeState.bottomNavigationMode,
+                          );
+                        },
+                        selector: (context, homeState) => homeState.selected.contains(element),
+                      );
+                    },
+                  ).toList(),
+                  TextButton(
+                    child: const Text("+ Grade new"),
+                    onPressed: () {
+                      context.read<Rubric>().load(rubric);
+                      context.read<GradedAssignment>().reset();
+                      Navigator.pushNamed(context, '/rubric');
+                    },
+                  )
+                ]),
+                selector: (context, homeState) => homeState.bottomNavigationMode,
+              ),
+              // baseColor: Theme.of(context).cardColor,
             ),
-            // baseColor: Theme.of(context).cardColor,
           ),
           selector: (context, homeState) => homeState.shouldExpand(rubric.xid),
         ),

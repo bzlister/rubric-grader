@@ -24,7 +24,8 @@ class RubricContainer extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Selector3<Grader, Rubric, GradedAssignment, bool>(
-              builder: (context, isEdited, child) => IconButton(
+              builder: (context, isEdited, child) => TextButton.icon(
+                label: Text(isEdited ? "Save" : "Saved"),
                 onPressed: isEdited
                     ? () {
                         Grader grader = context.read<Grader>();
@@ -76,19 +77,17 @@ class RubricContainer extends StatelessWidget {
                         }
                       }
                     : null,
-                icon: isEdited
-                    ? const Icon(
-                        Icons.save,
-                        semanticLabel: "Save",
-                      )
-                    : const Icon(Icons.check),
-                disabledColor: Colors.grey,
+                icon: const Icon(
+                  Icons.save,
+                  semanticLabel: "Save",
+                ),
               ),
               selector: (context, grader, rubric, gradedAssignment) =>
                   ModelsUtil.isEdited(grader, rubric, gradedAssignment) != EditedStatus.none,
             ),
             Selector3<Grader, Rubric, GradedAssignment, bool>(
-                builder: (context, isEdited, child) => IconButton(
+                builder: (context, isEdited, child) => TextButton.icon(
+                      label: const Text("Grade new"),
                       onPressed: isEdited
                           ? () {
                               Grader grader = context.read<Grader>();
@@ -112,7 +111,6 @@ class RubricContainer extends StatelessWidget {
                         Icons.person_add,
                         semanticLabel: "Grade new student",
                       ),
-                      disabledColor: Colors.grey,
                     ),
                 selector: (context, grader, rubric, gradedAssignment) {
                   EditedStatus edit = ModelsUtil.isEdited(grader, rubric, gradedAssignment);

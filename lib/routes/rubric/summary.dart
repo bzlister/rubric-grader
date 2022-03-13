@@ -120,6 +120,7 @@ class Summary extends StatelessWidget {
             ],
           ),
         ),
+        /*
         SizedBox(
           height: 35,
           child: Selector<GradedAssignment, String>(
@@ -133,6 +134,7 @@ class Summary extends StatelessWidget {
             selector: (context, gradedAssignment) => gradedAssignment.comment ?? "",
           ),
         )
+        */
       ],
     );
   }

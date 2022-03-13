@@ -101,20 +101,20 @@ class _GradingScaleSelectorState extends State<GradingScaleSelector> {
                         widget.onAdd(true);
                         Navigator.of(context).pop();
                       },
-                      icon: Icon(Icons.add)),
+                      icon: const Icon(Icons.vertical_align_top)),
                   IconButton(
                       onPressed: () {
                         widget.onRemove?.call();
                         Navigator.of(context).pop();
                       },
                       disabledColor: Colors.grey,
-                      icon: Icon(Icons.delete_forever)),
+                      icon: const Icon(Icons.delete_forever)),
                   IconButton(
                       onPressed: () {
                         widget.onAdd(false);
                         Navigator.of(context).pop();
                       },
-                      icon: Icon(Icons.add)),
+                      icon: const Icon(Icons.vertical_align_bottom)),
                 ],
               )
             ],
