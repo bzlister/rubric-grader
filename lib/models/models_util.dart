@@ -41,10 +41,10 @@ class ModelsUtil {
     }
     double finalScore =
         (calcEarnedPoints(rubric, gradedAssignment) - calcLatePenalty(rubric, gradedAssignment)) / total * 100;
-    String label = grader.gradingScale.scale[0].item1;
+    String label = grader.gradingScale.scale[0].letterGrade;
     for (int i = 0; i < grader.gradingScale.scale.length; i++) {
-      if (grader.gradingScale.scale[i].item2 <= finalScore) {
-        label = grader.gradingScale.scale[i].item1;
+      if (grader.gradingScale.scale[i].lower <= finalScore) {
+        label = grader.gradingScale.scale[i].letterGrade;
         break;
       }
     }

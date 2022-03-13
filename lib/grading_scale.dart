@@ -1,37 +1,30 @@
+import 'package:flapp/interval.dart';
 import 'package:tuple/tuple.dart';
 
 class GradingScale {
-  final List<Tuple2<String, double>> _scale;
+  final List<Interval> _scale;
   final String name;
 
-  GradingScale({required List<Tuple2<String, double>> scale})
+  GradingScale({required List<Interval> scale})
       : _scale = scale,
         name = "Custom";
 
   GradingScale.collegeBoard()
-      : _scale = const [
-          Tuple2("A+", 97),
-          Tuple2("A", 93),
-          Tuple2("A-", 90),
-          Tuple2("B+", 87),
-          Tuple2("B", 83),
-          Tuple2("B-", 80),
-          Tuple2("C+", 77),
-          Tuple2("C", 73),
-          Tuple2("C-", 70),
-          Tuple2("D+", 67),
-          Tuple2("D", 65),
-          Tuple2("F", 0),
+      : _scale = [
+          Interval("A+", 96.5, 100),
+          Interval("A", 92.5, 96.5),
+          Interval("A-", 89.5, 92.5),
+          Interval("B+", 86.5, 89.5),
+          Interval("B", 82.5, 86.5),
+          Interval("B-", 79.5, 82.5),
+          Interval("C+", 76.5, 79.5),
+          Interval("C", 72.5, 76.5),
+          Interval("C-", 69.5, 72.5),
+          Interval("D+", 66.5, 69.5),
+          Interval("D", 64.5, 66.5),
+          Interval("F", 0, 64.5),
         ],
         name = "College Board";
 
-  List<Tuple2<String, double>> get scale => _scale;
-
-  void update(int index, String label, double weight) {
-    _scale[index] = Tuple2(label, weight);
-  }
-
-  void remove(int index) {
-    _scale.removeAt(index);
-  }
+  List<Interval> get scale => _scale;
 }
