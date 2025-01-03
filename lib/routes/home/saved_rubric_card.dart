@@ -40,7 +40,7 @@ class SavedRubricCard extends StatelessWidget {
                       Tuple2<String, double> grade = ModelsUtil.calcGrade(context.read<Grader>(), rubric, element);
                       return Selector<HomeState, bool>(
                         builder: (context, isSelected, child) {
-                          Color? color = isSelected ? context.read<Grader>().themeData.toggleableActiveColor : null;
+                          Color? color = isSelected ? context.read<Grader>().themeData.primaryColor : null;
                           FontWeight? weight = isSelected ? FontWeight.bold : null;
                           return GestureDetector(
                             onTap: () {

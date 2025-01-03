@@ -15,7 +15,7 @@ class IconImageProvider extends ImageProvider<IconImageProvider> {
   Future<IconImageProvider> obtainKey(ImageConfiguration configuration) => SynchronousFuture<IconImageProvider>(this);
 
   @override
-  ImageStreamCompleter load(IconImageProvider key, DecoderCallback decode) =>
+  ImageStreamCompleter load(IconImageProvider key) =>
       OneFrameImageStreamCompleter(_loadAsync(key));
 
   Future<ImageInfo> _loadAsync(IconImageProvider key) async {
@@ -47,7 +47,7 @@ class IconImageProvider extends ImageProvider<IconImageProvider> {
   }
 
   @override
-  int get hashCode => hashValues(icon.hashCode, scale, size, color);
+  int get hashCode => 1;
 
   @override
   String toString() => '$runtimeType(${describeIdentity(icon)}, scale: $scale, size: $size, color: $color)';

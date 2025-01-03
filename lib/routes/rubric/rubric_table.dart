@@ -44,8 +44,8 @@ class RubricTable extends StatelessWidget {
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               shape: const CircleBorder(),
-                              primary: Colors.orange,
-                              onPrimary: Colors.black),
+                              foregroundColor: Colors.orange,
+                              backgroundColor: Colors.black),
                           child: const Icon(
                             Icons.add_box,
                             color: Colors.white70,

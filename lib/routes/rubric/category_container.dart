@@ -35,16 +35,16 @@ class CategoryContainer extends StatelessWidget {
                   alignment: Alignment.bottomLeft,
                   child: AutoSizeText(
                     category.label,
-                    maxFontSize: 12,
-                    minFontSize: 7,
+                    maxFontSize: 16,
+                    minFontSize: 12,
                     maxLines: category.label.contains(" ") ? 2 : 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 AutoSizeText(
                   "${category.weight.truncate()}",
-                  maxFontSize: 13,
-                  minFontSize: 11,
+                  maxFontSize: 16,
+                  minFontSize: 12,
                 )
               ],
             ),
