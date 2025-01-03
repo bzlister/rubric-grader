@@ -1,6 +1,8 @@
-# flapp
+# Rubric grader
 
 Cross-platform app for creating and scoring rubrics.
+
+<img width="599" alt="grader_dark" src="https://github.com/user-attachments/assets/5080702c-17be-4c8a-a76e-68636a0f8c14" />
 
 ## Getting Started
 
